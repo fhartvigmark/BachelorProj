@@ -1,0 +1,1 @@
+"On fast parallel detection of strongly connected components (SCC) in small-world graphs", Hong, Rodia, Olukotun

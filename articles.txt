@@ -1,1 +1,3 @@
 "On fast parallel detection of strongly connected components (SCC) in small-world graphs", Hong, Rodia, Olukotun
+"Computing Strongly Connected Components in Parallel on CUDA", Barnat, Bauch, Brim, Ceška
+"Finding strongly connected components in parallel using O(log2n) reachability queries", Warren Schudy

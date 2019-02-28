@@ -9,3 +9,14 @@ for Generalized B¨uchi Automata](https://link.springer.com/content/pdf/10.1007%
 on Tarjan’s Algorithm](https://link.springer.com/content/pdf/10.1007%2Fs10009-015-0382-1.pdf)
 * iSpan: [Parallel Identification of Strongly Connected
 Components with Spanning Trees](https://www2.seas.gwu.edu/~howie/publications/iSpan-SC18.pdf)
+
+## Other Articles
+
+
+## Benchmarking datasets
+* Wiki: [download dataset](https://wiki.dbpedia.org/downloads-2016-10), [nodes example](http://downloads.dbpedia.org/preview.php?file=2016-10_sl_core-i18n_sl_en_sl_labels_wkd_uris_en.tql.bz2), [edges example](http://downloads.dbpedia.org/preview.php?file=2016-10_sl_core-i18n_sl_en_sl_page_links_wkd_uris_en.ttl.bz2), [id to article](https://www.wikidata.org/wiki/Q1000000)
+* DBLP: [dataset](https://dblp.uni-trier.de/faq/How+can+I+download+the+whole+dblp+dataset)
+* Livejournal: [dataset](https://snap.stanford.edu/data/soc-LiveJournal1.html)
+
+
+SNAP: a collection of datasets [SNAP](https://snap.stanford.edu/data/index.html) 

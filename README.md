@@ -21,3 +21,5 @@ Components with Spanning Trees](https://www2.seas.gwu.edu/~howie/publications/iS
 
 
 SNAP: a collection of datasets [SNAP](https://snap.stanford.edu/data/index.html) 
+
+## Might be interesting to look at synthetic and and implicit graphs

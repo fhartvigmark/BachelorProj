@@ -23,6 +23,9 @@ in	Parallel](https://dl.acm.org/citation.cfm?id=663154)
 Components (SCC) in Small-World Graphs](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.301.3506&rep=rep1&type=pdf)
 
 
+## Pivot selection articles
+* 
+
 ## Benchmarking datasets
 * Wiki: [download dataset](https://wiki.dbpedia.org/downloads-2016-10), [nodes example](http://downloads.dbpedia.org/preview.php?file=2016-10_sl_core-i18n_sl_en_sl_labels_wkd_uris_en.tql.bz2), [edges example](http://downloads.dbpedia.org/preview.php?file=2016-10_sl_core-i18n_sl_en_sl_page_links_wkd_uris_en.ttl.bz2), [id to article](https://www.wikidata.org/wiki/Q1000000)
 * [DBLP](https://dblp.uni-trier.de/faq/How+can+I+download+the+whole+dblp+dataset)

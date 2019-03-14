@@ -15,7 +15,7 @@ Strongly Connected Components and Related Problems](https://ieeexplore.ieee.org/
 
 ## FB articles
 * [Improved Distributed Algorithms
-for SCC Decomposition]:(https://www.sciencedirect.com/science/article/pii/S1571066108000716)
+for SCC Decomposition](https://www.sciencedirect.com/science/article/pii/S1571066108000716)
 * [On	Identifying	Strongly	Connected	Components	
 in	Parallel](https://dl.acm.org/citation.cfm?id=663154)
 * [On fast parallel detection of strongly connected components (SCC) in small-world graphs](https://dl.acm.org/citation.cfm?id=2503246)

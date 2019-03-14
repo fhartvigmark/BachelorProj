@@ -22,6 +22,8 @@ in	Parallel](https://dl.acm.org/citation.cfm?id=663154)
 * [Technical Report: On Fast Parallel Detection of Strongly Connected
 Components (SCC) in Small-World Graphs](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.301.3506&rep=rep1&type=pdf)
 * Articulation points?: [Work efficient parallel algorithms for large graph exploration on emerging heterogeneous architectures](https://www.sciencedirect.com/science/article/pii/S074373151400224X)
+* [Efficient, Reachability-based, Parallel Algorithms for
+Finding Strongly Connected Components](https://pdfs.semanticscholar.org/7ee1/c61280fac646511cd5822e0ea4701fa2bb85.pdf)
 
 
 ## Pivot selection articles

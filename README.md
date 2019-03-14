@@ -10,8 +10,17 @@ on Tarjan’s Algorithm](https://link.springer.com/content/pdf/10.1007%2Fs10009-
 * iSpan: [Parallel Identification of Strongly Connected
 Components with Spanning Trees](https://www2.seas.gwu.edu/~howie/publications/iSpan-SC18.pdf)
 * Forward - Backward [FIND SOURCE]
+* Multistep: [BFS and Coloring-based Parallel Algorithms for
+Strongly Connected Components and Related Problems](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=6877288)
 
-## Other Articles
+## FB articles
+* [Improved Distributed Algorithms
+for SCC Decomposition]:(https://www.sciencedirect.com/science/article/pii/S1571066108000716)
+* [On	Identifying	Strongly	Connected	Components	
+in	Parallel](https://dl.acm.org/citation.cfm?id=663154)
+* [On fast parallel detection of strongly connected components (SCC) in small-world graphs](https://dl.acm.org/citation.cfm?id=2503246)
+* [Technical Report: On Fast Parallel Detection of Strongly Connected
+Components (SCC) in Small-World Graphs](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.301.3506&rep=rep1&type=pdf)
 
 
 ## Benchmarking datasets

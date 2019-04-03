@@ -6,3 +6,6 @@
 * Use BFS in basic FW-BW
 * Trims
 * Parallel BFS
+
+# Implementation notes
+* `Snap-4.1/examples/circles/circles.cpp` has useful way of importing graphs

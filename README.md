@@ -26,8 +26,8 @@ Components (SCC) in Small-World Graphs](http://citeseerx.ist.psu.edu/viewdoc/dow
 Finding Strongly Connected Components](https://pdfs.semanticscholar.org/7ee1/c61280fac646511cd5822e0ea4701fa2bb85.pdf)
 
 
-## Pivot selection articles
-* 
+## Other articles
+* [Direction-Optimizing Breadth-First Search](http://www.scottbeamer.net/pubs/beamer-sc2012.pdf)
 
 ## Benchmarking datasets
 * Wiki: [download dataset](https://wiki.dbpedia.org/downloads-2016-10), [nodes example](http://downloads.dbpedia.org/preview.php?file=2016-10_sl_core-i18n_sl_en_sl_labels_wkd_uris_en.tql.bz2), [edges example](http://downloads.dbpedia.org/preview.php?file=2016-10_sl_core-i18n_sl_en_sl_page_links_wkd_uris_en.ttl.bz2), [id to article](https://www.wikidata.org/wiki/Q1000000)

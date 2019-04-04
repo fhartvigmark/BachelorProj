@@ -65,7 +65,7 @@ endif
 #include Makefile.ex
 MAIN = main
 DEPH = 
-DEPCPP = 
+DEPCPP = fwbw.cpp pivot.cpp bfs.cpp scc.cpp trim.cpp
 
 #include ../Makefile.exmain
 all: $(MAIN)
@@ -75,14 +75,6 @@ $(MAIN): $(MAIN).cpp $(DEPH) $(DEPCPP) $(SNAP)/Snap.o ssc
 
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)
-
-others: $(SNAP)/Snap.o: 
-  $(CC) $(CXXFLAGS) -o fwbw fwbw.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
-  $(CC) $(CXXFLAGS) -o bfs bfs.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
-  $(CC) $(CXXFLAGS) -o trim trim.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
-
-ssc: others $(SNAP)/Snap.o: 
-  $(CC) $(CXXFLAGS) -o scc scc.cpp fwbw.o bfs.o trim.o $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f *.o  $(MAIN)  $(MAIN).exe

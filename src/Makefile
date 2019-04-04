@@ -70,8 +70,8 @@ DEPCPP = fwbw.cpp pivot.cpp bfs.cpp scc.cpp trim.cpp
 #include ../Makefile.exmain
 all: $(MAIN)
 # COMPILE
-$(MAIN): $(MAIN).cpp $(DEPH) $(DEPCPP) $(SNAP)/Snap.o ssc
-	$(CC) $(CXXFLAGS) -o $(MAIN) $(MAIN).cpp $(DEPCPP) scc.o $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
+$(MAIN): $(MAIN).cpp $(DEPH) $(DEPCPP) $(SNAP)/Snap.o
+	$(CC) $(CXXFLAGS) -o $(MAIN) $(MAIN).cpp $(DEPCPP) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)

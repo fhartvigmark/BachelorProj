@@ -70,11 +70,19 @@ DEPCPP =
 #include ../Makefile.exmain
 all: $(MAIN)
 # COMPILE
-$(MAIN): $(MAIN).cpp $(DEPH) $(DEPCPP) $(SNAP)/Snap.o 
-	$(CC) $(CXXFLAGS) -o $(MAIN) $(MAIN).cpp $(DEPCPP) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
+$(MAIN): $(MAIN).cpp $(DEPH) $(DEPCPP) $(SNAP)/Snap.o ssc
+	$(CC) $(CXXFLAGS) -o $(MAIN) $(MAIN).cpp $(DEPCPP) scc.o $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)
+
+others: $(SNAP)/Snap.o: 
+  $(CC) $(CXXFLAGS) -o fwbw fwbw.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
+  $(CC) $(CXXFLAGS) -o bfs bfs.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
+  $(CC) $(CXXFLAGS) -o trim trim.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
+
+ssc: others $(SNAP)/Snap.o: 
+  $(CC) $(CXXFLAGS) -o scc scc.cpp fwbw.o bfs.o trim.o $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f *.o  $(MAIN)  $(MAIN).exe

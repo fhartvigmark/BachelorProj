@@ -63,7 +63,7 @@ endif
 
 
 #include Makefile.ex
-MAIN = graphtest
+MAIN = main
 DEPH = 
 DEPCPP = 
 

@@ -18,11 +18,11 @@ int main(int argc, char** argv) {
 
 	// Load an example graph
 	PUNGraph Graph = TSnap::LoadEdgeList<PUNGraph>(InEdges);
-	
+	PNGraph bfstree = TSnap::GetBfsTree(Graph, 1, true, false);
 	// Traverse the nodes
-	for (TUNGraph::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI(); NI++)
+	for (TUNGraph::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI(); NI++){
 		printf("%d %d %d\n", NI.GetId(), NI.GetOutDeg(), NI.GetInDeg());
-
+	}
 	
 	return 0;
 }

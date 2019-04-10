@@ -64,7 +64,7 @@ endif
 
 #include Makefile.ex
 MAIN = main
-DEPH = 
+DEPH = $(GLIB)/hash.h
 DEPCPP = fwbw.cpp pivot.cpp bfs.cpp scc.cpp trim.cpp
 
 #include ../Makefile.exmain

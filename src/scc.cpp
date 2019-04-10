@@ -6,6 +6,7 @@ int scc::FindSCCs(PNGraph g, int trimlevel, int pivotmethod, int fwbwmethod){
     TIntH colors;
     colors(g -> GetNodes());
     enhgraph.colors = &colors;
+    enhgraph.colorGen = new ColorGenerator();
     
     switch (fwbwmethod){
         case 0:

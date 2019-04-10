@@ -1,6 +1,6 @@
 #pragma once
-
 #include "core.h"
+#include "pivot.h"
 
 class bfs
 {

@@ -4,7 +4,7 @@
 
 class ColorGenerator
 {
-    protected:
+    public:
         int getNext() { return ++lastColor; }
     private:
         std::atomic<int> lastColor;

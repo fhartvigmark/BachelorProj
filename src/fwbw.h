@@ -1,6 +1,6 @@
 #pragma once
 
-#include "base.h"
+#include "core.h"
 #include "bfs.h"
 #include "trim.h"
 #include "pivot.h"

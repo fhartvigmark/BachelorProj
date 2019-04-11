@@ -39,6 +39,6 @@ Finding Strongly Connected Components](https://pdfs.semanticscholar.org/7ee1/c61
 SNAP: a collection of datasets [SNAP](https://snap.stanford.edu/data/index.html) 
 
 ## Multithreading in C++
-* OpenMP[https://www.openmp.org/wp-content/uploads/omp-hands-on-SC08.pdf]
+* [OpenMP](https://www.openmp.org/wp-content/uploads/omp-hands-on-SC08.pdf)
 
 ## Might be interesting to look at synthetic and and implicit graphs

@@ -13,7 +13,7 @@
 # Tasks
 * OpenMP
 * Finish sequential baseline implementation
-* Paralel baseline implementation
+* Parallel baseline implementation
 * Unit tests with gtest
 * Trim 1
 * Debug information

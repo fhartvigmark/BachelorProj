@@ -7,5 +7,5 @@
 
 class fwbw{
     public:
-      static int basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod);
+      static int basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
 };

@@ -9,3 +9,14 @@
 
 # Implementation notes
 * `Snap-4.1/examples/circles/circles.cpp` has useful way of importing graphs
+
+# Tasks
+* OpenMP
+* Finish sequential baseline implementation
+* Paralel baseline implementation
+* Unit tests with gtest
+* Trim 1
+* Debug information
+* More pivot methods
+* Trim 2-3
+* SCC output structure

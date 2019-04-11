@@ -11,6 +11,7 @@
 * `Snap-4.1/examples/circles/circles.cpp` has useful way of importing graphs
 * OpenMP might let us avoid using queues. Need to look into this
 * [OpenMP Tasks](http://pages.tacc.utexas.edu/~eijkhout/pcse/html/omp-task.html)
+* [OpenMP Tasks 2](https://openmp.org/wp-content/uploads/sc13.tasking.ruud.pdf)
 * Color based pivot selection is tedious. We have copied Hong's own method
 
 # Tasks

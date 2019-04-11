@@ -5,5 +5,5 @@
 class bfs
 {
   public:
-    static int colorbfs(enhancedgraph *g, int color);
+    static std::pair<int, int> colorbfs(enhancedgraph *g, int color, int startNode);
 };

@@ -1,13 +1,11 @@
 #include "bfs.h"
 
 //Maybe include mark
-int colorbfs(enhancedgraph *g, int color){
+std::pair<int, int> colorbfs(enhancedgraph *g, int color, int startNode){
     TSnapQueue<int> Queue;
     TIntH *colors = g->colors;
     PNGraph *pgraph = g->graph;
 
-    //Find pivot node
-    int startNode = pivot::getPivot(g, color);
     Queue.Push(startNode);
 
     const int sccColor = g->colorGen->getNext();
@@ -83,5 +81,5 @@ int colorbfs(enhancedgraph *g, int color){
             }
         }
     }
-    return 0;
+    return std::make_pair(fwColor, bwColor);
 }   

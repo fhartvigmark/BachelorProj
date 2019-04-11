@@ -1,10 +1,10 @@
 #include "bfs.h"
 
 //Maybe include mark
-//The passed parameters should be new graph struct.
 int colorbfs(enhancedgraph *g, int color){
     TSnapQueue<int> Queue;
     TIntH *colors = g->colors;
+    PNGraph pgraph = *g->graph;
 
     //Find pivot node
     int startNode = pivot::getPivot(g, color);
@@ -25,7 +25,7 @@ int colorbfs(enhancedgraph *g, int color){
             colors->AddDat(node, fwColor);
 
             //Get node iterator for the current node
-            const TNGraph::TNodeI NodeI = g->graph->GetNI(node);
+            const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
 
             //Add all out edges that have not already been visited to the queue
             for (v = 0; v < NodeI.GetOutDeg(); v++) 

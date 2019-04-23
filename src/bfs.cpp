@@ -1,7 +1,7 @@
 #include "bfs.h"
 
 //Maybe include mark
-std::pair<int, int> colorbfs(enhancedgraph *g, int color, int startNode){
+std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode){
     TSnapQueue<int> Queue;
     TIntH *colors = g->colors;
     PNGraph *pgraph = g->graph;

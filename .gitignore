@@ -3,3 +3,8 @@
 !*.*
 /datasets
 /.vscode
+
+!/src/Makefile
+!/test/Makefile
+/test/*.o
+/src/*.o

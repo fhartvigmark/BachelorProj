@@ -65,7 +65,7 @@ endif
 #include Makefile.ex
 MAIN = main
 DEPH = core.h
-DEPCPP = fwbw.cpp pivot.cpp bfs.cpp scc.cpp trim.cpp
+DEPCPP = fwbw.cpp pivot.cpp bfs.cpp scc.cpp trim.cpp core.cpp
 
 #include ../Makefile.exmain
 all: $(MAIN)

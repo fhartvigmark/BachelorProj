@@ -61,17 +61,20 @@ LD_FLAGS = -L /usr/local/lib -l $(GOOGLE_TEST_LIB) -l pthread
 
 SRC = ../src
 
-OBJECTS = runAll.o example.o
+OBJECTS = runAll.o example.o $(SRC)/bfs.o bfs-test.o
 TARGET = runAll
+
+DEPH = 
+
 
 all: $(TARGET)
 run: test
 
-$(TARGET): $(OBJECTS) $(SRC)/bfs.o $(SRC)/trim.o $(SRC)/pivot.o $(SNAP)/Snap.o
+$(TARGET): $(SRC)/bfs.o $(SRC)/trim.o $(SRC)/pivot.o $(SNAP)/Snap.o $(OBJECTS) 
 	$(G++) -o $(TARGET) $(OBJECTS) $(LD_FLAGS) $(CXXFLAGS) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 %.o: %.cpp
-	$(G++) $(G++_FLAGS) $<
+	$(G++) $(G++_FLAGS) $(CXXFLAGS) $(SRC)/bfs.o $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) -I$(SRC) $(LDFLAGS) $(LIBS) $<
 
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)

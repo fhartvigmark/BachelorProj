@@ -19,15 +19,15 @@
 * Finish sequential baseline implementation
 * Parallel baseline implementation
 * Unit tests with gtest
-* * Pivot tests
-* * * Empty graph
-* * * No matching color
-* * * More than one Matching color
-* * Enhanced graph test
-* * * Colorgen
-* * * Hashmap
-* * * * All nodes present
-* * * * All nodes 0
+    * Pivot tests
+        * Empty graph
+        * No matching color
+        * More than one Matching color
+    * Enhanced graph test
+        * Colorgen
+        * Hashmap
+            * All nodes present
+            * All nodes 0
 * Trim 1
 * Debug information
 * More pivot methods

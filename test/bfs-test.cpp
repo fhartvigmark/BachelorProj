@@ -12,7 +12,7 @@ struct graph_state {
 
 struct SimpleReachabilityTest : testing::Test, testing::WithParamInterface<graph_state> {
 
-    struct enhancedgraph* enhgraph;
+    enhancedgraph* enhgraph = new enhancedgraph;
 
     SimpleReachabilityTest() {
         PNGraph graph = TNGraph::New();

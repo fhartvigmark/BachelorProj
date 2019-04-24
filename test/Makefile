@@ -70,7 +70,7 @@ DEPH =
 all: $(TARGET)
 run: test
 
-$(TARGET): $(SRC)/bfs.o $(SRC)/trim.o $(SRC)/pivot.o $(SNAP)/Snap.o $(OBJECTS) 
+$(TARGET): $(SRC)/bfs.o $(SRC)/trim.o $(SRC)/pivot.o $(SRC)/core.o $(SNAP)/Snap.o $(OBJECTS) 
 	$(G++) -o $(TARGET) $(OBJECTS) $(LD_FLAGS) $(CXXFLAGS) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 %.o: %.cpp
@@ -86,6 +86,9 @@ $(SRC)/pivot.o:
 	make -C $(SRC)
 
 $(SRC)/trim.o:
+	make -C $(SRC)
+
+$(SRC)/core.o:
 	make -C $(SRC)
 
 test: $(TARGET)

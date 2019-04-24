@@ -3,7 +3,7 @@
 * ~Read a graph~
 * ~Make basic framework~
 * ~Implement basic BFS~
-* Use BFS in basic FW-BW
+* ~Use BFS in basic FW-BW~
 * Trims
 * Parallel BFS
 

@@ -4,7 +4,7 @@ GOOGLE_TEST_LIB = gtest
 GOOGLE_TEST_INCLUDE = /usr/local/include
 
 G++ = g++
-G++_FLAGS = -c -Wall -I $(GOOGLE_TEST_INCLUDE)
+G++_FLAGS = -c -Wall -I $(GOOGLE_TEST_INCLUDE) -std=c++11
 LD_FLAGS = -L /usr/local/lib -l $(GOOGLE_TEST_LIB) -l pthread
 
 OBJECTS = runAll.o example.o

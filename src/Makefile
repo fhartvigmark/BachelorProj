@@ -70,11 +70,20 @@ DEPCPP = fwbw.cpp pivot.cpp bfs.cpp scc.cpp trim.cpp
 #include ../Makefile.exmain
 all: $(MAIN)
 # COMPILE
-$(MAIN): $(MAIN).cpp $(DEPH) $(DEPCPP) $(SNAP)/Snap.o
+$(MAIN): $(MAIN).cpp $(DEPH) $(DEPCPP) $(SNAP)/Snap.o bfs.o pivot.o trim.o
 	$(CC) $(CXXFLAGS) -o $(MAIN) $(MAIN).cpp $(DEPCPP) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)
+
+bfs.o: $(DEPH)
+	$(CC) $(CXXFLAGS) -c bfs.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
+
+pivot.o: $(DEPH)
+	$(CC) $(CXXFLAGS) -c pivot.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
+
+trim.o: $(DEPH)
+	$(CC) $(CXXFLAGS) -c trim.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f *.o  $(MAIN)  $(MAIN).exe

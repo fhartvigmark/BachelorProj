@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <bfs.h>
+#include <list>
 
 struct graph_state {
     int startnode;
@@ -7,9 +8,9 @@ struct graph_state {
     std::list<int> scclist;
     std::list<int> fwlist;
     std::list<int> bwlist;
-}
+};
 
-struct SimpleReachabilityTest : testing::WithParamInterface<graph_state> {
+struct SimpleReachabilityTest : testing::Test, testing::WithParamInterface<graph_state> {
 
     struct enhancedgraph* enhgraph;
 
@@ -21,17 +22,17 @@ struct SimpleReachabilityTest : testing::WithParamInterface<graph_state> {
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-        enhgraph.graph = &graph;
+        enhgraph->graph = &graph;
         TIntH colors;
         colors(graph->GetNodes());
-        enhgraph.colors = &colors;
-        enhgraph.colorGen = new ColorGenerator();
+        enhgraph->colors = &colors;
+        enhgraph->colorGen = new ColorGenerator();
     }
 
     virtual ~SimpleReachabilityTest() {
         delete enhgraph;
     }
-}
+};
 
 TEST_P(SimpleReachabilityTest, BasicColors) {
     auto gs = GetParam();
@@ -41,5 +42,5 @@ TEST_P(SimpleReachabilityTest, BasicColors) {
 
 INSTANTIATE_TEST_CASE_P(Default, SimpleReachabilityTest,
     testing::Values(
-        graph_state{1, 42, (1), (2, 3), ()}
+        graph_state{1, 42, {1}, {2, 3}, {}}
     ));

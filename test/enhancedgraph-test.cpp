@@ -36,6 +36,10 @@ struct MapSetupTest : testing::Test {
 
         enhgraph = new enhancedgraph(&graph);
 	}
+
+	virtual ~MapSetupTest() {
+        delete enhgraph;
+    }
 };
 
 TEST_F(SimpleSetupTest, ColorIncrementEachTime) {

@@ -11,9 +11,12 @@ class ColorGenerator
         std::atomic<int> lastColor;
 };
 
-struct enhancedgraph
+class enhancedgraph
 {
-    PNGraph *graph;
-    TIntH *colors;
-    ColorGenerator *colorGen;
+	public:
+    	PNGraph *graph;
+    	TIntH *colors;
+    	ColorGenerator *colorGen;
+		enhancedgraph(PNGraph* g);
+		enhancedgraph();
 };

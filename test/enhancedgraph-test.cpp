@@ -2,7 +2,7 @@
 #include <core.h>
 
 struct SimpleSetupTest : testing::Test {
-    enhancedgraph* enhgraph = new enhancedgraph;
+    enhancedgraph* enhgraph = new enhancedgraph();
 
     SimpleSetupTest() {
         PNGraph graph = TNGraph::New();
@@ -24,7 +24,7 @@ struct SimpleSetupTest : testing::Test {
 };
 
 struct MapSetupTest : testing::Test {
-	enhancedgraph* enhgraph = new enhancedgraph;
+	enhancedgraph* enhgraph;
 
 	MapSetupTest() {
 		PNGraph graph = TNGraph::New();
@@ -34,15 +34,7 @@ struct MapSetupTest : testing::Test {
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-        enhgraph->graph = &graph;
-        TIntH *colors = new TIntH();
-        enhgraph->colors = colors;
-
-
-		for (PNGraph::TObj::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
-		{
-			colors->AddDat(NI.GetId(), 0);
-		}
+        enhgraph = new enhancedgraph(&graph);
 	}
 };
 

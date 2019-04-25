@@ -4,7 +4,7 @@
 
 struct graph_state {
     int startnode;
-    int scccolor;
+    int color;
     std::list<int> scclist;
     std::list<int> fwlist;
     std::list<int> bwlist;
@@ -36,11 +36,11 @@ struct SimpleReachabilityTest : testing::Test, testing::WithParamInterface<graph
 
 TEST_P(SimpleReachabilityTest, BasicColors) {
     auto gs = GetParam();
-    auto newcolors = bfs::colorbfs(enhgraph, gs.scccolor, gs.startnode);
-    EXPECT_EQ(enhgraph->colors->GetDat(gs.startnode), gs.scccolor);
+    auto newcolors = bfs::colorbfs(enhgraph, gs.color, gs.startnode);
+    EXPECT_EQ(enhgraph->colors->GetDat(3), newcolors.first);
 }
 
 INSTANTIATE_TEST_CASE_P(Default, SimpleReachabilityTest,
     testing::Values(
-        graph_state{1, 42, {1}, {2, 3}, {}}
+        graph_state{1, 1, {1}, {2, 3}, {}}
     ));

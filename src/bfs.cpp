@@ -1,5 +1,5 @@
 #include "bfs.h"
-
+#include <assert.h>
 //Maybe include mark
 std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode){
     TSnapQueue<int> Queue;
@@ -22,10 +22,13 @@ std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode){
         if (colors->GetDat(node) == color) {
             colors->AddDat(node, fwColor);
 
-            //Get node iterator for the current node
-            const TNGraph::TNodeI NodeI = (*pgraph)->GetNI(node);
+			assert((*pgraph)!=NULL);
+			assert(node!=NULL);
+			assert((*pgraph)->IsNode(node)==true);
+				//Get node iterator for the current node
+			const TNGraph::TNodeI NodeI = (*pgraph)->GetNI(node);
 
-            //Add all out edges that have not already been visited to the queue
+			//Add all out edges that have not already been visited to the queue
             for (v = 0; v < NodeI.GetOutDeg(); v++) 
             {
                 const int outNode = NodeI.GetOutNId(v);

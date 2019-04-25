@@ -12,7 +12,7 @@ struct graph_state {
 
 struct SimpleReachabilityTest : testing::Test, testing::WithParamInterface<graph_state> {
 
-    enhancedgraph* enhgraph = new enhancedgraph;
+    enhancedgraph* enhgraph;
 
     SimpleReachabilityTest() {
         PNGraph graph = TNGraph::New();
@@ -22,11 +22,8 @@ struct SimpleReachabilityTest : testing::Test, testing::WithParamInterface<graph
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-        enhgraph->graph = &graph;
-        TIntH *colors = new TIntH();
-        enhgraph->colors = colors;
-        enhgraph->colorGen = new ColorGenerator();
-    }
+		enhgraph = new enhancedgraph(&graph);
+	}
 
     virtual ~SimpleReachabilityTest() {
         delete enhgraph;
@@ -36,7 +33,7 @@ struct SimpleReachabilityTest : testing::Test, testing::WithParamInterface<graph
 struct SmallCycleTest : testing::Test, testing::WithParamInterface<graph_state>
 {
 
-	enhancedgraph *enhgraph = new enhancedgraph;
+	enhancedgraph *enhgraph;
 
 	SmallCycleTest()
 	{
@@ -46,10 +43,8 @@ struct SmallCycleTest : testing::Test, testing::WithParamInterface<graph_state>
 		graph->AddEdge(1, 2);
 		graph->AddEdge(2, 1);
 
-		enhgraph->graph = &graph;
-		TIntH *colors = new TIntH();
-		enhgraph->colors = colors;
-		enhgraph->colorGen = new ColorGenerator();
+		enhgraph = new enhancedgraph(&graph);
+
 	}
 
 	virtual ~SmallCycleTest()

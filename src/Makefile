@@ -27,8 +27,8 @@ ifeq ($(UNAME), Linux)
   CXXFLAGS += -std=c++11 -Wall
   CXXFLAGS += -O3 -DNDEBUG -fopenmp
   # turn on for crash debugging, get symbols with <prog> 2>&1 | c++filt
-  #CXXFLAGS += -g -rdynamic
-  #CXXFLAGS += -ggdb
+  CXXFLAGS += -g -rdynamic
+  CXXFLAGS += -ggdb
   # turn on for OpenMP
   CXXOPENMP = 
   LDFLAGS +=

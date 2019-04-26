@@ -14,9 +14,9 @@ class ColorGenerator
 class enhancedgraph
 {
 	public:
-    	PNGraph *graph;
+    	PNGraph graph;
     	TIntH *colors;
     	ColorGenerator *colorGen;
-		enhancedgraph(PNGraph* g);
+		enhancedgraph(PNGraph g);
 		enhancedgraph();
 };

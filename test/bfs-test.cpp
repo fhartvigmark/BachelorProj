@@ -22,7 +22,7 @@ struct SimpleReachabilityTest : testing::Test, testing::WithParamInterface<graph
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-		enhgraph = new enhancedgraph(&graph);
+		enhgraph = new enhancedgraph(graph);
 	}
 
     virtual ~SimpleReachabilityTest() {
@@ -43,7 +43,7 @@ struct SmallCycleTest : testing::Test, testing::WithParamInterface<graph_state>
 		graph->AddEdge(1, 2);
 		graph->AddEdge(2, 1);
 
-		enhgraph = new enhancedgraph(&graph);
+		enhgraph = new enhancedgraph(graph);
 
 	}
 

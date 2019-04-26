@@ -4,7 +4,7 @@
 std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode){
     TSnapQueue<int> Queue;
     TIntH *colors = g->colors;
-    PNGraph *pgraph = g->graph;
+    PNGraph pgraph = g->graph;
 
     Queue.Push(startNode);
 
@@ -23,7 +23,7 @@ std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode){
             colors->AddDat(node, fwColor);
 
             //Get node iterator for the current node
-            const TNGraph::TNodeI NodeI = (*pgraph)->GetNI(node);
+            const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
 
             //Add all out edges that have not already been visited to the queue
             for (v = 0; v < NodeI.GetOutDeg(); v++) 
@@ -48,7 +48,7 @@ std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode){
             colors->AddDat(node, bwColor);
 
             //Get node iterator for the current node
-            const TNGraph::TNodeI NodeI = (*pgraph)->GetNI(node);
+            const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
 
             //Add all out edges that have not already been visited to the queue
             for (v = 0; v < NodeI.GetInDeg(); v++)
@@ -66,7 +66,7 @@ std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode){
             colors->AddDat(node, sccColor);
 
             //Get node iterator for the current node
-            const TNGraph::TNodeI NodeI = (*pgraph)->GetNI(node);
+            const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
 
             //Add all out edges that have not already been visited to the queue
             for (v = 0; v < NodeI.GetInDeg(); v++)

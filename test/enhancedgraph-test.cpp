@@ -12,7 +12,7 @@ struct SimpleSetupTest : testing::Test {
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-        enhgraph->graph = &graph;
+        enhgraph->graph = graph;
         TIntH *colors = new TIntH();
         enhgraph->colors = colors;
         enhgraph->colorGen = new ColorGenerator();
@@ -27,14 +27,14 @@ struct MapSetupTest : testing::Test {
 	enhancedgraph* enhgraph;
 
 	MapSetupTest() {
-		PNGraph graph = TNGraph::New();
+		PNGraph graph = new TNGraph();
         graph->AddNode(1);
         graph->AddNode(2);
         graph->AddNode(3);
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-        enhgraph = new enhancedgraph(&graph);
+        enhgraph = new enhancedgraph(graph);
 	}
 
 	virtual ~MapSetupTest() {
@@ -53,6 +53,23 @@ TEST_F(SimpleSetupTest, ColorIncrementEachTime) {
 TEST_F(SimpleSetupTest, HashMapStartsEmpty) {
 	TIntH *colorMap = enhgraph->colors;
     EXPECT_EQ(0, colorMap->Len());
+}
+
+TEST_F(SimpleSetupTest, GraphTest) {
+	PNGraph graph = enhgraph->graph;
+
+	EXPECT_EQ(3, graph->GetNodes());
+}
+
+TEST_F(SimpleSetupTest, GetNI) {
+	EXPECT_EQ(true, enhgraph->graph->IsNode(1));
+
+	const TNGraph::TNodeI NodeI = enhgraph->graph->GetNI(1);
+
+	for (int v = 0; v < NodeI.GetOutDeg(); v++)
+	{
+		EXPECT_EQ(true, false);
+	}
 }
 
 TEST_F(MapSetupTest, MapStartsWithAllNodes) {

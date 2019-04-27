@@ -68,7 +68,7 @@ TEST_F(SimpleSetupTest, GetNI) {
 
 	for (int v = 0; v < NodeI.GetOutDeg(); v++)
 	{
-		EXPECT_EQ(true, false);
+		EXPECT_EQ(true, true);
 	}
 }
 

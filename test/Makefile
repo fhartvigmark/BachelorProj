@@ -61,7 +61,8 @@ LD_FLAGS = -L /usr/local/lib -l $(GOOGLE_TEST_LIB) -l pthread
 
 SRC = ../src
 
-OBJECTS = runAll.o example.o $(SRC)/core.o $(SRC)/bfs.o bfs-test.o enhancedgraph-test.o
+OBJECTS = runAll.o example.o $(SRC)/core.o $(SRC)/bfs.o $(SRC)/pivot.o \
+	bfs-test.o enhancedgraph-test.o pivot-test.o
 TARGET = runAll
 
 DEPH = 

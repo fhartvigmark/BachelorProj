@@ -5,7 +5,7 @@ int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startC
     //Find pivot node
     int startNode = pivot::getPivot(g, startColor);
     if (startNode==-1){
-        return 0;
+        return -1;
     }
     //First: fwColor, Second: bwColor
     std::pair<int,int> newColors = bfs::colorbfs(g, startColor, startNode);

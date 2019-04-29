@@ -30,6 +30,31 @@ struct SimpleReachabilityTest : testing::Test, testing::WithParamInterface<graph
     }
 };
 
+struct SimpleColorTest : testing::Test, testing::WithParamInterface<graph_state>
+{
+
+	enhancedgraph *enhgraph;
+
+	SimpleColorTest()
+	{
+		PNGraph graph = TNGraph::New();
+		graph->AddNode(1);
+		graph->AddNode(2);
+		graph->AddNode(3);
+		graph->AddEdge(1, 2);
+		graph->AddEdge(2, 3);
+
+		enhgraph = new enhancedgraph(graph);
+
+		enhgraph->colors->AddDat(3, 42);
+	}
+
+	virtual ~SimpleColorTest()
+	{
+		delete enhgraph;
+	}
+};
+
 struct SmallCycleTest : testing::Test, testing::WithParamInterface<graph_state>
 {
 
@@ -48,6 +73,34 @@ struct SmallCycleTest : testing::Test, testing::WithParamInterface<graph_state>
 	}
 
 	virtual ~SmallCycleTest()
+	{
+		delete enhgraph;
+	}
+};
+
+struct AdvancedCycleTest : testing::Test, testing::WithParamInterface<graph_state>
+{
+
+	enhancedgraph *enhgraph;
+
+	AdvancedCycleTest()
+	{
+		PNGraph graph = TNGraph::New();
+		graph->AddNode(1);
+		graph->AddNode(2);
+		graph->AddNode(3);
+		graph->AddNode(4);
+		graph->AddNode(5);
+		graph->AddEdge(1, 2);
+		graph->AddEdge(2, 3);
+		graph->AddEdge(2, 4);
+		graph->AddEdge(4, 5);
+		graph->AddEdge(5, 2);
+
+		enhgraph = new enhancedgraph(graph);
+	}
+
+	virtual ~AdvancedCycleTest()
 	{
 		delete enhgraph;
 	}
@@ -96,13 +149,71 @@ TEST_P(SmallCycleTest, BasicCycle)
 	}
 }
 
+TEST_P(SimpleColorTest, IgnoresDifferentColors)
+{
+	auto gs = GetParam();
+	auto newcolors = bfs::colorbfs(enhgraph, gs.color, gs.startnode);
+
+	EXPECT_EQ(enhgraph->colors->GetDat(3), 42);
+
+	for (int sccnode : gs.scclist)
+	{
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), gs.color);
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.first);
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.second);
+	}
+
+	for (int fwnode : gs.fwlist)
+	{
+		EXPECT_EQ(enhgraph->colors->GetDat(fwnode), newcolors.first);
+	}
+
+	for (int bwnode : gs.bwlist)
+	{
+		EXPECT_EQ(enhgraph->colors->GetDat(bwnode), newcolors.second);
+	}
+
+
+}
+
+TEST_P(AdvancedCycleTest, DetectCycle)
+{
+	auto gs = GetParam();
+	auto newcolors = bfs::colorbfs(enhgraph, gs.color, gs.startnode);
+
+	for (int sccnode : gs.scclist)
+	{
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), gs.color);
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.first);
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.second);
+	}
+
+	for (int fwnode : gs.fwlist)
+	{
+		EXPECT_EQ(enhgraph->colors->GetDat(fwnode), newcolors.first);
+	}
+
+	for (int bwnode : gs.bwlist)
+	{
+		EXPECT_EQ(enhgraph->colors->GetDat(bwnode), newcolors.second);
+	}
+}
+
 INSTANTIATE_TEST_CASE_P(Default, SimpleReachabilityTest,
 						testing::Values(
 							graph_state{1, 0, {1}, {2, 3}, {}},
 							graph_state{2, 0, {2}, {3}, {1}},
 							graph_state{3, 0, {3}, {}, {1, 2}}));
-
+INSTANTIATE_TEST_CASE_P(Default, SimpleColorTest,
+						testing::Values(
+							graph_state{1, 0, {1}, {2}, {}},
+							graph_state{2, 0, {2}, {}, {1}}));
 INSTANTIATE_TEST_CASE_P(Default, SmallCycleTest,
 						testing::Values(
 							graph_state{1, 0, {1, 2}, {}, {}},
 							graph_state{2, 0, {1, 2}, {}, {}}));
+INSTANTIATE_TEST_CASE_P(Default, AdvancedCycleTest,
+						testing::Values(
+							graph_state{2, 0, {2, 4, 5}, {3}, {1}},
+							graph_state{4, 0, {2, 4, 5}, {3}, {1}},
+							graph_state{5, 0, {2, 4, 5}, {3}, {1}}));

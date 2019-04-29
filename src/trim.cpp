@@ -24,8 +24,8 @@ int trim::trim1(enhancedgraph *g, int color)
             }
 
 			if (inDegree == 0) {
-				colors->AddDat(NI.GetId(), g->colorGen->getNext());
-				break;
+				colors->AddDat(node, g->colorGen->getNext());
+				continue;
 			}
 
 			int outDegree = 0;
@@ -42,8 +42,8 @@ int trim::trim1(enhancedgraph *g, int color)
             }
 
 			if (outDegree == 0) {
-				colors->AddDat(NI.GetId(), g->colorGen->getNext());
-				break;
+				colors->AddDat(node, g->colorGen->getNext());
+				continue;
 			}
 		}
         

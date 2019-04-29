@@ -61,8 +61,8 @@ LD_FLAGS = -L /usr/local/lib -l $(GOOGLE_TEST_LIB) -l pthread
 
 SRC = ../src
 
-OBJECTS = runAll.o example.o $(SRC)/core.o $(SRC)/bfs.o $(SRC)/pivot.o \
-	bfs-test.o enhancedgraph-test.o pivot-test.o
+OBJECTS = runAll.o example.o $(SRC)/core.o $(SRC)/bfs.o $(SRC)/pivot.o $(SRC)/trim.o \
+	bfs-test.o enhancedgraph-test.o pivot-test.o trim-test.o
 TARGET = runAll
 
 DEPH = 
@@ -71,7 +71,7 @@ DEPH =
 all: $(TARGET)
 run: test
 
-$(TARGET): $(SRC)/bfs.o $(SRC)/trim.o $(SRC)/pivot.o $(SRC)/core.o $(SNAP)/Snap.o $(OBJECTS) 
+$(TARGET): $(SRC)/core.o $(SRC)/bfs.o $(SRC)/trim.o $(SRC)/pivot.o $(SNAP)/Snap.o $(OBJECTS) 
 	$(G++) -o $(TARGET) $(OBJECTS) $(LD_FLAGS) $(CXXFLAGS) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 %.o: %.cpp

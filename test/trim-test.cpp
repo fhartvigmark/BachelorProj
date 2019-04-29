@@ -1,12 +1,7 @@
 #include <gtest/gtest.h>
 #include <trim.h>
 
-struct trim_state {
-    int nodeChanged;
-    int color;
-};
-
-struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state> {
+struct SimpleGraphTest : testing::Test {
 
     enhancedgraph* enhgraph;
 
@@ -17,6 +12,18 @@ struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state>
         graph->AddNode(3);
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
+        graph->AddEdge(3, 1);
+
+		graph->AddNode(4);
+        graph->AddNode(5);
+        graph->AddNode(6);
+		graph->AddEdge(1, 4);
+        graph->AddEdge(5, 2);
+        graph->AddEdge(6, 3);
+
+		graph->AddNode(7);
+		graph->AddEdge(1, 7);
+		graph->AddEdge(7, 1);
 
 		enhgraph = new enhancedgraph(graph);
 	}
@@ -26,7 +33,7 @@ struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state>
     }
 };
 
-struct ColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> {
+struct ColorGraphTest : testing::Test {
 
     enhancedgraph* enhgraph;
 
@@ -37,11 +44,25 @@ struct ColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> 
         graph->AddNode(3);
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
+        graph->AddEdge(3, 1);
+
+		graph->AddNode(4);
+        graph->AddNode(5);
+        graph->AddNode(6);
+		graph->AddEdge(1, 4);
+        graph->AddEdge(5, 2);
+        graph->AddEdge(6, 3);
+
+		graph->AddNode(7);
+		graph->AddEdge(1, 7);
+		graph->AddEdge(7, 1);
 
 		enhgraph = new enhancedgraph(graph);
 
-		enhgraph->colors->AddDat(1, 2);
-		enhgraph->colors->AddDat(3, 40);
+		enhgraph->colors->AddDat(4, 1);
+		enhgraph->colors->AddDat(5, 2);
+		enhgraph->colors->AddDat(6, 3);
+		enhgraph->colors->AddDat(7, 4);
 	}
 
     virtual ~ColorGraphTest() {
@@ -49,49 +70,76 @@ struct ColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> 
     }
 };
 
-TEST_P(SimpleGraphTest, CanFindStartnode) {
-    auto gs = GetParam();
-    int startnode = pivot::getPivot(enhgraph, gs.color);
+TEST_F(SimpleGraphTest, TrimFindsSCCs) {
+	TIntH *colors = enhgraph->colors;
+    trim::trim1(enhgraph, 0);
 
-	if (gs.expectedOutput == -1) {
-		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));
+	EXPECT_EQ(0, colors->GetDat(7));
 
-		for (THashKeyDatI<TInt, TInt> i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
-		{
-			EXPECT_NE(gs.color, i.GetDat());
-		}
-	} else {
-		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
-		EXPECT_EQ(gs.expectedOutput, startnode);
-		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
-	}
+	EXPECT_NE(0, colors->GetDat(4));
+	EXPECT_NE(0, colors->GetDat(5));
+	EXPECT_NE(0, colors->GetDat(6));
+
+	EXPECT_NE(colors->GetDat(4), colors->GetDat(5));
+	EXPECT_NE(colors->GetDat(5), colors->GetDat(6));	
 }
 
-TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) {
-    auto gs = GetParam();
-    int startnode = pivot::getPivot(enhgraph, gs.color);
+TEST_F(SimpleGraphTest, TrimRespectsColors) {
+	TIntH *colors = enhgraph->colors;
+    trim::trim1(enhgraph, 1);
 
-	if (gs.expectedOutput == -1) {
-		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
-
-		for (THashKeyDatI<TInt, TInt> i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
-		{
-			EXPECT_NE(gs.color, i.GetDat());
-		}
-	} else {
-		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
-		EXPECT_EQ(gs.expectedOutput, startnode);
-		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
-	}
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));	
+	EXPECT_EQ(0, colors->GetDat(4));	
+	EXPECT_EQ(0, colors->GetDat(5));	
+	EXPECT_EQ(0, colors->GetDat(6));	
+	EXPECT_EQ(0, colors->GetDat(7));	
 }
 
-INSTANTIATE_TEST_CASE_P(Default, SimpleGraphTest,
-						testing::Values(
-							pivot_state{1, 0},
-							pivot_state{-1, 2}));
-INSTANTIATE_TEST_CASE_P(Default, ColorGraphTest,
-						testing::Values(
-							pivot_state{2, 0},
-							pivot_state{3, 40},
-							pivot_state{1, 2},
-							pivot_state{-1, 39}));
+TEST_F(ColorGraphTest, TrimRespectsColorsDegree) {
+	TIntH *colors = enhgraph->colors;
+    trim::trim1(enhgraph, 4);
+
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));
+	EXPECT_EQ(1, colors->GetDat(4));
+	EXPECT_EQ(2, colors->GetDat(5));
+	EXPECT_EQ(3, colors->GetDat(6));
+
+	EXPECT_NE(0, colors->GetDat(7));
+	EXPECT_NE(4, colors->GetDat(7));
+}
+
+TEST_F(ColorGraphTest, TrimRespectsColors) {
+	TIntH *colors = enhgraph->colors;
+    trim::trim1(enhgraph, 0);
+
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));	
+	EXPECT_EQ(1, colors->GetDat(4));	
+	EXPECT_EQ(2, colors->GetDat(5));	
+	EXPECT_EQ(3, colors->GetDat(6));	
+	EXPECT_EQ(4, colors->GetDat(7));	
+}
+
+TEST_F(ColorGraphTest, TrimFindsSCCs) {
+	TIntH *colors = enhgraph->colors;
+    trim::trim1(enhgraph, 2);
+
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));
+	EXPECT_EQ(1, colors->GetDat(4));
+	EXPECT_EQ(3, colors->GetDat(6));
+	EXPECT_EQ(4, colors->GetDat(7));
+
+	EXPECT_NE(0, colors->GetDat(5));	
+	EXPECT_NE(2, colors->GetDat(5));	
+}
+

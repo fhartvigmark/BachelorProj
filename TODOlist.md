@@ -32,6 +32,7 @@
         * Hashmap
             * All nodes present
             * All nodes 0
+    * Test on big graphs
 * Trim 1 _(in progress)_
 * Debug information
 * More pivot methods
@@ -40,3 +41,4 @@
 * Trim 2-3
 * SCC output structure
 * Graph analysis tool, and plotting
+* Improve MAKEFILE

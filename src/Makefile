@@ -51,6 +51,9 @@ DEPCPP = core.cpp pivot.cpp trim.cpp bfs.cpp scc.cpp fwbw.cpp
 TESTDEP = core.o pivot.o trim.o bfs.o fwbw.o
 
 all: $(MAIN)
+run:
+	./$(MAIN)
+
 # COMPILE
 $(MAIN): $(MAIN).cpp $(SNAP)/Snap.o $(DEPH) $(DEPCPP) $(TESTDEP)
 	$(CC) $(CXXFLAGS) -o $(MAIN) $(MAIN).cpp $(DEPCPP) $(SNAP)/Snap.o -I$(SNAP) -I$(GLIB) $(LIBS)

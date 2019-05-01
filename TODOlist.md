@@ -5,7 +5,7 @@
 * ~Implement basic BFS~
 * ~Use BFS in basic FW-BW~
 * Trims
-* Parallel BFS
+* ~Parallel BFS~
 
 # Implementation notes
 * `Snap-4.1/examples/circles/circles.cpp` has useful way of importing graphs
@@ -15,22 +15,28 @@
 * Color based pivot selection is tedious. We have copied Hong's own method
 
 # Tasks
-* OpenMP
-* Finish sequential baseline implementation
-* Parallel baseline implementation
+* ~OpenMP~
+* ~Finish sequential baseline implementation~
+* Parallel baseline implementation _(in progress)_
+   * ~Parallel BFS~
+   * Parallel FWBW
+   * Parallel Trim
+   * Parallel pivot
 * Unit tests with gtest
-    * Pivot tests
+    * ~Pivot tests~
         * Empty graph
         * No matching color
         * More than one Matching color
-    * Enhanced graph test
+    * ~Enhanced graph test~
         * Colorgen
         * Hashmap
             * All nodes present
             * All nodes 0
-* Trim 1
+* Trim 1 _(in progress)_
 * Debug information
 * More pivot methods
+   * ~In-out degree~
+   * Rand-walk
 * Trim 2-3
 * SCC output structure
 * Graph analysis tool, and plotting

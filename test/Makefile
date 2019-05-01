@@ -1,5 +1,3 @@
-# Makefile for gtest examples
-
 aGLIB = glib-core
 aSNAP = snap-core
 aGLIBADV = glib-adv
@@ -64,10 +62,10 @@ all: $(TARGET)
 run: test
 
 $(TARGET): $(SNAP)/Snap.o $(OBJECTS) 
-	$(G++) -o $(TARGET) $(OBJECTS) $(LD_FLAGS) $(CXXFLAGS) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LIBS)
+	$(G++) -o $(TARGET) $(OBJECTS) $(LD_FLAGS) $(CXXFLAGS) $(SNAP)/Snap.o -I$(SNAP) -I$(GLIB) $(LIBS)
 
 %.o: %.cpp
-	$(G++) $(G++_FLAGS) $(CXXFLAGS) $(DEPH) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) -I$(SRC) $(LIBS) $<
+	$(G++) $(G++_FLAGS) $(CXXFLAGS) $(DEPH) $(SNAP)/Snap.o -I$(SNAP) -I$(GLIB) -I$(SRC) $(LIBS) $<
 
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)

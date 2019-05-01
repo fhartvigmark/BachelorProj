@@ -1,12 +1,3 @@
-#
-#	Makefile for this SNAP example
-#	- modify Makefile.ex when creating a new SNAP example
-#
-#	implements:
-#		all (default), clean
-#
-
-#include ../../Makefile.config
 aGLIB = glib-core
 aSNAP = snap-core
 aGLIBADV = glib-adv
@@ -29,9 +20,6 @@ ifeq ($(UNAME), Linux)
   # turn on for crash debugging, get symbols with <prog> 2>&1 | c++filt
   CXXFLAGS += -g -rdynamic
   CXXFLAGS += -ggdb
-  # turn on for OpenMP
-  CXXOPENMP = 
-  LDFLAGS +=
   LIBS += -lrt
 
 else ifeq ($(UNAME), Darwin)
@@ -42,54 +30,36 @@ else ifeq ($(UNAME), Darwin)
   CLANG := $(shell g++ -v 2>&1 | grep clang | cut -d " " -f 2)
   ifneq ($(CLANG), LLVM)
     CXXFLAGS += -fopenmp
-    #CXXOPENMP += -fopenmp
   else
     CXXFLAGS += -DNOMP
-    CXXOPENMP =
   endif
-  LDFLAGS +=
   LIBS +=
 
 else ifeq ($(shell uname -o), Cygwin)
   # Cygwin flags
   CC = g++
   CXXFLAGS += -Wall -D__STDC_LIMIT_MACROS
-  CXXFLAGS += -O3 -DNDEBUG
-  CXXOPENMP = -fopenmp
-  LDFLAGS +=
+  CXXFLAGS += -O3 -DNDEBUG -fopenmp
   LIBS +=
 
 endif
 
 
-#include Makefile.ex
 MAIN = main
 DEPH = core.h
-DEPCPP = fwbw.cpp pivot.cpp bfs.cpp scc.cpp trim.cpp core.cpp
+DEPCPP = core.cpp pivot.cpp trim.cpp bfs.cpp scc.cpp fwbw.cpp
+TESTDEP = core.o pivot.o trim.o bfs.o fwbw.o
 
-#include ../Makefile.exmain
 all: $(MAIN)
 # COMPILE
-$(MAIN): $(MAIN).cpp $(DEPH) $(DEPCPP) $(SNAP)/Snap.o bfs.o pivot.o trim.o core.o fwbw.o
-	$(CC) $(CXXFLAGS) -o $(MAIN) $(MAIN).cpp $(DEPCPP) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
+$(MAIN): $(MAIN).cpp $(SNAP)/Snap.o $(DEPH) $(DEPCPP) $(TESTDEP)
+	$(CC) $(CXXFLAGS) -o $(MAIN) $(MAIN).cpp $(DEPCPP) $(SNAP)/Snap.o -I$(SNAP) -I$(GLIB) $(LIBS)
 
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)
 
-bfs.o: $(DEPH)
-	$(CC) $(CXXFLAGS) -c bfs.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
-
-pivot.o: $(DEPH)
-	$(CC) $(CXXFLAGS) -c pivot.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
-
-trim.o: $(DEPH)
-	$(CC) $(CXXFLAGS) -c trim.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
-
-core.o: $(DEPH)
-	$(CC) $(CXXFLAGS) -c core.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
-
-fwbw.o: $(DEPH)
-	$(CC) $(CXXFLAGS) -c fwbw.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
+%.o: %.cpp $(DEPH) 
+	$(CC) $(CXXFLAGS) -c $< $(SNAP)/Snap.o -I$(SNAP) -I$(GLIB) $(LIBS)
 
 clean:
 	rm -f *.o  $(MAIN)  $(MAIN).exe

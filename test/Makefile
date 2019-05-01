@@ -79,4 +79,4 @@ test: $(TARGET)
 clean:
 	rm -f $(TARGET) $(OBJECTS)
                     
-.PHONY: all clean
+.PHONY: all run test clean

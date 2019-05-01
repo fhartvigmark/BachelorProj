@@ -67,3 +67,5 @@ $(SNAP)/Snap.o:
 clean:
 	rm -f *.o  $(MAIN)  $(MAIN).exe
 	rm -rf Debug Release
+
+.PHONY: all run clean

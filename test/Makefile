@@ -21,11 +21,7 @@ ifeq ($(UNAME), Linux)
   # turn on for crash debugging, get symbols with <prog> 2>&1 | c++filt
   CXXFLAGS += -g -rdynamic
   CXXFLAGS += -ggdb
-  # turn on for OpenMP
-  CXXOPENMP = 
-  LDFLAGS +=
   LIBS += -lrt
-
 else ifeq ($(UNAME), Darwin)
   # OS X flags
   CXXFLAGS += -std=c++11 -Wall -Wno-unknown-pragmas
@@ -33,24 +29,16 @@ else ifeq ($(UNAME), Darwin)
   CLANG := $(shell g++ -v 2>&1 | grep clang | cut -d " " -f 2)
   ifneq ($(CLANG), LLVM)
     CXXFLAGS += -fopenmp
-    #CXXOPENMP += -fopenmp
   else
     CXXFLAGS += -DNOMP
-    CXXOPENMP =
   endif
-  LDFLAGS +=
   LIBS +=
-
 else ifeq ($(shell uname -o), Cygwin)
   # Cygwin flags
-  CXXFLAGS += -Wall -D__STDC_LIMIT_MACROS
-  CXXFLAGS += -O3 -DNDEBUG
-  CXXOPENMP = -fopenmp
-  LDFLAGS +=
+  CXXFLAGS += -Wall -D__STDC_LIMIT_MACROS -std=c++11
+  CXXFLAGS += -O3 -DNDEBUG -fopenmp
   LIBS +=
-
 endif
-
 
 GOOGLE_TEST_LIB = gtest
 GOOGLE_TEST_INCLUDE = /usr/local/include
@@ -64,8 +52,11 @@ SRC = ../src
 DEPH = $(SRC)/core.o $(SRC)/bfs.o $(SRC)/pivot.o $(SRC)/trim.o $(SRC)/fwbw.o
 OBJECTS = $(DEPH) \
 	runAll.o example.o \
-	bfs-test.o enhancedgraph-test.o \
-	pivot-test.o trim-test.o fwbw-test.o
+	bfs-test.o \
+	enhancedgraph-test.o \
+	pivot-test.o \
+	trim-test.o \
+	fwbw-test.o
 TARGET = runAll
 
 
@@ -73,10 +64,10 @@ all: $(TARGET)
 run: test
 
 $(TARGET): $(SNAP)/Snap.o $(OBJECTS) 
-	$(G++) -o $(TARGET) $(OBJECTS) $(LD_FLAGS) $(CXXFLAGS) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
+	$(G++) -o $(TARGET) $(OBJECTS) $(LD_FLAGS) $(CXXFLAGS) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LIBS)
 
 %.o: %.cpp
-	$(G++) $(G++_FLAGS) $(CXXFLAGS) $(DEPH) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) -I$(SRC) $(LDFLAGS) $(LIBS) $<
+	$(G++) $(G++_FLAGS) $(CXXFLAGS) $(DEPH) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) -I$(SRC) $(LIBS) $<
 
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)

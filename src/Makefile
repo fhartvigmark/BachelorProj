@@ -65,19 +65,16 @@ endif
 #include Makefile.ex
 MAIN = main
 DEPH = core.h
-DEPCPP = fwbw.cpp pivot.cpp bfs.cpp scc.cpp trim.cpp core.cpp openMPHelloWorld.cpp
+DEPCPP = fwbw.cpp pivot.cpp bfs.cpp scc.cpp trim.cpp core.cpp
 
 #include ../Makefile.exmain
 all: $(MAIN)
 # COMPILE
-$(MAIN): $(MAIN).cpp $(DEPH) $(DEPCPP) $(SNAP)/Snap.o bfs.o pivot.o trim.o core.o fwbw.o openMPHelloWorld.o
+$(MAIN): $(MAIN).cpp $(DEPH) $(DEPCPP) $(SNAP)/Snap.o bfs.o pivot.o trim.o core.o fwbw.o
 	$(CC) $(CXXFLAGS) -o $(MAIN) $(MAIN).cpp $(DEPCPP) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)
-
-openMPHelloWorld.o: $(DEPH)
-	$(CC) $(CXXFLAGS) -c openMPHelloWorld.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 bfs.o: $(DEPH)
 	$(CC) $(CXXFLAGS) -c bfs.cpp $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)

@@ -3,6 +3,7 @@
 #include <list>
 
 struct graph_state {
+	int variant;
     int startnode;
     int color;
     std::list<int> scclist;
@@ -10,9 +11,20 @@ struct graph_state {
     std::list<int> bwlist;
 };
 
-struct SimpleReachabilityTest : testing::Test, testing::WithParamInterface<graph_state> {
+std::pair<int, int> testBFS(int variant, enhancedgraph *g, int color, int startNode){
+	switch (variant){
+		case 0 :
+			return bfs::colorbfs(g, color, startNode);
+		case 1 :
+			return bfs::parbfs(g, color, startNode);
+	}
+}
 
-    enhancedgraph* enhgraph;
+struct SimpleReachabilityTest : testing::Test,
+									testing::WithParamInterface<graph_state>
+{
+
+	enhancedgraph* enhgraph;
 
     SimpleReachabilityTest() {
         PNGraph graph = TNGraph::New();
@@ -108,7 +120,7 @@ struct AdvancedCycleTest : testing::Test, testing::WithParamInterface<graph_stat
 
 TEST_P(SimpleReachabilityTest, BasicColors) {
     auto gs = GetParam();
-    auto newcolors = bfs::colorbfs(enhgraph, gs.color, gs.startnode);
+    auto newcolors = testBFS(gs.variant, enhgraph, gs.color, gs.startnode);
 
 	for (int sccnode : gs.scclist)
 	{
@@ -129,7 +141,7 @@ TEST_P(SimpleReachabilityTest, BasicColors) {
 TEST_P(SmallCycleTest, BasicCycle)
 {
 	auto gs = GetParam();
-	auto newcolors = bfs::colorbfs(enhgraph, gs.color, gs.startnode);
+	auto newcolors = testBFS(gs.variant, enhgraph, gs.color, gs.startnode);
 
 	for (int sccnode : gs.scclist)
 	{
@@ -152,7 +164,7 @@ TEST_P(SmallCycleTest, BasicCycle)
 TEST_P(SimpleColorTest, IgnoresDifferentColors)
 {
 	auto gs = GetParam();
-	auto newcolors = bfs::colorbfs(enhgraph, gs.color, gs.startnode);
+	auto newcolors = testBFS(gs.variant, enhgraph, gs.color, gs.startnode);
 
 	EXPECT_EQ(enhgraph->colors->GetDat(3), 42);
 
@@ -179,7 +191,7 @@ TEST_P(SimpleColorTest, IgnoresDifferentColors)
 TEST_P(AdvancedCycleTest, DetectCycle)
 {
 	auto gs = GetParam();
-	auto newcolors = bfs::colorbfs(enhgraph, gs.color, gs.startnode);
+	auto newcolors = testBFS(gs.variant, enhgraph, gs.color, gs.startnode);
 
 	for (int sccnode : gs.scclist)
 	{
@@ -201,19 +213,29 @@ TEST_P(AdvancedCycleTest, DetectCycle)
 
 INSTANTIATE_TEST_CASE_P(Default, SimpleReachabilityTest,
 						testing::Values(
-							graph_state{1, 0, {1}, {2, 3}, {}},
-							graph_state{2, 0, {2}, {3}, {1}},
-							graph_state{3, 0, {3}, {}, {1, 2}}));
+							graph_state{0, 1, 0, {1}, {2, 3}, {}},
+							graph_state{0, 2, 0, {2}, {3}, {1}},
+							graph_state{0, 3, 0, {3}, {}, {1, 2}},
+							graph_state{1, 1, 0, {1}, {2, 3}, {}},
+							graph_state{1, 2, 0, {2}, {3}, {1}},
+							graph_state{1, 3, 0, {3}, {}, {1, 2}}));
 INSTANTIATE_TEST_CASE_P(Default, SimpleColorTest,
 						testing::Values(
-							graph_state{1, 0, {1}, {2}, {}},
-							graph_state{2, 0, {2}, {}, {1}}));
+							graph_state{0, 1, 0, {1}, {2}, {}},
+							graph_state{0, 2, 0, {2}, {}, {1}},
+							graph_state{1, 1, 0, {1}, {2}, {}},
+							graph_state{1, 2, 0, {2}, {}, {1}}));
 INSTANTIATE_TEST_CASE_P(Default, SmallCycleTest,
 						testing::Values(
-							graph_state{1, 0, {1, 2}, {}, {}},
-							graph_state{2, 0, {1, 2}, {}, {}}));
+							graph_state{0, 1, 0, {1, 2}, {}, {}},
+							graph_state{0, 2, 0, {1, 2}, {}, {} },
+							graph_state{1, 1, 0, {1, 2}, {}, {}},
+							graph_state{1, 2, 0, {1, 2}, {}, {}}));
 INSTANTIATE_TEST_CASE_P(Default, AdvancedCycleTest,
 						testing::Values(
-							graph_state{2, 0, {2, 4, 5}, {3}, {1}},
-							graph_state{4, 0, {2, 4, 5}, {3}, {1}},
-							graph_state{5, 0, {2, 4, 5}, {3}, {1}}));
+							graph_state{0, 2, 0, {2, 4, 5}, {3}, {1}},
+							graph_state{0, 4, 0, {2, 4, 5}, {3}, {1}},
+							graph_state{0, 5, 0, {2, 4, 5}, {3}, {1}},
+							graph_state{1, 2, 0, {2, 4, 5}, {3}, {1}},
+							graph_state{1, 4, 0, {2, 4, 5}, {3}, {1}},
+							graph_state{1, 5, 0, {2, 4, 5}, {3}, {1}}));

@@ -61,38 +61,27 @@ LD_FLAGS = -L /usr/local/lib -l $(GOOGLE_TEST_LIB) -l pthread
 
 SRC = ../src
 
-OBJECTS = runAll.o example.o $(SRC)/core.o $(SRC)/bfs.o $(SRC)/pivot.o $(SRC)/trim.o $(SRC)/fwbw.o\
-	bfs-test.o enhancedgraph-test.o pivot-test.o trim-test.o fwbw-test.o
+DEPH = $(SRC)/core.o $(SRC)/bfs.o $(SRC)/pivot.o $(SRC)/trim.o $(SRC)/fwbw.o
+OBJECTS = $(DEPH) \
+	runAll.o example.o \
+	bfs-test.o enhancedgraph-test.o \
+	pivot-test.o trim-test.o fwbw-test.o
 TARGET = runAll
-
-DEPH = 
 
 
 all: $(TARGET)
 run: test
 
-$(TARGET): $(SRC)/core.o $(SRC)/bfs.o $(SRC)/trim.o $(SRC)/pivot.o $(SNAP)/Snap.o $(OBJECTS) 
+$(TARGET): $(SNAP)/Snap.o $(OBJECTS) 
 	$(G++) -o $(TARGET) $(OBJECTS) $(LD_FLAGS) $(CXXFLAGS) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) $(LDFLAGS) $(LIBS)
 
 %.o: %.cpp
-	$(G++) $(G++_FLAGS) $(CXXFLAGS) $(SRC)/bfs.o $(SRC)/trim.o $(SRC)/pivot.o $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) -I$(SRC) $(LDFLAGS) $(LIBS) $<
+	$(G++) $(G++_FLAGS) $(CXXFLAGS) $(DEPH) $(SNAP)/Snap.o -I$(SNAP) -I$(SNAPADV) -I$(GLIB) -I$(SNAPEXP) -I$(SRC) $(LDFLAGS) $(LIBS) $<
 
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)
 
-$(SRC)/fwbw.o:
-	make -C $(SRC)
-
-$(SRC)/bfs.o:
-	make -C $(SRC)
-
-$(SRC)/pivot.o:
-	make -C $(SRC)
-
-$(SRC)/trim.o:
-	make -C $(SRC)
-
-$(SRC)/core.o:
+$(SRC)/%.o: $(SRC)/%.cpp
 	make -C $(SRC)
 
 test: $(TARGET)

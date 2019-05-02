@@ -6,6 +6,7 @@
 
 !/src/Makefile
 !/test/Makefile
+!Makefile
 
 
 ### Graphs ###

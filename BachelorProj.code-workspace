@@ -35,6 +35,9 @@
 		"C_Cpp.default.intelliSenseMode": "gcc-x64",
 		"editor.tabSize": 4,
 		"editor.detectIndentation": false,
-		"editor.insertSpaces": false
+		"editor.insertSpaces": false,
+		"files.associations": {
+			"iostream": "cpp"
+		}
 	}
 }

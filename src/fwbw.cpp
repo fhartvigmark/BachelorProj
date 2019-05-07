@@ -1,5 +1,15 @@
 #include "fwbw.h"
 
+int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int method) {
+	switch (method){
+        case 0:
+            return fwbw::basicFWBW(g, trimlevel, pivotmethod, startColor);
+		case 1:
+            return fwbw::parFWBW(g, trimlevel, pivotmethod, startColor);			
+    }
+}
+
+
 //Coloring based basic fw-bw
 int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor){
     //Find pivot node

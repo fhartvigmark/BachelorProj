@@ -60,7 +60,7 @@ struct Graph1Test : testing::Test {
 };
 
 TEST_F(Graph1Test, SCCheck){
-	int status = fwbw::basicFWBW(enhgraph, 0, 0, 0);
+	int status = fwbw::FWBW(enhgraph, 0, 0, 0, 0);
 	//No error
 	EXPECT_EQ(status, 0);
 	int scc1_1 = enhgraph->colors->GetDat(1);
@@ -93,7 +93,7 @@ TEST_F(Graph1Test, SCCheck){
 
 TEST_F(Graph1Test, ParSCCCheck)
 {
-	int status = fwbw::parFWBW(enhgraph, 0, 0, 0);
+	int status = fwbw::FWBW(enhgraph, 0, 0, 0, 1);
 	//No error
 	EXPECT_EQ(status, 0);
 	int scc1_1 = enhgraph->colors->GetDat(1);
@@ -125,7 +125,7 @@ TEST_F(Graph1Test, ParSCCCheck)
 }
 
 TEST_F(BasicFWBWTest, ColorCheck){
-	int status = fwbw::basicFWBW(enhgraph, 0, 0, 0);
+	int status = fwbw::FWBW(enhgraph, 0, 0, 0, 0);
 	//No error
 	EXPECT_EQ(status, 0);
 	int scc1 = enhgraph->colors->GetDat(1);

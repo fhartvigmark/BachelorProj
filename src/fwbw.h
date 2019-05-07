@@ -6,7 +6,9 @@
 #include "pivot.h"
 
 class fwbw{
-    public:
-      static int basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
-	  static int parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
+	public:
+		static int FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int method);
+    private:
+     	static int basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
+	 	static int parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
 };

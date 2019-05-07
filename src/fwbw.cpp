@@ -14,3 +14,20 @@ int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startC
     basicFWBW(g, trimlevel, pivotmethod, newColors.second);
     return 0;
 };
+
+//Coloring based basic fw-bw
+int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor)
+{
+	//Find pivot node
+	int startNode = pivot::getPivot(g, startColor);
+	if (startNode == -1)
+	{
+		return -1;
+	}
+	//First: fwColor, Second: bwColor
+	std::pair<int, int> newColors = bfs::parbfs(g, startColor, startNode);
+	parFWBW(g, trimlevel, pivotmethod, startColor);
+	parFWBW(g, trimlevel, pivotmethod, newColors.first);
+	parFWBW(g, trimlevel, pivotmethod, newColors.second);
+	return 0;
+};

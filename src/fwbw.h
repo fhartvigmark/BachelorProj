@@ -8,4 +8,5 @@
 class fwbw{
     public:
       static int basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
+	  static int parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
 };

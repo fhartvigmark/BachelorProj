@@ -15,6 +15,7 @@ struct SimpleSetupTest : testing::Test {
         enhgraph->graph = graph;
         TIntH *colors = new TIntH();
         enhgraph->colors = colors;
+		enhgraph->NIds = new TIntV();
         enhgraph->colorGen = new ColorGenerator();
     }
 
@@ -55,6 +56,11 @@ TEST_F(SimpleSetupTest, HashMapStartsEmpty) {
     EXPECT_EQ(0, colorMap->Len());
 }
 
+TEST_F(SimpleSetupTest, NodeVectorStartsEmpty) {
+	TIntH *colorMap = enhgraph->colors;
+    EXPECT_EQ(0, colorMap->Len());
+}
+
 TEST_F(SimpleSetupTest, GraphTest) {
 	PNGraph graph = enhgraph->graph;
 
@@ -72,6 +78,18 @@ TEST_F(SimpleSetupTest, GetNI) {
 	}
 }
 
+TEST_F(MapSetupTest, VectorStartsWithAllNodes) {
+	TIntV *nodes = enhgraph->NIds;
+	EXPECT_EQ(3, nodes->Len());
+}
+
+TEST_F(MapSetupTest, VectorStartsWithCorrectValues) {
+	TIntV *nodes = enhgraph->NIds;
+	EXPECT_EQ(1, nodes->GetVal(0));
+	EXPECT_EQ(2, nodes->GetVal(1));
+	EXPECT_EQ(3, nodes->GetVal(2));
+}
+
 TEST_F(MapSetupTest, MapStartsWithAllNodes) {
 	TIntH *colorMap = enhgraph->colors;
 	EXPECT_EQ(3, colorMap->Len());
@@ -85,6 +103,3 @@ TEST_F(MapSetupTest, MapStartsWithZeroValues) {
 		EXPECT_EQ(0, i.GetDat());
     }
 }
-
-
-

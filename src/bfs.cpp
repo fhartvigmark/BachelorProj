@@ -96,7 +96,6 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 	const int fwColor = g->colorGen->getNext();
 	const int bwColor = g->colorGen->getNext();
 
-	int v = 0;
 
 	while (!Queue.Empty())
 	{
@@ -121,7 +120,7 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 				const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
 
 				//Add all out edges that have not already been visited to the queue
-				for (v = 0; v < NodeI.GetOutDeg(); v++)
+				for (int v = 0; v < NodeI.GetOutDeg(); v++)
 				{
 					const int outNode = NodeI.GetOutNId(v);
 
@@ -162,7 +161,7 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 				const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
 
 				//Add all out edges that have not already been visited to the queue
-				for (v = 0; v < NodeI.GetInDeg(); v++)
+				for (int v = 0; v < NodeI.GetInDeg(); v++)
 				{
 					const int inNode = NodeI.GetInNId(v);
 					const int inNodeColor = colors->GetDat(inNode);
@@ -182,7 +181,7 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 				const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
 
 				//Add all out edges that have not already been visited to the queue
-				for (v = 0; v < NodeI.GetInDeg(); v++)
+				for (int v = 0; v < NodeI.GetInDeg(); v++)
 				{
 					const int inNode = NodeI.GetInNId(v);
 					const int inNodeColor = colors->GetDat(inNode);

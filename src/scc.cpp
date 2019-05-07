@@ -12,6 +12,8 @@ int scc::FindSCCs(PNGraph g, int trimlevel, int pivotmethod, int fwbwmethod){
     switch (fwbwmethod){
         case 0:
             fwbw::basicFWBW(enhgraph, trimlevel, pivotmethod, 0);
+		case 1:
+            fwbw::parFWBW(enhgraph, trimlevel, pivotmethod, 0);			
     }
 
 	cout << "Writing output\n";

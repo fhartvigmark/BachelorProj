@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     // Load the graph 
     PNGraph Graph = TSnap::LoadEdgeList<PNGraph>(InEdges);
 
-	scc::FindSCCs(Graph, 0, 0, 0);
+	scc::FindSCCs(Graph, Trimlevels, PivotMethod, FwBwMethod);
 
 	//TODO add printing and timing handler here
 

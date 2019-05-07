@@ -1,5 +1,17 @@
 #include "pivot.h"
 
+int pivot::findPivot(enhancedgraph *g, int color, int method) {
+	switch (method)
+	{
+		case 0:
+			return pivot::getPivot(g, color);
+		case 1:
+			return pivot::getPivotMaxDegree(g, color);
+		case 2:
+			return pivot::getPivotMaxDegreeColor(g, color);
+	}
+}
+
 int pivot::getPivot(enhancedgraph *g, int color)
 {
     TIntH *colorMap = g->colors;

@@ -112,11 +112,12 @@ int pivot::getParPivot(enhancedgraph *g, int color)
 	for (int i = 0; i < Ids->Len(); i++) {
 		if (colorMap->GetDat(Ids->GetVal(i)) == color) {
 
+			#pragma omp cancellation point for	
 			#pragma omp critical
 			{
 				retVal = Ids->GetVal(i);
 			}
-			#pragma omp cancel for 
+			#pragma omp cancel for
 		}
 	}
 

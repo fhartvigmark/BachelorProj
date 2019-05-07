@@ -23,6 +23,16 @@ struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state>
         graph->AddNode(1);
         graph->AddNode(2);
         graph->AddNode(3);
+        graph->AddNode(4);
+        graph->AddNode(5);
+        graph->AddNode(6);
+        graph->AddNode(7);
+        graph->AddNode(8);
+        graph->AddNode(9);
+        graph->AddNode(10);
+        graph->AddNode(11);
+        graph->AddNode(12);
+        graph->AddNode(13);
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
@@ -93,6 +103,10 @@ struct AdvancedColorGraphTest : testing::Test {
 	}
 };
 
+TEST(Default, OmpCancelEnabled) {
+	EXPECT_TRUE(omp_get_cancellation());
+}
+
 TEST_P(SimpleGraphTest, CanFindStartnode) {
     auto gs = GetParam();
     int startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
@@ -104,6 +118,10 @@ TEST_P(SimpleGraphTest, CanFindStartnode) {
 		{
 			EXPECT_NE(gs.color, i.GetDat());
 		}
+	} else if (gs.method == 3) {
+		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
+		EXPECT_TRUE(startnode < omp_get_max_threads());
+		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
 	} else {
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
 		EXPECT_EQ(gs.expectedOutput, startnode);

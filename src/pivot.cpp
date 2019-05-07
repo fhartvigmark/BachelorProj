@@ -9,6 +9,12 @@ int pivot::findPivot(enhancedgraph *g, int color, int method) {
 			return pivot::getPivotMaxDegree(g, color);
 		case 2:
 			return pivot::getPivotMaxDegreeColor(g, color);
+		case 3:
+			return pivot::getParPivot(g, color);
+		case 4:
+			return pivot::getParPivotMaxDegree(g, color);
+		case 5:
+			return pivot::getParPivotMaxDegreeColor(g, color);
 	}
 }
 
@@ -46,6 +52,97 @@ int pivot::getPivotMaxDegree(enhancedgraph *g, int color)
 };
 
 int pivot::getPivotMaxDegreeColor(enhancedgraph *g, int color)
+{
+    int bestNode = -1;
+    int bestDegree = 0;
+    TIntH *colors = g->colors;
+    PNGraph graph = g->graph;
+    for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
+    {
+        int node = NI.GetId();
+        if (colors->GetDat(node) == color)
+        {
+            int inDegree = 0;
+            TNGraph::TNodeI NodeI = graph->GetNI(node);
+
+            int v = 0;
+            for (v = 0; v < NodeI.GetInDeg(); v++)
+            {
+                const int outNode = NodeI.GetInNId(v);
+
+                if (colors->GetDat(outNode) == color && outNode != node)
+                {
+                    inDegree += 1;
+                }
+            }
+
+            int outDegree = 0;
+            NodeI = graph->GetNI(node);
+
+            for (v = 0; v < NodeI.GetOutDeg(); v++)
+            {
+                const int outNode = NodeI.GetOutNId(v);
+
+                if (colors->GetDat(outNode) == color && outNode != node)
+                {
+                    outDegree += 1;
+                }
+            }
+
+            int newDeg = inDegree * outDegree;
+            if (newDeg > bestDegree)
+            {
+                bestNode = NI.GetId();
+                bestDegree = newDeg;
+            }
+        }
+    }
+    return bestNode;
+};
+
+int pivot::getParPivot(enhancedgraph *g, int color)
+{
+    TIntH *colorMap = g->colors;
+	PNGraph graph = g->graph;
+	TIntV *Ids = g->NIds;
+
+	int retVal = -1;
+
+	#pragma omp parallel for schedule(dynamic)
+	for (int i = 0; i < Ids->Len(); i++) {
+		if (colorMap->GetDat(Ids->GetVal(i)) == color) {
+
+			#pragma omp critical
+			{
+				retVal = Ids->GetVal(i);
+			}
+			#pragma omp cancel for 
+		}
+	}
+
+    return retVal;
+};
+
+int pivot::getParPivotMaxDegree(enhancedgraph *g, int color)
+{
+    int bestNode = -1;
+    int bestDegree = 0;
+    TIntH *colors = g->colors;
+    PNGraph graph = g->graph;
+    for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
+    {
+        if(colors->GetDat(NI.GetId())==color){
+            int newDeg = NI.GetInDeg() * NI.GetOutDeg();
+            if (newDeg>bestDegree){
+                bestNode = NI.GetId();
+                bestDegree = newDeg;
+            }
+        }
+    }
+    return bestNode;
+};
+
+int pivot::getParPivotMaxDegreeColor(enhancedgraph *g, int color)
 {
     int bestNode = -1;
     int bestDegree = 0;

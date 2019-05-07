@@ -126,21 +126,29 @@ int pivot::getParPivot(enhancedgraph *g, int color)
 
 int pivot::getParPivotMaxDegree(enhancedgraph *g, int color)
 {
-    int bestNode = -1;
-    int bestDegree = 0;
-    TIntH *colors = g->colors;
+	TIntH *colors = g->colors;
     PNGraph graph = g->graph;
-    for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
-    {
-        if(colors->GetDat(NI.GetId())==color){
+	TIntV *Ids = g->NIds;
+
+	struct Compare max; 
+	max.val = 0; 
+	max.node = -1;
+	#pragma omp parallel for reduction(maximum:max)
+	for (int i = 0; i < Ids->Len(); i++) {
+
+		const TNGraph::TNodeI NI = graph->GetNI(Ids->GetVal(i));
+
+		if(colors->GetDat(NI.GetId())==color){
             int newDeg = NI.GetInDeg() * NI.GetOutDeg();
-            if (newDeg>bestDegree){
-                bestNode = NI.GetId();
-                bestDegree = newDeg;
-            }
+
+			if(newDeg < max.val) { 
+				max.val = newDeg;
+				max.node = Ids->GetVal(i);
+			}
         }
-    }
-    return bestNode;
+	}
+
+    return max.node;
 };
 
 int pivot::getParPivotMaxDegreeColor(enhancedgraph *g, int color)

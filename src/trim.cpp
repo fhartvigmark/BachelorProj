@@ -167,7 +167,6 @@ int trim::partrim1(enhancedgraph *g, int color)
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
 
-	#pragma parallel for
 	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
 	{
 		int node = NI.GetId();

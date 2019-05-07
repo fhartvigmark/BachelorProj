@@ -5,6 +5,13 @@ struct pivot_state {
     int expectedOutput;
     int color;
 	int method;
+
+	friend std::ostream& operator<<(std::ostream& os, const pivot_state& obj) {
+        return os
+            << "expected output: " << obj.expectedOutput
+            << ", color: " << obj.color
+            << ", method: " << obj.method;
+    }
 };
 
 struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state> {

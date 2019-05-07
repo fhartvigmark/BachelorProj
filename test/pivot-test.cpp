@@ -4,6 +4,7 @@
 struct pivot_state {
     int expectedOutput;
     int color;
+	int method;
 };
 
 struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state> {
@@ -87,7 +88,7 @@ struct AdvancedColorGraphTest : testing::Test {
 
 TEST_P(SimpleGraphTest, CanFindStartnode) {
     auto gs = GetParam();
-    int startnode = pivot::getPivot(enhgraph, gs.color);
+    int startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
 
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
@@ -105,7 +106,7 @@ TEST_P(SimpleGraphTest, CanFindStartnode) {
 
 TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) {
     auto gs = GetParam();
-    int startnode = pivot::getPivot(enhgraph, gs.color);
+    int startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
 
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
@@ -137,11 +138,17 @@ TEST_F(AdvancedColorGraphTest, IgnoresNodesOfDifferentColor)
 
 INSTANTIATE_TEST_CASE_P(Default, SimpleGraphTest,
 						testing::Values(
-							pivot_state{1, 0},
-							pivot_state{-1, 2}));
+							pivot_state{1, 0, 0},
+							pivot_state{-1, 2, 0},
+							pivot_state{1, 0, 3},
+							pivot_state{-1, 2, 3}));
 INSTANTIATE_TEST_CASE_P(Default, ColorGraphTest,
 						testing::Values(
-							pivot_state{2, 0},
-							pivot_state{3, 40},
-							pivot_state{1, 2},
-							pivot_state{-1, 39}));
+							pivot_state{2, 0, 0},
+							pivot_state{3, 40, 0},
+							pivot_state{1, 2, 0},
+							pivot_state{-1, 39, 0},
+							pivot_state{2, 0, 3},
+							pivot_state{3, 40, 3},
+							pivot_state{1, 2, 3},
+							pivot_state{-1, 39, 3}));

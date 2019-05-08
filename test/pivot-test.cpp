@@ -149,14 +149,28 @@ TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) {
 
 TEST_F(AdvancedColorGraphTest, FindsMaxDegree)
 {
-	int startnode = pivot::getPivotMaxDegree(enhgraph, 1);
+	int startnode = pivot::findPivot(enhgraph, 1, 1);
 
 	EXPECT_EQ(startnode, 3);
 }
 
 TEST_F(AdvancedColorGraphTest, IgnoresNodesOfDifferentColor)
 {
-	int startnode = pivot::getPivotMaxDegreeColor(enhgraph, 1);
+	int startnode = pivot::findPivot(enhgraph, 1, 2);
+
+	EXPECT_EQ(startnode, 2);
+}
+
+TEST_F(AdvancedColorGraphTest, FindsMaxDegreePar)
+{
+	int startnode = pivot::findPivot(enhgraph, 1, 4);
+
+	EXPECT_EQ(startnode, 3);
+}
+
+TEST_F(AdvancedColorGraphTest, IgnoresNodesOfDifferentColorPar)
+{
+	int startnode = pivot::findPivot(enhgraph, 1, 5);
 
 	EXPECT_EQ(startnode, 2);
 }

@@ -5,6 +5,8 @@ int trim::doTrim(int trimlevel, enhancedgraph *g, int color){
 	{
 	case 1:
 		return trim::trim1(g, color);
+	case 2:
+		return trim::trim2(g, color);
 	default:
 		return -1;
 	}
@@ -16,6 +18,8 @@ int trim::doParTrim(int trimlevel, enhancedgraph *g, int color)
 	{
 	case 1:
 		return trim::partrim1(g, color);
+	case 2:
+		return trim::partrim2(g, color);
 	default:
 		return -1;
 	}
@@ -372,5 +376,183 @@ int trim::partrim1(enhancedgraph *g, int color)
 		
 	}
 
+	return -1;
+};
+
+int trim::trim2(enhancedgraph *g, int color)
+{
+	TSnapQueue<int> Queue;
+	TIntH *colors = g->colors;
+	PNGraph graph = g->graph;
+	TIntV *Ids = g->NIds;
+
+	for (int i = 0; i < Ids->Len(); i++)
+	{
+		int node = Ids->GetVal(i);
+		if (colors->GetDat(node) == color)
+		{
+			int inDegree = 0;
+			int lastNode;
+			TNGraph::TNodeI NodeI = graph->GetNI(node);
+
+			for (int v = 0; v < NodeI.GetInDeg(); v++)
+			{
+				const int inNode = NodeI.GetInNId(v);
+
+				if (colors->GetDat(inNode) == color && inNode != node)
+				{
+					inDegree++;
+					lastNode = inNode;
+				}
+			}
+
+			if (inDegree == 1)
+			{
+				int newInDegree;
+				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
+				for (int v = 0; v < LastNodeI.GetInDeg(); v++)
+				{
+					const int outoutNode = LastNodeI.GetInNId(v);
+
+					if (colors->GetDat(outoutNode) == color && outoutNode != lastNode)
+					{
+						newInDegree++;
+					}
+				}
+				if (newInDegree == 1)
+				{
+					int newSCC = g->colorGen->getNext();
+					colors->AddDat(node, newSCC);
+					colors->AddDat(lastNode, newSCC);
+					continue;
+				}
+			}
+
+			int outDegree = 0;
+			NodeI = graph->GetNI(node);
+
+			for (int v = 0; v < NodeI.GetOutDeg(); v++)
+			{
+				const int outNode = NodeI.GetOutNId(v);
+
+				if (colors->GetDat(outNode) == color && outNode != node)
+				{
+					outDegree++;
+					lastNode = outNode;
+				}
+			}
+
+			if (outDegree == 1)
+			{
+				int newOutDegree;
+				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
+				for (int v = 0; v < LastNodeI.GetOutDeg(); v++)
+				{
+					const int outoutNode = LastNodeI.GetOutNId(v);
+
+					if (colors->GetDat(outoutNode) == color && outoutNode != lastNode)
+					{
+						newOutDegree++;
+					}
+				}
+				if (newOutDegree == 1)
+				{
+					int newSCC = g->colorGen->getNext();
+					colors->AddDat(node, newSCC);
+					colors->AddDat(lastNode, newSCC);
+					continue;
+				}
+			}
+		}
+	}
+	return -1;
+};
+
+int trim::partrim2(enhancedgraph *g, int color)
+{
+	TSnapQueue<int> Queue;
+	TIntH *colors = g->colors;
+	PNGraph graph = g->graph;
+	TIntV *Ids = g->NIds;
+
+#pragma omp parallel for schedule(dynamic)
+	for (int i = 0; i < Ids->Len(); i++)
+	{
+		int node = Ids->GetVal(i);
+		if (colors->GetDat(node) == color)
+		{
+			int inDegree = 0;
+			int lastNode;
+			TNGraph::TNodeI NodeI = graph->GetNI(node);
+
+			for (int v = 0; v < NodeI.GetInDeg(); v++)
+			{
+				const int inNode = NodeI.GetInNId(v);
+
+				if (colors->GetDat(inNode) == color && inNode != node)
+				{
+					inDegree++;
+					lastNode = inNode;
+				}
+			}
+
+			if (inDegree == 1)
+			{
+				int newInDegree;
+				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
+				for (int v = 0; v < LastNodeI.GetInDeg(); v++)
+				{
+					const int outoutNode = LastNodeI.GetInNId(v);
+
+					if (colors->GetDat(outoutNode) == color && outoutNode != lastNode)
+					{
+						newInDegree++;
+					}
+				}
+				if (newInDegree == 1)
+				{
+					int newSCC = g->colorGen->getNext();
+					colors->AddDat(node, newSCC);
+					colors->AddDat(lastNode, newSCC);
+					continue;
+				}
+			}
+
+			int outDegree = 0;
+			NodeI = graph->GetNI(node);
+
+			for (int v = 0; v < NodeI.GetOutDeg(); v++)
+			{
+				const int outNode = NodeI.GetOutNId(v);
+
+				if (colors->GetDat(outNode) == color && outNode != node)
+				{
+					outDegree++;
+					lastNode = outNode;
+				}
+			}
+
+			if (outDegree == 1)
+			{
+				int newOutDegree;
+				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
+				for (int v = 0; v < LastNodeI.GetOutDeg(); v++)
+				{
+					const int outoutNode = LastNodeI.GetOutNId(v);
+
+					if (colors->GetDat(outoutNode) == color && outoutNode != lastNode)
+					{
+						newOutDegree++;
+					}
+				}
+				if (newOutDegree == 1){
+					int newSCC = g->colorGen->getNext();
+					colors->AddDat(node, newSCC);
+					colors->AddDat(lastNode, newSCC);
+					continue;
+				}
+			}
+		}
+	}
 	return -1;
 };

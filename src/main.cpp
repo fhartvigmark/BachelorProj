@@ -1,5 +1,7 @@
 #include "main.h"
 #include "scc.h"
+#include <iostream>
+using namespace std;
 
 int main(int argc, char **argv)
 {
@@ -33,9 +35,41 @@ int main(int argc, char **argv)
         Env.GetIfArgPrefixInt("-time=", 0, "Time execution");
 	const TInt Output =
         Env.GetIfArgPrefixInt("-out=", 0, "Print SCC output to file");
+	const TInt Help =
+        Env.GetIfArgPrefixInt("-h=", 0, "Print help section");
+
+	if (Help > 0)
+	{
+		cout << "\n" << "parameters:" << "\n";
+		cout << "  " << "Trim levels:" << "\n";
+		cout << "    " << "0 = no trim" << "\n";
+		cout << "    " << "1 = trim-1" << "\n";
+		cout << "    " << "2 = trim-1,2" << "\n";
+		cout << "    " << "3 = trim-1,2,3" << "\n";
+		//TODO: partrim???
+		cout << "  " << "Pivot methods:" << "\n";
+		cout << "    " << "0 = first occurrence" << "\n";
+		cout << "    " << "1 = max degree product" << "\n";
+		cout << "    " << "2 = max degree product with colors" << "\n";
+		cout << "    " << "3 = parallel version of 0" << "\n";
+		cout << "    " << "4 = parallel version of 1" << "\n";
+		cout << "    " << "5 = parallel version of 2" << "\n";
+
+		cout << "  " << "FWBW method:" << "\n";
+		cout << "    " << "0 = basic FWBW" << "\n";
+		cout << "    " << "1 = FWBW with parallel bfs" << "\n";
+		cout << "    " << "2 = Recursive FWBW" << "\n";
+
+		return 0;
+	}
+	
+	cout << "\n";
 
     // Load the graph 
+	cout << "Loading graph\n";
     PNGraph Graph = TSnap::LoadEdgeList<PNGraph>(InEdges);
+	cout << "Graph loaded\n";
+
 
 	scc::FindSCCs(Graph, Trimlevels, PivotMethod, FwBwMethod);
 

@@ -131,7 +131,7 @@ int pivot::getParPivotMaxDegree(enhancedgraph *g, int color)
 	TIntV *Ids = g->NIds;
 
 	struct Compare max; 
-	max.val = 0; 
+	max.val = -1; 
 	max.node = -1;
 	#pragma omp parallel for reduction(maximum:max)
 	for (int i = 0; i < Ids->Len(); i++) {
@@ -158,7 +158,7 @@ int pivot::getParPivotMaxDegreeColor(enhancedgraph *g, int color)
 	TIntV *Ids = g->NIds;
 
 	struct Compare max; 
-	max.val = 0; 
+	max.val = -1; 
 	max.node = -1;
 	#pragma omp parallel for reduction(maximum:max)
 	for (int i = 0; i < Ids->Len(); i++) {

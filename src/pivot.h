@@ -2,7 +2,7 @@
 #include "core.h"
 
 struct Compare { long val; int node; };    
-#pragma omp declare reduction(maximum : struct Compare : omp_out = omp_in.val > omp_out.val ? omp_in : omp_out)
+#pragma omp declare reduction(maximum : struct Compare : omp_out = omp_in.val > omp_out.val ? omp_in : omp_out) initializer(omp_priv={-1,-1})
 
 class pivot
 {

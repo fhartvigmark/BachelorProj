@@ -1,5 +1,25 @@
 #include "trim.h"
 
+int trim::doTrim(int trimlevel, enhancedgraph *g, int color){
+	switch (trimlevel)
+	{
+	case 1:
+		return trim::trim1(g, color);
+	default:
+		return -1;
+	}
+};
+
+int trim::doParTrim(int trimlevel, enhancedgraph *g, int color)
+{
+	switch (trimlevel)
+	{
+	case 1:
+		return trim::partrim1(g, color);
+	default:
+		return -1;
+	}
+};
 
 int trim::trim1(enhancedgraph *g, int color)
 {
@@ -167,17 +187,18 @@ int trim::partrim1(enhancedgraph *g, int color)
 	TSnapQueue<int> Queue;
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
+	TIntV *Ids = g->NIds;
 
-	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
+	#pragma omp parallel for schedule(dynamic)
+	for (int i = 0; i < Ids->Len(); i++)
 	{
-		int node = NI.GetId();
+		int node = Ids->GetVal(i);
 		if (colors->GetDat(node) == color)
 		{
 			int inDegree = 0;
 			TNGraph::TNodeI NodeI = graph->GetNI(node);
 
-			int v = 0;
-			for (v = 0; v < NodeI.GetInDeg(); v++)
+			for (int v = 0; v < NodeI.GetInDeg(); v++)
 			{
 				const int outNode = NodeI.GetInNId(v);
 
@@ -191,14 +212,17 @@ int trim::partrim1(enhancedgraph *g, int color)
 			if (inDegree == 0)
 			{
 				colors->AddDat(node, g->colorGen->getNext());
-				Queue.Push(node);
+				#pragma omp critical
+				{
+					Queue.Push(node);
+				}
 				continue;
 			}
 
 			int outDegree = 0;
 			NodeI = graph->GetNI(node);
 
-			for (v = 0; v < NodeI.GetOutDeg(); v++)
+			for (int v = 0; v < NodeI.GetOutDeg(); v++)
 			{
 				const int outNode = NodeI.GetOutNId(v);
 
@@ -212,7 +236,10 @@ int trim::partrim1(enhancedgraph *g, int color)
 			if (outDegree == 0)
 			{
 				colors->AddDat(node, g->colorGen->getNext());
-				Queue.Push(node);
+				#pragma omp critical
+				{
+					Queue.Push(node);
+				}
 				continue;
 			}
 		}

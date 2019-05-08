@@ -35,7 +35,7 @@ int pivot::getPivot(enhancedgraph *g, int color)
 int pivot::getPivotMaxDegree(enhancedgraph *g, int color)
 {
     int bestNode = -1;
-    int bestDegree = 0;
+    int bestDegree = -1;
     TIntH *colors = g->colors;
     PNGraph graph = g->graph;
     for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
@@ -54,7 +54,7 @@ int pivot::getPivotMaxDegree(enhancedgraph *g, int color)
 int pivot::getPivotMaxDegreeColor(enhancedgraph *g, int color)
 {
     int bestNode = -1;
-    int bestDegree = 0;
+    int bestDegree = -1;
     TIntH *colors = g->colors;
     PNGraph graph = g->graph;
     for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)

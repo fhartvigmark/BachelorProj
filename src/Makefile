@@ -61,7 +61,7 @@ $(MAIN): $(MAIN).cpp $(SNAP)/Snap.o $(DEPH) $(DEPCPP) $(TESTDEP)
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)
 
-%.o: %.cpp $(DEPH) 
+%.o: %.cpp %.h $(DEPH) 
 	$(CC) $(CXXFLAGS) -c $< $(SNAP)/Snap.o -I$(SNAP) -I$(GLIB) $(LIBS)
 
 clean:

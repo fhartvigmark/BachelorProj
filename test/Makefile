@@ -70,7 +70,7 @@ $(TARGET): $(SNAP)/Snap.o $(OBJECTS)
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)
 
-$(SRC)/%.o: $(SRC)/%.cpp
+$(SRC)/%.o: $(SRC)/%.cpp $(SRC)/%.h 
 	make -C $(SRC)
 
 test: $(TARGET)

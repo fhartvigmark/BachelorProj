@@ -36,6 +36,7 @@
 * Parallel baseline implementation _(in progress)_
    * ~Parallel BFS~
    * ~Parallel FWBW~
+   * Recursive FWBW
    * Parallel Trim _(in progress, Trim 2-3)_
    * ~Parallel pivot~
 * Unit tests with gtest
@@ -51,6 +52,7 @@
     * Test on big graphs
 * ~Trim 1~
 * Debug information
+* Help argument
 * More pivot methods
    * ~In-out degree~
    * Rand-walk

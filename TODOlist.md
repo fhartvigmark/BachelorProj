@@ -35,9 +35,9 @@
 * ~Finish sequential baseline implementation~
 * Parallel baseline implementation _(in progress)_
    * ~Parallel BFS~
-   * Parallel FWBW
-   * Parallel Trim
-   * Parallel pivot
+   * ~Parallel FWBW~
+   * Parallel Trim _(in progress, Trim 2-3)_
+   * ~Parallel pivot~
 * Unit tests with gtest
     * ~Pivot tests~
         * Empty graph
@@ -49,12 +49,14 @@
             * All nodes present
             * All nodes 0
     * Test on big graphs
-* Trim 1 _(in progress)_
+* ~Trim 1~
 * Debug information
 * More pivot methods
    * ~In-out degree~
    * Rand-walk
 * Trim 2-3
-* SCC output structure
+* SCC output structure _(in progress)_
 * Graph analysis tool, and plotting
+* Testing tool
+ Read output files, group by SCC, compare groupings
 * ~Improve MAKEFILE~

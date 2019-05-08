@@ -52,7 +52,7 @@
     * Test on big graphs
 * ~Trim 1~
 * Debug information
-* Help argument
+* ~Help argument~
 * More pivot methods
    * ~In-out degree~
    * Rand-walk

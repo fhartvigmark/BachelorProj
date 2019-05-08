@@ -99,7 +99,7 @@ struct ColorGraphTest : testing::Test {
 
 TEST_F(SimpleGraphTest, TrimFindsSCCs) {
 	TIntH *colors = enhgraph->colors;
-    trim::trim1(enhgraph, 0);
+    trim::doTrim(1, enhgraph, 0);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -118,7 +118,7 @@ TEST_F(SimpleGraphTest, TrimFindsSCCs) {
 TEST_F(SimpleGraphTest, ParTrimFindsSCCs)
 {
 	TIntH *colors = enhgraph->colors;
-	trim::trim1(enhgraph, 0);
+	trim::doTrim(1, enhgraph, 0);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -136,7 +136,7 @@ TEST_F(SimpleGraphTest, ParTrimFindsSCCs)
 
 TEST_F(SimpleGraphTest, TrimRespectsColors) {
 	TIntH *colors = enhgraph->colors;
-    trim::trim1(enhgraph, 1);
+    trim::doTrim(1, enhgraph, 1);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -150,7 +150,7 @@ TEST_F(SimpleGraphTest, TrimRespectsColors) {
 TEST_F(SimpleGraphTest, ParTrimRespectsColors)
 {
 	TIntH *colors = enhgraph->colors;
-	trim::partrim1(enhgraph, 1);
+	trim::doParTrim(1, enhgraph, 1);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -163,7 +163,7 @@ TEST_F(SimpleGraphTest, ParTrimRespectsColors)
 
 TEST_F(ColorGraphTest, TrimRespectsColorsDegree) {
 	TIntH *colors = enhgraph->colors;
-    trim::trim1(enhgraph, 4);
+    trim::doTrim(1, enhgraph, 4);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -179,7 +179,7 @@ TEST_F(ColorGraphTest, TrimRespectsColorsDegree) {
 TEST_F(ColorGraphTest, ParTrimRespectsColorsDegree)
 {
 	TIntH *colors = enhgraph->colors;
-	trim::partrim1(enhgraph, 4);
+	trim::doParTrim(1, enhgraph, 4);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -194,7 +194,7 @@ TEST_F(ColorGraphTest, ParTrimRespectsColorsDegree)
 
 TEST_F(ColorGraphTest, TrimRespectsColors) {
 	TIntH *colors = enhgraph->colors;
-    trim::trim1(enhgraph, 0);
+    trim::doTrim(1, enhgraph, 0);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -208,7 +208,7 @@ TEST_F(ColorGraphTest, TrimRespectsColors) {
 TEST_F(ColorGraphTest, ParTrimRespectsColors)
 {
 	TIntH *colors = enhgraph->colors;
-	trim::partrim1(enhgraph, 0);
+	trim::doParTrim(1, enhgraph, 0);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -221,7 +221,7 @@ TEST_F(ColorGraphTest, ParTrimRespectsColors)
 
 TEST_F(ColorGraphTest, TrimFindsSCCs) {
 	TIntH *colors = enhgraph->colors;
-    trim::trim1(enhgraph, 2);
+    trim::doParTrim(1, enhgraph, 2);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -237,7 +237,7 @@ TEST_F(ColorGraphTest, TrimFindsSCCs) {
 TEST_F(ColorGraphTest, ParTrimFindsSCCs)
 {
 	TIntH *colors = enhgraph->colors;
-	trim::partrim1(enhgraph, 2);
+	trim::doParTrim(1, enhgraph, 2);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -252,7 +252,7 @@ TEST_F(ColorGraphTest, ParTrimFindsSCCs)
 
 TEST_F(SimpleChainTest, TrimRunsMultiplePasses) {
 	TIntH *colors = enhgraph->colors;
-	trim::trim1(enhgraph, 0);
+	trim::doTrim(1, enhgraph, 0);
 
 	EXPECT_NE(0, colors->GetDat(1));
 	EXPECT_NE(0, colors->GetDat(2));
@@ -285,7 +285,7 @@ TEST_F(SimpleChainTest, TrimRunsMultiplePasses) {
 TEST_F(SimpleChainTest, ParTrimRunsMultiplePasses)
 {
 	TIntH *colors = enhgraph->colors;
-	trim::partrim1(enhgraph, 0);
+	trim::doParTrim(1, enhgraph, 0);
 
 	EXPECT_NE(0, colors->GetDat(1));
 	EXPECT_NE(0, colors->GetDat(2));

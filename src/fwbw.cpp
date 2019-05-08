@@ -13,7 +13,7 @@ int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor,
 //Coloring based basic fw-bw
 int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor){
     //Find pivot node
-    int startNode = pivot::getPivot(g, startColor);
+    int startNode = pivot::findPivot(g, startColor, pivotmethod);
     if (startNode==-1){
         return -1;
     }
@@ -31,7 +31,7 @@ int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startC
 int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor)
 {
 	//Find pivot node
-	int startNode = pivot::getPivot(g, startColor);
+	int startNode = pivot::findPivot(g, startColor, pivotmethod);
 	if (startNode == -1)
 	{
 		return -1;

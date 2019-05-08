@@ -381,7 +381,6 @@ int trim::partrim1(enhancedgraph *g, int color)
 
 int trim::trim2(enhancedgraph *g, int color)
 {
-	TSnapQueue<int> Queue;
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
@@ -470,7 +469,6 @@ int trim::trim2(enhancedgraph *g, int color)
 
 int trim::partrim2(enhancedgraph *g, int color)
 {
-	TSnapQueue<int> Queue;
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
@@ -496,7 +494,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 				}
 			}
 
-			if (inDegree == 1)
+			if (inDegree == 1 && colors->GetDat(lastNode) == color)
 			{
 				int newInDegree;
 				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
@@ -511,9 +509,12 @@ int trim::partrim2(enhancedgraph *g, int color)
 				}
 				if (newInDegree == 1)
 				{
-					int newSCC = g->colorGen->getNext();
-					colors->AddDat(node, newSCC);
-					colors->AddDat(lastNode, newSCC);
+					#pragma omp critical
+					{
+						int newSCC = g->colorGen->getNext();
+						colors->AddDat(node, newSCC);
+						colors->AddDat(lastNode, newSCC);
+					}
 					continue;
 				}
 			}
@@ -532,7 +533,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 				}
 			}
 
-			if (outDegree == 1)
+			if (outDegree == 1 && colors->GetDat(lastNode) == color)
 			{
 				int newOutDegree;
 				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
@@ -546,9 +547,12 @@ int trim::partrim2(enhancedgraph *g, int color)
 					}
 				}
 				if (newOutDegree == 1){
-					int newSCC = g->colorGen->getNext();
-					colors->AddDat(node, newSCC);
-					colors->AddDat(lastNode, newSCC);
+					#pragma omp critical 
+					{
+						int newSCC = g->colorGen->getNext();
+						colors->AddDat(node, newSCC);
+						colors->AddDat(lastNode, newSCC);
+					}
 					continue;
 				}
 			}

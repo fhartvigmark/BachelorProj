@@ -97,6 +97,55 @@ struct ColorGraphTest : testing::Test {
     }
 };
 
+struct SimpleTrim2GraphTest : testing::Test {
+	enhancedgraph *enhgraph;
+
+	SimpleTrim2GraphTest()
+	{
+		PNGraph graph = TNGraph::New();
+		graph->AddNode(1);
+		graph->AddNode(2);
+		graph->AddNode(3);
+		graph->AddEdge(1, 2);
+		graph->AddEdge(2, 1);
+		graph->AddEdge(3, 1);
+
+		enhgraph = new enhancedgraph(graph);
+	}
+
+	virtual ~SimpleTrim2GraphTest()
+	{
+		delete enhgraph;
+	}
+};
+
+struct AdvancedTrim2GraphTest : testing::Test
+{
+	enhancedgraph *enhgraph;
+
+	AdvancedTrim2GraphTest()
+	{
+		PNGraph graph = TNGraph::New();
+		graph->AddNode(1);
+		graph->AddNode(2);
+		graph->AddNode(3);
+		graph->AddNode(4);
+		graph->AddEdge(1, 2);
+		graph->AddEdge(2, 1);
+		graph->AddEdge(1, 3);
+		graph->AddEdge(3, 4);
+		graph->AddEdge(4, 3);
+		graph->AddEdge(4, 2);
+
+		enhgraph = new enhancedgraph(graph);
+	}
+
+	virtual ~AdvancedTrim2GraphTest()
+	{
+		delete enhgraph;
+	}
+};
+
 TEST_F(SimpleGraphTest, TrimFindsSCCs) {
 	TIntH *colors = enhgraph->colors;
     trim::doTrim(1, enhgraph, 0);
@@ -313,4 +362,39 @@ TEST_F(SimpleChainTest, ParTrimRunsMultiplePasses)
 	EXPECT_NE(colors->GetDat(4), colors->GetDat(6));
 
 	EXPECT_NE(colors->GetDat(5), colors->GetDat(6));
+}
+
+TEST_F(SimpleTrim2GraphTest, Trim2FindsSize2SCCs)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doTrim(2, enhgraph, 0);
+
+	EXPECT_NE(0, colors->GetDat(1));
+	EXPECT_NE(0, colors->GetDat(2));
+
+	EXPECT_EQ(colors->GetDat(1), colors->GetDat(1));
+	EXPECT_NE(colors->GetDat(1), colors->GetDat(3));
+}
+
+TEST_F(AdvancedTrim2GraphTest, Trim2CorrectlyLooksUpNeighbours)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doTrim(2, enhgraph, 0);
+
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));
+	EXPECT_EQ(0, colors->GetDat(4));
+}
+
+TEST_F(SimpleTrim2GraphTest, ParTrim2FindsSize2SCCs)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doParTrim(2, enhgraph, 0);
+
+	EXPECT_NE(0, colors->GetDat(1));
+	EXPECT_NE(0, colors->GetDat(2));
+
+	EXPECT_EQ(colors->GetDat(1), colors->GetDat(1));
+	EXPECT_NE(colors->GetDat(1), colors->GetDat(3));
 }

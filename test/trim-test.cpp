@@ -99,7 +99,26 @@ struct ColorGraphTest : testing::Test {
 
 TEST_F(SimpleGraphTest, TrimFindsSCCs) {
 	TIntH *colors = enhgraph->colors;
-    trim::trim1(enhgraph, 0);
+    trim::doTrim(1, enhgraph, 0);
+
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));
+	EXPECT_EQ(0, colors->GetDat(7));
+
+	EXPECT_NE(0, colors->GetDat(4));
+	EXPECT_NE(0, colors->GetDat(5));
+	EXPECT_NE(0, colors->GetDat(6));
+
+	EXPECT_NE(colors->GetDat(4), colors->GetDat(5));
+	EXPECT_NE(colors->GetDat(5), colors->GetDat(6));
+	EXPECT_NE(colors->GetDat(4), colors->GetDat(6));
+}
+
+TEST_F(SimpleGraphTest, ParTrimFindsSCCs)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doTrim(1, enhgraph, 0);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -117,7 +136,7 @@ TEST_F(SimpleGraphTest, TrimFindsSCCs) {
 
 TEST_F(SimpleGraphTest, TrimRespectsColors) {
 	TIntH *colors = enhgraph->colors;
-    trim::trim1(enhgraph, 1);
+    trim::doTrim(1, enhgraph, 1);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -128,9 +147,39 @@ TEST_F(SimpleGraphTest, TrimRespectsColors) {
 	EXPECT_EQ(0, colors->GetDat(7));	
 }
 
+TEST_F(SimpleGraphTest, ParTrimRespectsColors)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doParTrim(1, enhgraph, 1);
+
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));
+	EXPECT_EQ(0, colors->GetDat(4));
+	EXPECT_EQ(0, colors->GetDat(5));
+	EXPECT_EQ(0, colors->GetDat(6));
+	EXPECT_EQ(0, colors->GetDat(7));
+}
+
 TEST_F(ColorGraphTest, TrimRespectsColorsDegree) {
 	TIntH *colors = enhgraph->colors;
-    trim::trim1(enhgraph, 4);
+    trim::doTrim(1, enhgraph, 4);
+
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));
+	EXPECT_EQ(1, colors->GetDat(4));
+	EXPECT_EQ(2, colors->GetDat(5));
+	EXPECT_EQ(3, colors->GetDat(6));
+
+	EXPECT_NE(0, colors->GetDat(7));
+	EXPECT_NE(4, colors->GetDat(7));
+}
+
+TEST_F(ColorGraphTest, ParTrimRespectsColorsDegree)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doParTrim(1, enhgraph, 4);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -145,7 +194,7 @@ TEST_F(ColorGraphTest, TrimRespectsColorsDegree) {
 
 TEST_F(ColorGraphTest, TrimRespectsColors) {
 	TIntH *colors = enhgraph->colors;
-    trim::trim1(enhgraph, 0);
+    trim::doTrim(1, enhgraph, 0);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -156,9 +205,23 @@ TEST_F(ColorGraphTest, TrimRespectsColors) {
 	EXPECT_EQ(4, colors->GetDat(7));	
 }
 
+TEST_F(ColorGraphTest, ParTrimRespectsColors)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doParTrim(1, enhgraph, 0);
+
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));
+	EXPECT_EQ(1, colors->GetDat(4));
+	EXPECT_EQ(2, colors->GetDat(5));
+	EXPECT_EQ(3, colors->GetDat(6));
+	EXPECT_EQ(4, colors->GetDat(7));
+}
+
 TEST_F(ColorGraphTest, TrimFindsSCCs) {
 	TIntH *colors = enhgraph->colors;
-    trim::trim1(enhgraph, 2);
+    trim::doParTrim(1, enhgraph, 2);
 
 	EXPECT_EQ(0, colors->GetDat(1));
 	EXPECT_EQ(0, colors->GetDat(2));
@@ -171,9 +234,25 @@ TEST_F(ColorGraphTest, TrimFindsSCCs) {
 	EXPECT_NE(2, colors->GetDat(5));	
 }
 
+TEST_F(ColorGraphTest, ParTrimFindsSCCs)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doParTrim(1, enhgraph, 2);
+
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));
+	EXPECT_EQ(1, colors->GetDat(4));
+	EXPECT_EQ(3, colors->GetDat(6));
+	EXPECT_EQ(4, colors->GetDat(7));
+
+	EXPECT_NE(0, colors->GetDat(5));
+	EXPECT_NE(2, colors->GetDat(5));
+}
+
 TEST_F(SimpleChainTest, TrimRunsMultiplePasses) {
 	TIntH *colors = enhgraph->colors;
-	trim::trim1(enhgraph, 0);
+	trim::doTrim(1, enhgraph, 0);
 
 	EXPECT_NE(0, colors->GetDat(1));
 	EXPECT_NE(0, colors->GetDat(2));
@@ -203,3 +282,35 @@ TEST_F(SimpleChainTest, TrimRunsMultiplePasses) {
 	EXPECT_NE(colors->GetDat(5), colors->GetDat(6));
 }
 
+TEST_F(SimpleChainTest, ParTrimRunsMultiplePasses)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doParTrim(1, enhgraph, 0);
+
+	EXPECT_NE(0, colors->GetDat(1));
+	EXPECT_NE(0, colors->GetDat(2));
+	EXPECT_NE(0, colors->GetDat(3));
+	EXPECT_NE(0, colors->GetDat(4));
+	EXPECT_NE(0, colors->GetDat(5));
+	EXPECT_NE(0, colors->GetDat(6));
+
+	EXPECT_NE(colors->GetDat(1), colors->GetDat(2));
+	EXPECT_NE(colors->GetDat(1), colors->GetDat(3));
+	EXPECT_NE(colors->GetDat(1), colors->GetDat(4));
+	EXPECT_NE(colors->GetDat(1), colors->GetDat(5));
+	EXPECT_NE(colors->GetDat(1), colors->GetDat(6));
+
+	EXPECT_NE(colors->GetDat(2), colors->GetDat(3));
+	EXPECT_NE(colors->GetDat(2), colors->GetDat(4));
+	EXPECT_NE(colors->GetDat(2), colors->GetDat(5));
+	EXPECT_NE(colors->GetDat(2), colors->GetDat(6));
+
+	EXPECT_NE(colors->GetDat(3), colors->GetDat(4));
+	EXPECT_NE(colors->GetDat(3), colors->GetDat(5));
+	EXPECT_NE(colors->GetDat(3), colors->GetDat(6));
+
+	EXPECT_NE(colors->GetDat(4), colors->GetDat(5));
+	EXPECT_NE(colors->GetDat(4), colors->GetDat(6));
+
+	EXPECT_NE(colors->GetDat(5), colors->GetDat(6));
+}

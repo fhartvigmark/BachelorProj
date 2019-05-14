@@ -1,3 +1,4 @@
+//#include "iostream"
 #include "trim.h"
 
 int trim::doTrim(int trimlevel, enhancedgraph *g, int color){
@@ -386,8 +387,9 @@ int trim::trim2(enhancedgraph *g, int color)
 	TIntV *Ids = g->NIds;
 
 	for (int i = 0; i < Ids->Len(); i++)
-	{
+	{	
 		int node = Ids->GetVal(i);
+		//std::cout << "looking at node " << node << "\n"; 
 		if (colors->GetDat(node) == color)
 		{
 			int inDegree = 0;
@@ -407,7 +409,8 @@ int trim::trim2(enhancedgraph *g, int color)
 
 			if (inDegree == 1)
 			{
-				int newInDegree;
+				//std::cout << "Found node with in-deg 1: " << node << "\n";
+				int newInDegree = 0;
 				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
 				for (int v = 0; v < LastNodeI.GetInDeg(); v++)
 				{
@@ -418,8 +421,10 @@ int trim::trim2(enhancedgraph *g, int color)
 						newInDegree++;
 					}
 				}
-				if (newInDegree == 1)
+				//std::cout << "Found potential SCC containing: " << node << " and " << lastNode << ". With in-deg " << newInDegree << ", " << LastNodeI.IsInNId(node) << "\n";
+				if (newInDegree == 1 && LastNodeI.IsInNId(node))
 				{
+					//std::cout << "Found SCC containing: " << node << " and " << lastNode << "\n";
 					int newSCC = g->colorGen->getNext();
 					colors->AddDat(node, newSCC);
 					colors->AddDat(lastNode, newSCC);
@@ -443,7 +448,8 @@ int trim::trim2(enhancedgraph *g, int color)
 
 			if (outDegree == 1)
 			{
-				int newOutDegree;
+				//std::cout << "Found node with out-deg 1: " << node << "\n";
+				int newOutDegree = 0;
 				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
 				for (int v = 0; v < LastNodeI.GetOutDeg(); v++)
 				{
@@ -454,8 +460,10 @@ int trim::trim2(enhancedgraph *g, int color)
 						newOutDegree++;
 					}
 				}
-				if (newOutDegree == 1)
+				//std::cout << "Found potential SCC containing: " << node << " and " << lastNode << ". With out-deg " << newOutDegree << ", " << LastNodeI.IsInNId(node) << "\n";
+				if (newOutDegree == 1 && LastNodeI.IsOutNId(node))
 				{
+					//std::cout << "Found SCC containing: " << node << " and " << lastNode <<"\n";
 					int newSCC = g->colorGen->getNext();
 					colors->AddDat(node, newSCC);
 					colors->AddDat(lastNode, newSCC);
@@ -496,7 +504,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 
 			if (inDegree == 1 && colors->GetDat(lastNode) == color)
 			{
-				int newInDegree;
+				int newInDegree = 0;
 				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
 				for (int v = 0; v < LastNodeI.GetInDeg(); v++)
 				{
@@ -507,7 +515,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 						newInDegree++;
 					}
 				}
-				if (newInDegree == 1)
+				if (newInDegree == 1 && LastNodeI.IsInNId(node))
 				{
 					#pragma omp critical
 					{
@@ -535,7 +543,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 
 			if (outDegree == 1 && colors->GetDat(lastNode) == color)
 			{
-				int newOutDegree;
+				int newOutDegree = 0;
 				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
 				for (int v = 0; v < LastNodeI.GetOutDeg(); v++)
 				{
@@ -546,7 +554,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 						newOutDegree++;
 					}
 				}
-				if (newOutDegree == 1){
+				if (newOutDegree == 1 && LastNodeI.IsOutNId(node)){
 					#pragma omp critical 
 					{
 						int newSCC = g->colorGen->getNext();

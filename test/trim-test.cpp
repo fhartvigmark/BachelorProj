@@ -372,7 +372,7 @@ TEST_F(SimpleTrim2GraphTest, Trim2FindsSize2SCCs)
 	EXPECT_NE(0, colors->GetDat(1));
 	EXPECT_NE(0, colors->GetDat(2));
 
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(1));
+	EXPECT_EQ(colors->GetDat(1), colors->GetDat(2));
 	EXPECT_NE(colors->GetDat(1), colors->GetDat(3));
 }
 
@@ -397,4 +397,28 @@ TEST_F(SimpleTrim2GraphTest, ParTrim2FindsSize2SCCs)
 
 	EXPECT_EQ(colors->GetDat(1), colors->GetDat(1));
 	EXPECT_NE(colors->GetDat(1), colors->GetDat(3));
+}
+
+TEST_F(SimpleChainTest, Trim2IgnoresChains)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doTrim(2, enhgraph, 0);
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));
+	EXPECT_EQ(0, colors->GetDat(4));
+	EXPECT_EQ(0, colors->GetDat(5));
+	EXPECT_EQ(0, colors->GetDat(6));
+}
+
+TEST_F(SimpleChainTest, ParTrim2IgnoresChains)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doParTrim(2, enhgraph, 0);
+	EXPECT_EQ(0, colors->GetDat(1));
+	EXPECT_EQ(0, colors->GetDat(2));
+	EXPECT_EQ(0, colors->GetDat(3));
+	EXPECT_EQ(0, colors->GetDat(4));
+	EXPECT_EQ(0, colors->GetDat(5));
+	EXPECT_EQ(0, colors->GetDat(6));
 }

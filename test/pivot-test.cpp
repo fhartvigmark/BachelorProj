@@ -122,6 +122,9 @@ TEST_P(SimpleGraphTest, CanFindStartnode) {
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
 		EXPECT_TRUE(startnode < omp_get_max_threads());
 		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
+	} else if (gs.method == 6 || gs.method == 7) {
+		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
+		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
 	} else {
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
 		EXPECT_EQ(gs.expectedOutput, startnode);
@@ -190,7 +193,11 @@ INSTANTIATE_TEST_CASE_P(Default, SimpleGraphTest,
 							pivot_state{1, 0, 0},
 							pivot_state{-1, 2, 0},
 							pivot_state{1, 0, 3},
-							pivot_state{-1, 2, 3}));
+							pivot_state{-1, 2, 3},
+							pivot_state{1, 0, 6},
+							pivot_state{-1, 2, 6},
+							pivot_state{1, 0, 7},
+							pivot_state{-1, 2, 7}));
 INSTANTIATE_TEST_CASE_P(Default, ColorGraphTest,
 						testing::Values(
 							pivot_state{2, 0, 0},
@@ -200,4 +207,12 @@ INSTANTIATE_TEST_CASE_P(Default, ColorGraphTest,
 							pivot_state{2, 0, 3},
 							pivot_state{3, 40, 3},
 							pivot_state{1, 2, 3},
-							pivot_state{-1, 39, 3}));
+							pivot_state{-1, 39, 3},
+							pivot_state{2, 0, 6},
+							pivot_state{3, 40, 6},
+							pivot_state{1, 2, 6},
+							pivot_state{-1, 39, 6},
+							pivot_state{2, 0, 7},
+							pivot_state{3, 40, 7},
+							pivot_state{1, 2, 7},
+							pivot_state{-1, 39, 7}));

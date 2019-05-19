@@ -4,7 +4,7 @@ ColorGenerator::ColorGenerator() {
 	lastColor = 0;
 }
 
-enhancedgraph::enhancedgraph(PNGraph g) {
+enhancedgraph::enhancedgraph(PNGraph g) : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
 	graph = g;
 	colorGen = new ColorGenerator();
 	colors = new TIntH();
@@ -22,6 +22,7 @@ enhancedgraph::enhancedgraph(PNGraph g) {
 	}
 }
 
-enhancedgraph::enhancedgraph() {
+//TODO: make params for consts, also args in main
+enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
 	
 }

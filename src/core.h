@@ -18,6 +18,8 @@ class ColorGenerator
 class enhancedgraph
 {
 	public:
+		static const int RAND_WALK_ITERATIONS = 10;
+
     	PNGraph graph;
 		TIntH *colors;
 		TIntV *NIds;

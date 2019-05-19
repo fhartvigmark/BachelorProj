@@ -49,13 +49,15 @@ SRC = ../src
 
 DEPH = $(SRC)/core.o $(SRC)/bfs.o $(SRC)/pivot.o $(SRC)/trim.o $(SRC)/fwbw.o
 OBJECTS = $(DEPH) \
-	runAll.o example.o \
+	runAll.o \
 	bfs-test.o \
 	enhancedgraph-test.o \
 	pivot-test.o \
 	trim-test.o \
 	fwbw-test.o
 TARGET = runAll
+
+n = 10
 
 
 all: $(TARGET)
@@ -75,6 +77,9 @@ $(SRC)/%.o: $(SRC)/%.cpp $(SRC)/%.h
 
 test: $(TARGET)
 	./$(TARGET)
+
+test-repeat: $(TARGET) 
+	./$(TARGET) --gtest_repeat=$(n) --gtest_break_on_failure
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)

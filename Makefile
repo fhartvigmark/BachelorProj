@@ -9,6 +9,8 @@ clean: clean-src clean-test
 clean-all: clean-snap clean
 run-test:
 	$(MAKE) run -C $(TEST)
+run-test-repeat:
+	$(MAKE) test-repeat -C $(TEST)
 run-src:
 	$(MAKE) run -C $(SRC)
 

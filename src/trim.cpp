@@ -24,7 +24,7 @@ int trim::doParTrim(int trimlevel, enhancedgraph *g, int color)
 	case 2:
 		return trim::partrim2(g, color);
 	default:
-		return -1;
+		return trim::partrim3(g, color);
 	}
 };
 
@@ -816,6 +816,293 @@ int trim::trim3(enhancedgraph *g, int color){
 						colors->AddDat(node, newSCC);
 						colors->AddDat(nodeB, newSCC);
 						colors->AddDat(nodeC, newSCC);
+					}
+					continue;
+				}
+			}
+		}
+	}
+
+	return -1;
+};
+
+int trim::partrim3(enhancedgraph *g, int color)
+{
+	TIntH *colors = g->colors;
+	PNGraph graph = g->graph;
+	TIntV *Ids = g->NIds;
+
+#pragma omp parallel for schedule(dynamic)
+	for (int i = 0; i < Ids->Len(); i++)
+	{
+		int node = Ids->GetVal(i);
+		if (colors->GetDat(node) == color)
+		{
+			int inDegree = 0;
+			int nodeB = -1;
+			int nodeC = -2;
+			TNGraph::TNodeI NodeI = graph->GetNI(node);
+
+			for (int v = 0; v < NodeI.GetInDeg(); v++)
+			{
+				const int inNode = NodeI.GetInNId(v);
+
+				if (colors->GetDat(inNode) == color && inNode != node)
+				{
+					if (inDegree == 0)
+					{
+						inDegree++;
+						nodeB = inNode;
+					}
+					else if (inDegree == 1)
+					{
+						inDegree++;
+						nodeC = inNode;
+					}
+					else
+					{
+						//If out-deg is now 3, break
+						inDegree++;
+						break;
+					}
+				}
+			}
+
+			if (inDegree == 1 && colors->GetDat(nodeB) == color)
+			{
+				int inDegree_B = 0;
+				TNGraph::TNodeI NodeBI = graph->GetNI(nodeB);
+				for (int v = 0; v < NodeBI.GetInDeg(); v++)
+				{
+					nodeC = NodeBI.GetInNId(v);
+
+					if (colors->GetDat(nodeC) == color && nodeC != nodeB)
+					{
+						inDegree_B++;
+						if (inDegree_B == 2)
+						{
+							break;
+						}
+					}
+				}
+				if (inDegree_B == 1 && colors->GetDat(nodeB) == color)
+				{
+					int inDegree_C = 0;
+					TNGraph::TNodeI NodeCI = graph->GetNI(nodeC);
+					for (int v = 0; v < NodeCI.GetInDeg(); v++)
+					{
+						int out_node_c = NodeCI.GetInNId(v);
+
+						if (colors->GetDat(out_node_c) == color && nodeC != out_node_c)
+						{
+							inDegree_C++;
+							if (inDegree_C == 2)
+							{
+								break;
+							}
+						}
+					}
+					if (inDegree_C == 1 && NodeCI.IsInNId(node) && colors->GetDat(nodeC) == color)
+					{
+						#pragma omp critical
+						{
+							if (colors->GetDat(node) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
+							{
+								int newSCC = g->colorGen->getNext();
+								colors->AddDat(node, newSCC);
+								colors->AddDat(nodeB, newSCC);
+								colors->AddDat(nodeC, newSCC);
+							}
+						}
+					}
+					continue;
+				}
+			}
+
+			if (inDegree == 2 && colors->GetDat(nodeB) == color)
+			{
+				//std::cout << "Found potential pattern 2 on in-degrees, node: " << node << "\n";
+				int inDegree_B = 0;
+				TNGraph::TNodeI NodeBI = graph->GetNI(nodeB);
+				for (int v = 0; v < NodeBI.GetInDeg(); v++)
+				{
+					int out_node_B = NodeBI.GetInNId(v);
+
+					if (colors->GetDat(out_node_B) == color && out_node_B != nodeB)
+					{
+						inDegree_B++;
+						if (inDegree_B == 2)
+						{
+							//std::cout << "B's in-degree over 1, breaking \n";
+							break;
+						}
+					}
+				}
+				if (inDegree_B == 1 && NodeBI.IsInNId(node) && colors->GetDat(nodeB) == color)
+				{
+					//std::cout << "B's in-degree is 1, proceeding \n";
+					int inDegree_C = 0;
+					TNGraph::TNodeI NodeCI = graph->GetNI(nodeC);
+					for (int v = 0; v < NodeCI.GetInDeg(); v++)
+					{
+						int in_node_c = NodeCI.GetInNId(v);
+
+						if (colors->GetDat(in_node_c) == color && nodeC != in_node_c)
+						{
+							inDegree_C++;
+							if (inDegree_C == 2)
+							{
+								break;
+							}
+						}
+					}
+					if (inDegree_C == 1 && NodeCI.IsInNId(node) && colors->GetDat(nodeC) == color)
+					{
+						//std::cout << "Found pattern 2 SCC \n";
+#pragma omp critical
+						{
+							if (colors->GetDat(node) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
+							{
+								int newSCC = g->colorGen->getNext();
+								colors->AddDat(node, newSCC);
+								colors->AddDat(nodeB, newSCC);
+								colors->AddDat(nodeC, newSCC);
+							}
+						}
+					}
+					continue;
+				}
+			}
+
+			int outDegree = 0;
+			NodeI = graph->GetNI(node);
+
+			for (int v = 0; v < NodeI.GetOutDeg(); v++)
+			{
+				const int outNode = NodeI.GetOutNId(v);
+
+				if (colors->GetDat(outNode) == color && outNode != node)
+				{
+					if (outDegree == 0)
+					{
+						outDegree++;
+						nodeB = outNode;
+					}
+					else if (outDegree == 1)
+					{
+						outDegree++;
+						nodeC = outNode;
+					}
+					else
+					{
+						outDegree++;
+						//If out-deg is now 3, break
+						break;
+					}
+				}
+			}
+
+			if (outDegree == 1 && colors->GetDat(nodeB) == color)
+			{
+				int outDegree_B = 0;
+				TNGraph::TNodeI NodeBI = graph->GetNI(nodeB);
+				for (int v = 0; v < NodeBI.GetInDeg(); v++)
+				{
+					nodeC = NodeBI.GetOutNId(v);
+
+					if (colors->GetDat(nodeC) == color && nodeC != nodeB)
+					{
+						outDegree_B++;
+						if (outDegree_B == 2)
+						{
+							break;
+						}
+					}
+				}
+				if (outDegree_B == 1 && colors->GetDat(nodeB) == color)
+				{
+					int outDegree_C = 0;
+					TNGraph::TNodeI NodeCI = graph->GetNI(nodeC);
+					for (int v = 0; v < NodeCI.GetOutDeg(); v++)
+					{
+						int out_node_c = NodeCI.GetOutNId(v);
+
+						if (colors->GetDat(out_node_c) == color && nodeC != out_node_c)
+						{
+							outDegree_C++;
+							if (outDegree_C == 2)
+							{
+								break;
+							}
+						}
+					}
+					if (outDegree_C == 1 && NodeCI.IsOutNId(node) && colors->GetDat(nodeC) == color)
+					{
+#pragma omp critical
+						{
+							if (colors->GetDat(node) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
+							{
+								int newSCC = g->colorGen->getNext();
+								colors->AddDat(node, newSCC);
+								colors->AddDat(nodeB, newSCC);
+								colors->AddDat(nodeC, newSCC);
+							}
+						}
+					}
+					continue;
+				}
+			}
+
+			if (outDegree == 2 && colors->GetDat(nodeB) == color)
+			{
+				//std::cout << "Found potential pattern 2 on out-degrees, node: " << node << "\n";
+				int outDegree_B = 0;
+				TNGraph::TNodeI NodeBI = graph->GetNI(nodeB);
+				for (int v = 0; v < NodeBI.GetOutDeg(); v++)
+				{
+					int out_node_B = NodeBI.GetOutNId(v);
+
+					if (colors->GetDat(out_node_B) == color && out_node_B != nodeB)
+					{
+						outDegree_B++;
+						if (outDegree_B == 2)
+						{
+							//std::cout << "B's out-degree over 1, breaking \n";
+							break;
+						}
+					}
+				}
+				if (outDegree_B == 1 && NodeBI.IsOutNId(node) && colors->GetDat(nodeB) == color)
+				{
+					//std::cout << "B's out-degree is 1, proceeding \n";
+					int outDegree_C = 0;
+					TNGraph::TNodeI NodeCI = graph->GetNI(nodeC);
+					for (int v = 0; v < NodeCI.GetOutDeg(); v++)
+					{
+						int out_node_c = NodeCI.GetOutNId(v);
+
+						if (colors->GetDat(out_node_c) == color && nodeC != out_node_c)
+						{
+							outDegree_C++;
+							if (outDegree_C == 2)
+							{
+								break;
+							}
+						}
+					}
+					if (outDegree_C == 1 && NodeCI.IsOutNId(node) && colors->GetDat(nodeC) == color)
+					{
+						//std::cout << "Found pattern 2 SCC \n";
+#pragma omp critical
+						{
+							if (colors->GetDat(node) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
+							{
+								int newSCC = g->colorGen->getNext();
+								colors->AddDat(node, newSCC);
+								colors->AddDat(nodeB, newSCC);
+								colors->AddDat(nodeC, newSCC);
+							}
+						}
 					}
 					continue;
 				}

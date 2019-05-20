@@ -31,34 +31,12 @@
 * Color based pivot selection is tedious. We have copied Hong's own method
 
 # Tasks
-* ~OpenMP~
-* ~Finish sequential baseline implementation~
 * Parallel baseline implementation _(in progress)_
-   * ~Parallel BFS~
-   * ~Parallel FWBW~
    * Recursive FWBW
-   * ~Parallel Trim~
-   * ~Parallel pivot~
-* Unit tests with gtest
-    * ~Pivot tests~
-        * Empty graph
-        * No matching color
-        * More than one Matching color
-    * ~Enhanced graph test~
-        * Colorgen
-        * Hashmap
-            * All nodes present
-            * All nodes 0
-    * Test on big graphs
-* ~Trim 1~
+* Synthetic graph generation
+* Test on big graphs
 * Debug information
-* ~Help argument~
-* ~More pivot methods~
-   * ~In-out degree~
-   * ~Rand-walk~
-* ~Trim 2-3~
 * SCC output structure _(in progress)_
 * Graph analysis tool, and plotting
 * Testing tool
  Read output files, group by SCC, compare groupings
-* ~Improve MAKEFILE~

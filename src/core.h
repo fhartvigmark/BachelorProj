@@ -30,10 +30,10 @@ class enhancedgraph
 		TIntV *NIds;
     	ColorGenerator *colorGen;
 
-		//TODO: implement function
 		//TODO: add code to main that outputs times
 		//TODO: test
 		void endTimer(std::chrono::high_resolution_clock::time_point start, eTimer timer);
+		int64_t getTime(eTimer timer);
 
 		//TODO: add deconstructor??
 		enhancedgraph(PNGraph g);

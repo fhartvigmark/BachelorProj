@@ -49,6 +49,30 @@ void enhancedgraph::endTimer(std::chrono::high_resolution_clock::time_point star
 	}
 }
 
+int64_t enhancedgraph::getTime(eTimer timer) {
+	if (!TIMER_ENABLED) {
+		return -1;
+	}
+
+	switch (timer)
+	{
+		case eTimer::MAIN:
+			return std::chrono::duration_cast<std::chrono::milliseconds>(tMain).count();
+		case eTimer::FirstFWBW:
+			return std::chrono::duration_cast<std::chrono::milliseconds>(tFirstFWBW).count();
+		case eTimer::FWBWs:
+			return std::chrono::duration_cast<std::chrono::milliseconds>(tFWBW).count();
+		case eTimer::TRIM:
+			return std::chrono::duration_cast<std::chrono::milliseconds>(tTrim).count();
+		case eTimer::PIVOT:
+			return std::chrono::duration_cast<std::chrono::milliseconds>(tPivot).count();
+		case eTimer::SETUP:
+			return std::chrono::duration_cast<std::chrono::milliseconds>(tSetup).count();
+		default:
+			return -1;
+	}
+}
+
 enhancedgraph::enhancedgraph(PNGraph g) : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
 	graph = g;
 	colorGen = new ColorGenerator();

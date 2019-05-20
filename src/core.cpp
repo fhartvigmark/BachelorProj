@@ -4,6 +4,7 @@ ColorGenerator::ColorGenerator() {
 	lastColor = 0;
 }
 
+//Measure end time and add that time to the corresponding duration based on the timer argument
 void enhancedgraph::endTimer(std::chrono::high_resolution_clock::time_point start, eTimer timer) {
 	if (TIMER_ENABLED)
 	{
@@ -48,23 +49,8 @@ void enhancedgraph::endTimer(std::chrono::high_resolution_clock::time_point star
 	}
 }
 
-enhancedgraph::enhancedgraph(PNGraph g) : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
-	graph = g;
-	colorGen = new ColorGenerator();
-	colors = new TIntH();
-	colors->Gen(g->GetNodes());
-	NIds = new TIntV(g->GetNodes());
-
-	int i = 0;
-
-	for (PNGraph::TObj::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
-	{
-		colors->AddDat(NI.GetId(), 0);
-		NIds->SetVal(i, NI.GetId());
-
-		i++;
-	}
-
+//Initialize durations and duration locks
+void initTimer() {
 	if (TIMER_ENABLED) {
 		tMain = std::chrono::high_resolution_clock::duration::zero();
 		tFirstFWBW = std::chrono::high_resolution_clock::duration::zero();
@@ -82,21 +68,29 @@ enhancedgraph::enhancedgraph(PNGraph g) : TIMER_ENABLED(false), RAND_WALK_ITERAT
 	}
 }
 
-//TODO: make params for consts, also args in main
-enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
-	if (TIMER_ENABLED) {
-		tMain = std::chrono::high_resolution_clock::duration::zero();
-		tFirstFWBW = std::chrono::high_resolution_clock::duration::zero();
-		tFWBW = std::chrono::high_resolution_clock::duration::zero();
-		tTrim = std::chrono::high_resolution_clock::duration::zero();
-		tPivot = std::chrono::high_resolution_clock::duration::zero();
-		tSetup = std::chrono::high_resolution_clock::duration::zero();
+enhancedgraph::enhancedgraph(PNGraph g) : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
+	graph = g;
+	colorGen = new ColorGenerator();
+	colors = new TIntH();
+	colors->Gen(g->GetNodes());
+	NIds = new TIntV(g->GetNodes());
 
-		omp_init_lock(&lMain);
-		omp_init_lock(&lFirstFWBW);
-		omp_init_lock(&lFWBW);
-		omp_init_lock(&lTrim);
-		omp_init_lock(&lPivot);
-		omp_init_lock(&lSetup);
+	//Add all colors and node ids to colormap and node vector
+	int i = 0;
+
+	for (PNGraph::TObj::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
+	{
+		colors->AddDat(NI.GetId(), 0);
+		NIds->SetVal(i, NI.GetId());
+
+		i++;
 	}
+
+	initTimer();
+}
+
+//TODO: make params for consts, also args in main
+//Basic constructor, only sets constants and initilize timers
+enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
+	iinitTimer();
 }

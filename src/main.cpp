@@ -1,10 +1,34 @@
 #include "main.h"
 #include "scc.h"
 #include <iostream>
+#include <fstream>
 using namespace std;
 
-int main(int argc, char **argv)
-{
+void printTime(enhancedgraph *enhgraph) {
+	//cout <<  << "ms\n";
+}
+
+void printFile(enhancedgraph *enhgraph) {
+	cout << "Writing output\n";
+
+	ofstream file;
+	file.open("output.txt");
+
+	TIntH *colors = enhgraph->colors;
+	PNGraph graph = enhgraph->graph;
+
+	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
+    {
+		int node = NI.GetId();
+		file << node << " " << colors->GetDat(node) << "\n";
+	}
+
+	file.close();
+
+	cout << "Done\n";
+}
+
+void bootstrap(char **argv) {
 	//https://stackoverflow.com/questions/46482468/enable-cancellation-of-openmp-threads-from-inside-program
 	char *hasCancel = getenv("OMP_CANCELLATION");
 	if (hasCancel == nullptr) {
@@ -18,6 +42,11 @@ int main(int argc, char **argv)
 	} else {
 		puts("Bootstrapping complete");
 	}
+}
+
+int main(int argc, char **argv)
+{
+	bootstrap(argv);
 
     // Input Parameters
     Env = TEnv(argc, argv, TNotify::StdNotify);
@@ -70,10 +99,18 @@ int main(int argc, char **argv)
     PNGraph Graph = TSnap::LoadEdgeList<PNGraph>(InEdges);
 	cout << "Graph loaded\n";
 
-
-	scc::FindSCCs(Graph, Trimlevels, PivotMethod, FwBwMethod);
+	enhancedgraph *enhgraph;
+    enhgraph = new enhancedgraph(Graph);
+	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
 
 	//TODO add printing and timing handler here
+	if (Timer > 0){
+		printTime(enhgraph);
+	}
+
+	if (Output > 0) {
+		printFile(enhgraph);
+	}
 
     return 0;
 }

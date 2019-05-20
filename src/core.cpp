@@ -5,10 +5,10 @@ ColorGenerator::ColorGenerator() {
 }
 
 //Measure end time and add that time to the corresponding duration based on the timer argument
-void enhancedgraph::endTimer(std::chrono::high_resolution_clock::time_point start, eTimer timer) {
+void enhancedgraph::endTimer(TimePoint start, eTimer timer) {
 	if (TIMER_ENABLED)
 	{
-		auto end = std::chrono::high_resolution_clock::now();
+		auto end = Time::now();
 		auto dur = end - start;
 
 		switch (timer)
@@ -57,17 +57,17 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 	switch (timer)
 	{
 		case eTimer::MAIN:
-			return std::chrono::duration_cast<std::chrono::milliseconds>(tMain).count();
+			return std::chrono::duration_cast<Ms>(tMain).count();
 		case eTimer::FirstFWBW:
-			return std::chrono::duration_cast<std::chrono::milliseconds>(tFirstFWBW).count();
+			return std::chrono::duration_cast<Ms>(tFirstFWBW).count();
 		case eTimer::FWBWs:
-			return std::chrono::duration_cast<std::chrono::milliseconds>(tFWBW).count();
+			return std::chrono::duration_cast<Ms>(tFWBW).count();
 		case eTimer::TRIM:
-			return std::chrono::duration_cast<std::chrono::milliseconds>(tTrim).count();
+			return std::chrono::duration_cast<Ms>(tTrim).count();
 		case eTimer::PIVOT:
-			return std::chrono::duration_cast<std::chrono::milliseconds>(tPivot).count();
+			return std::chrono::duration_cast<Ms>(tPivot).count();
 		case eTimer::SETUP:
-			return std::chrono::duration_cast<std::chrono::milliseconds>(tSetup).count();
+			return std::chrono::duration_cast<Ms>(tSetup).count();
 		default:
 			return -1;
 	}
@@ -93,12 +93,12 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, int randwalk_iterations) : T
 
 	//Initialize durations and duration locks
 	if (TIMER_ENABLED) {
-		tMain = std::chrono::high_resolution_clock::duration::zero();
-		tFirstFWBW = std::chrono::high_resolution_clock::duration::zero();
-		tFWBW = std::chrono::high_resolution_clock::duration::zero();
-		tTrim = std::chrono::high_resolution_clock::duration::zero();
-		tPivot = std::chrono::high_resolution_clock::duration::zero();
-		tSetup = std::chrono::high_resolution_clock::duration::zero();
+		tMain = Duration::zero();
+		tFirstFWBW = Duration::zero();
+		tFWBW = Duration::zero();
+		tTrim = Duration::zero();
+		tPivot = Duration::zero();
+		tSetup = Duration::zero();
 
 		omp_init_lock(&lMain);
 		omp_init_lock(&lFirstFWBW);
@@ -113,12 +113,12 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, int randwalk_iterations) : T
 enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
 	//Initialize durations and duration locks
 	if (TIMER_ENABLED) {
-		tMain = std::chrono::high_resolution_clock::duration::zero();
-		tFirstFWBW = std::chrono::high_resolution_clock::duration::zero();
-		tFWBW = std::chrono::high_resolution_clock::duration::zero();
-		tTrim = std::chrono::high_resolution_clock::duration::zero();
-		tPivot = std::chrono::high_resolution_clock::duration::zero();
-		tSetup = std::chrono::high_resolution_clock::duration::zero();
+		tMain = Duration::zero();
+		tFirstFWBW = Duration::zero();
+		tFWBW = Duration::zero();
+		tTrim = Duration::zero();
+		tPivot = Duration::zero();
+		tSetup = Duration::zero();
 
 		omp_init_lock(&lMain);
 		omp_init_lock(&lFirstFWBW);

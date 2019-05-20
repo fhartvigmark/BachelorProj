@@ -8,6 +8,10 @@ enum eMethod{FWBW, ParFWBW, RecFWBW};
 enum eTrim{Trim1, Trim2, Trim3, ParTrim1, ParTrim2, ParTrim3};
 enum eTimer{MAIN, FirstFWBW, FWBWs, TRIM, PIVOT, SETUP};
 
+typedef std::chrono::high_resolution_clock Time;
+typedef std::chrono::high_resolution_clock::time_point TimePoint;
+typedef std::chrono::high_resolution_clock::duration Duration;
+typedef std::chrono::milliseconds Ms;
 
 class ColorGenerator
 {
@@ -31,19 +35,20 @@ class enhancedgraph
 
 		//TODO: add timers to functions
 		//TODO: test
-		void endTimer(std::chrono::high_resolution_clock::time_point start, eTimer timer);
+		
+		void endTimer(TimePoint start, eTimer timer);
 		int64_t getTime(eTimer timer);
 
 		//TODO: add deconstructor??
 		enhancedgraph(PNGraph g, bool timer, int randwalk_iterations);
 		enhancedgraph();
 	private:
-        std::chrono::high_resolution_clock::duration tMain;
-        std::chrono::high_resolution_clock::duration tFirstFWBW;
-        std::chrono::high_resolution_clock::duration tFWBW;
-        std::chrono::high_resolution_clock::duration tTrim;
-        std::chrono::high_resolution_clock::duration tPivot;
-        std::chrono::high_resolution_clock::duration tSetup;
+        Duration tMain;
+        Duration tFirstFWBW;
+        Duration tFWBW;
+        Duration tTrim;
+        Duration tPivot;
+        Duration tSetup;
 
 		omp_lock_t lMain;
         omp_lock_t lFirstFWBW;

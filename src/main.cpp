@@ -1,21 +1,17 @@
 #include "main.h"
-#include "scc.h"
-#include <iostream>
-#include <fstream>
-using namespace std;
 
 void printTime(enhancedgraph *enhgraph) {
 	cout << "\nTime used: \n";
-	cout << "  " << "Setup " << enhgraph->getTime(eTimer::SETUP) << "ms\n";
-	cout << "  " << "SCC " << enhgraph->getTime(eTimer::MAIN) << "ms\n";
-	cout << "  " << "First FWBW " << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
-	cout << "  " << "FWBW " << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
-	cout << "  " << "Trim " << enhgraph->getTime(eTimer::TRIM) << "ms\n";
-	cout << "  " << "Pivot " << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
+	cout << "  " << "Setup\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
+	cout << "  " << "SCC\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
+	cout << "  " << "First FWBW\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
+	cout << "  " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
+	cout << "  " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+	cout << "  " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
 }
 
 void printFile(enhancedgraph *enhgraph) {
-	cout << "Writing output\n";
+	cout << "\nWriting output\n";
 
 	ofstream file;
 	file.open("output.txt");
@@ -59,21 +55,21 @@ int main(int argc, char **argv)
     Env.PrepArgs(TStr::Fmt("SCC. build: %s, %s. Time: %s",
                            __TIME__, __DATE__, TExeTm::GetCurTm()));
     const TStr InEdges =
-        Env.GetIfArgPrefixStr("-g=", "fb1.edges", "Input graph (directed)");
-    const TInt Trimlevels =
-        Env.GetIfArgPrefixInt("-t=", 0, "Input number of trim levels");
-    const TInt PivotMethod =
-        Env.GetIfArgPrefixInt("-p=", 0, "Pivot selection (0 for random)");
-    const TInt FwBwMethod =
-        Env.GetIfArgPrefixInt("-m=", 0, "Specify FW-BW variant");
-	const TInt Timer =
-        Env.GetIfArgPrefixInt("-time=", 0, "Time execution");
-	const TInt Output =
-        Env.GetIfArgPrefixInt("-out=", 0, "Print SCC output to file");
-	const TInt Help =
-        Env.GetIfArgPrefixInt("-h=", 0, "Print help section");
+        Env.GetIfArgPrefixStr("-g=", "fb1.edges", "Input graph (directed)\t\t");
+    const int Trimlevels =
+        Env.GetIfArgPrefixInt("-t=", 0, "Input number of trim levels\t");
+    const int PivotMethod =
+        Env.GetIfArgPrefixInt("-p=", 0, "Pivot selection (0 for random)\t");
+    const int FwBwMethod =
+        Env.GetIfArgPrefixInt("-m=", 0, "Specify FW-BW variant\t\t");
+	const bool Timer =
+        Env.GetIfArgPrefixInt("-time=", false, "Time execution\t\t\t");
+	const bool Output =
+        Env.GetIfArgPrefixInt("-out=", false, "Print SCC output to file\t");
+	const bool Help =
+        Env.GetIfArgPrefixInt("-h=", false, "Print help section\t\t");
 
-	if (Help > 0)
+	if (Help)
 	{
 		cout << "\n" << "parameters:" << "\n";
 		cout << "  " << "Trim levels:" << "\n";
@@ -89,6 +85,8 @@ int main(int argc, char **argv)
 		cout << "    " << "3 = parallel version of 0" << "\n";
 		cout << "    " << "4 = parallel version of 1" << "\n";
 		cout << "    " << "5 = parallel version of 2" << "\n";
+		cout << "    " << "6 = randomwalk" << "\n";
+		cout << "    " << "7 = parallel randomwalk" << "\n";
 
 		cout << "  " << "FWBW method:" << "\n";
 		cout << "    " << "0 = basic FWBW" << "\n";
@@ -110,11 +108,11 @@ int main(int argc, char **argv)
 	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
 
 	//TODO add printing and timing handler here
-	if (Timer > 0){
+	if (Timer){
 		printTime(enhgraph);
 	}
 
-	if (Output > 0) {
+	if (Output) {
 		printFile(enhgraph);
 	}
 

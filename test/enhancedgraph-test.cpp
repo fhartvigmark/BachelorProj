@@ -35,7 +35,7 @@ struct MapSetupTest : testing::Test {
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-        enhgraph = new enhancedgraph(graph, false, 10);
+        enhgraph = new enhancedgraph(graph, true, 10);
 	}
 
 	virtual ~MapSetupTest() {
@@ -78,6 +78,20 @@ TEST_F(SimpleSetupTest, GetNI) {
 	}
 }
 
+TEST_F(SimpleSetupTest, TimerNotEnabledGet) {
+	EXPECT_EQ(-1, enhgraph->getTime(eTimer::MAIN));
+	EXPECT_EQ(-1, enhgraph->getTime(eTimer::FirstFWBW));
+	EXPECT_EQ(-1, enhgraph->getTime(eTimer::FWBWs));
+	EXPECT_EQ(-1, enhgraph->getTime(eTimer::TRIM));
+	EXPECT_EQ(-1, enhgraph->getTime(eTimer::PIVOT));
+	EXPECT_EQ(-1, enhgraph->getTime(eTimer::SETUP));
+}
+
+TEST_F(SimpleSetupTest, TimerNotEnabledEnd) {
+	enhgraph->endTimer(Time::now(), eTimer::MAIN);
+	EXPECT_EQ(-1, enhgraph->getTime(eTimer::MAIN));
+}
+
 TEST_F(MapSetupTest, VectorStartsWithAllNodes) {
 	TIntV *nodes = enhgraph->NIds;
 	EXPECT_EQ(3, nodes->Len());
@@ -102,4 +116,22 @@ TEST_F(MapSetupTest, MapStartsWithZeroValues) {
     {
 		EXPECT_EQ(0, i.GetDat());
     }
+}
+
+TEST_F(MapSetupTest, TimersStartsAtZero) {
+	EXPECT_EQ(0, enhgraph->getTime(eTimer::MAIN));
+	EXPECT_EQ(0, enhgraph->getTime(eTimer::FirstFWBW));
+	EXPECT_EQ(0, enhgraph->getTime(eTimer::FWBWs));
+	EXPECT_EQ(0, enhgraph->getTime(eTimer::TRIM));
+	EXPECT_EQ(0, enhgraph->getTime(eTimer::PIVOT));
+	EXPECT_EQ(0, enhgraph->getTime(eTimer::SETUP));
+}
+
+TEST_F(MapSetupTest, TimerUpdatesCorrectly) {
+	auto start = Time::now() - std::chrono::milliseconds(100);
+
+	EXPECT_EQ(0, enhgraph->getTime(eTimer::MAIN));
+	enhgraph->endTimer(start, eTimer::MAIN);
+	EXPECT_NE(0, enhgraph->getTime(eTimer::MAIN));
+	EXPECT_EQ(100, enhgraph->getTime(eTimer::MAIN));
 }

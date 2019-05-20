@@ -168,7 +168,7 @@ struct SimpleTrim3Pattern1Test : testing::Test
 		graph->AddEdge(6, 2);
 		graph->AddEdge(7, 2);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 	}
 
 	virtual ~SimpleTrim3Pattern1Test()
@@ -200,7 +200,7 @@ struct SimpleTrim3Pattern2Test : testing::Test
 		graph->AddEdge(6, 2);
 		graph->AddEdge(7, 2);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 	}
 
 	virtual ~SimpleTrim3Pattern2Test()
@@ -234,7 +234,7 @@ struct Trim3MixedPatternTest : testing::Test
 		graph->AddEdge(2, 5);
 		graph->AddEdge(3, 6);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 	}
 
 	virtual ~Trim3MixedPatternTest()

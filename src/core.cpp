@@ -49,25 +49,6 @@ void enhancedgraph::endTimer(std::chrono::high_resolution_clock::time_point star
 	}
 }
 
-//Initialize durations and duration locks
-void initTimer() {
-	if (TIMER_ENABLED) {
-		tMain = std::chrono::high_resolution_clock::duration::zero();
-		tFirstFWBW = std::chrono::high_resolution_clock::duration::zero();
-		tFWBW = std::chrono::high_resolution_clock::duration::zero();
-		tTrim = std::chrono::high_resolution_clock::duration::zero();
-		tPivot = std::chrono::high_resolution_clock::duration::zero();
-		tSetup = std::chrono::high_resolution_clock::duration::zero();
-
-		omp_init_lock(&lMain);
-		omp_init_lock(&lFirstFWBW);
-		omp_init_lock(&lFWBW);
-		omp_init_lock(&lTrim);
-		omp_init_lock(&lPivot);
-		omp_init_lock(&lSetup);
-	}
-}
-
 enhancedgraph::enhancedgraph(PNGraph g) : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
 	graph = g;
 	colorGen = new ColorGenerator();
@@ -86,11 +67,41 @@ enhancedgraph::enhancedgraph(PNGraph g) : TIMER_ENABLED(false), RAND_WALK_ITERAT
 		i++;
 	}
 
-	initTimer();
+	//Initialize durations and duration locks
+	if (TIMER_ENABLED) {
+		tMain = std::chrono::high_resolution_clock::duration::zero();
+		tFirstFWBW = std::chrono::high_resolution_clock::duration::zero();
+		tFWBW = std::chrono::high_resolution_clock::duration::zero();
+		tTrim = std::chrono::high_resolution_clock::duration::zero();
+		tPivot = std::chrono::high_resolution_clock::duration::zero();
+		tSetup = std::chrono::high_resolution_clock::duration::zero();
+
+		omp_init_lock(&lMain);
+		omp_init_lock(&lFirstFWBW);
+		omp_init_lock(&lFWBW);
+		omp_init_lock(&lTrim);
+		omp_init_lock(&lPivot);
+		omp_init_lock(&lSetup);
+	}
 }
 
 //TODO: make params for consts, also args in main
 //Basic constructor, only sets constants and initilize timers
 enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
-	iinitTimer();
+	//Initialize durations and duration locks
+	if (TIMER_ENABLED) {
+		tMain = std::chrono::high_resolution_clock::duration::zero();
+		tFirstFWBW = std::chrono::high_resolution_clock::duration::zero();
+		tFWBW = std::chrono::high_resolution_clock::duration::zero();
+		tTrim = std::chrono::high_resolution_clock::duration::zero();
+		tPivot = std::chrono::high_resolution_clock::duration::zero();
+		tSetup = std::chrono::high_resolution_clock::duration::zero();
+
+		omp_init_lock(&lMain);
+		omp_init_lock(&lFirstFWBW);
+		omp_init_lock(&lFWBW);
+		omp_init_lock(&lTrim);
+		omp_init_lock(&lPivot);
+		omp_init_lock(&lSetup);
+	}
 }

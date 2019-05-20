@@ -34,7 +34,7 @@ struct SimpleReachabilityTest : testing::Test,
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 	}
 
     virtual ~SimpleReachabilityTest() {
@@ -56,7 +56,7 @@ struct SimpleColorTest : testing::Test, testing::WithParamInterface<graph_state>
 		graph->AddEdge(1, 2);
 		graph->AddEdge(2, 3);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 
 		enhgraph->colors->AddDat(3, 42);
 	}
@@ -80,7 +80,7 @@ struct SmallCycleTest : testing::Test, testing::WithParamInterface<graph_state>
 		graph->AddEdge(1, 2);
 		graph->AddEdge(2, 1);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 
 	}
 
@@ -109,7 +109,7 @@ struct AdvancedCycleTest : testing::Test, testing::WithParamInterface<graph_stat
 		graph->AddEdge(4, 5);
 		graph->AddEdge(5, 2);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 	}
 
 	virtual ~AdvancedCycleTest()

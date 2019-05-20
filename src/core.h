@@ -36,7 +36,7 @@ class enhancedgraph
 		int64_t getTime(eTimer timer);
 
 		//TODO: add deconstructor??
-		enhancedgraph(PNGraph g);
+		enhancedgraph(PNGraph g, bool timer, int randwalk_iterations);
 		enhancedgraph();
 	private:
         std::chrono::high_resolution_clock::duration tMain;

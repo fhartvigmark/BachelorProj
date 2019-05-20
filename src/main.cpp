@@ -100,7 +100,7 @@ int main(int argc, char **argv)
 	cout << "Graph loaded\n";
 
 	enhancedgraph *enhgraph;
-    enhgraph = new enhancedgraph(Graph);
+    enhgraph = new enhancedgraph(Graph, Timer, 10);
 	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
 
 	//TODO add printing and timing handler here

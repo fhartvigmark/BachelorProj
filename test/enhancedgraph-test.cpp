@@ -35,7 +35,7 @@ struct MapSetupTest : testing::Test {
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-        enhgraph = new enhancedgraph(graph);
+        enhgraph = new enhancedgraph(graph, false, 10);
 	}
 
 	virtual ~MapSetupTest() {

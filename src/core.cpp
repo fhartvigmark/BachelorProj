@@ -73,7 +73,7 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 	}
 }
 
-enhancedgraph::enhancedgraph(PNGraph g) : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
+enhancedgraph::enhancedgraph(PNGraph g, bool timer, int randwalk_iterations) : TIMER_ENABLED(timer), RAND_WALK_ITERATIONS(randwalk_iterations){
 	graph = g;
 	colorGen = new ColorGenerator();
 	colors = new TIntH();

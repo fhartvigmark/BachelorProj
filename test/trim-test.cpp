@@ -25,7 +25,7 @@ struct SimpleGraphTest : testing::Test {
 		graph->AddEdge(1, 7);
 		graph->AddEdge(7, 1);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 	}
 
     virtual ~SimpleGraphTest() {
@@ -51,7 +51,7 @@ struct SimpleChainTest :testing::Test {
 		graph->AddEdge(6, 5);
 		graph->AddEdge(5, 4);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 	}
 
 	virtual ~SimpleChainTest() {
@@ -84,7 +84,7 @@ struct ColorGraphTest : testing::Test {
 		graph->AddEdge(1, 7);
 		graph->AddEdge(7, 1);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 
 		enhgraph->colors->AddDat(4, 1);
 		enhgraph->colors->AddDat(5, 2);
@@ -110,7 +110,7 @@ struct SimpleTrim2GraphTest : testing::Test {
 		graph->AddEdge(2, 1);
 		graph->AddEdge(3, 1);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 	}
 
 	virtual ~SimpleTrim2GraphTest()
@@ -137,7 +137,7 @@ struct AdvancedTrim2GraphTest : testing::Test
 		graph->AddEdge(4, 3);
 		graph->AddEdge(4, 2);
 
-		enhgraph = new enhancedgraph(graph);
+		enhgraph = new enhancedgraph(graph, false, 10);
 	}
 
 	virtual ~AdvancedTrim2GraphTest()

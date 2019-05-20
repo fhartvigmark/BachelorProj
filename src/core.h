@@ -8,7 +8,6 @@ enum eMethod{FWBW, ParFWBW, RecFWBW};
 enum eTrim{Trim1, Trim2, Trim3, ParTrim1, ParTrim2, ParTrim3};
 enum eTimer{MAIN, FirstFWBW, FWBWs, TRIM, PIVOT, SETUP};
 
-//typedef std::duration<unsigned long long> my_duration;
 
 class ColorGenerator
 {
@@ -30,7 +29,7 @@ class enhancedgraph
 		TIntV *NIds;
     	ColorGenerator *colorGen;
 
-		//TODO: add code to main that outputs times
+		//TODO: add timers to functions
 		//TODO: test
 		void endTimer(std::chrono::high_resolution_clock::time_point start, eTimer timer);
 		int64_t getTime(eTimer timer);

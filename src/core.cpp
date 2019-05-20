@@ -109,7 +109,6 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, int randwalk_iterations) : T
 	}
 }
 
-//TODO: make params for consts, also args in main
 //Basic constructor, only sets constants and initilize timers
 enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
 	//Initialize durations and duration locks

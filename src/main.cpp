@@ -5,7 +5,13 @@
 using namespace std;
 
 void printTime(enhancedgraph *enhgraph) {
-	//cout <<  << "ms\n";
+	cout << "\nTime used: \n";
+	cout << "  " << "Setup " << enhgraph->getTime(eTimer::SETUP) << "ms\n";
+	cout << "  " << "SCC " << enhgraph->getTime(eTimer::MAIN) << "ms\n";
+	cout << "  " << "First FWBW " << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
+	cout << "  " << "FWBW " << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
+	cout << "  " << "Trim " << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+	cout << "  " << "Pivot " << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
 }
 
 void printFile(enhancedgraph *enhgraph) {

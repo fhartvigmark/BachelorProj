@@ -4,6 +4,12 @@ ColorGenerator::ColorGenerator() {
 	lastColor = 0;
 }
 
+TimePoint enhancedgraph::startTimer() {
+	if (TIMER_ENABLED) {
+		return Time::now();
+	}
+}
+
 //Measure end time and add that time to the corresponding duration based on the timer argument
 void enhancedgraph::endTimer(TimePoint start, eTimer timer) {
 	if (TIMER_ENABLED)

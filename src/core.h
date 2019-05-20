@@ -35,7 +35,7 @@ class enhancedgraph
 
 		//TODO: add timers to functions
 		//TODO: test
-		
+		TimePoint startTimer();
 		void endTimer(TimePoint start, eTimer timer);
 		int64_t getTime(eTimer timer);
 

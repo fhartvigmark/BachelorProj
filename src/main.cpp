@@ -100,12 +100,23 @@ int main(int argc, char **argv)
 
     // Load the graph 
 	cout << "Loading graph\n";
+	TimePoint start;
+	if (Timer) {
+		start = Time::now();
+	}
     PNGraph Graph = TSnap::LoadEdgeList<PNGraph>(InEdges);
-	cout << "Graph loaded\n";
+	
 
 	enhancedgraph *enhgraph;
     enhgraph = new enhancedgraph(Graph, Timer, 10);
+	
+	enhgraph->endTimer(start, eTimer::SETUP);
+	cout << "Graph loaded\n";
+
+	
+	start = enhgraph->startTimer();
 	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
+	enhgraph->endTimer(start, eTimer::MAIN);
 
 	//TODO add printing and timing handler here
 	if (Timer){

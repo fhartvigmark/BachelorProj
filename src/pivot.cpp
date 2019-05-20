@@ -1,25 +1,39 @@
 #include "pivot.h"
 
 int pivot::findPivot(enhancedgraph *g, int color, int method) {
+	int retVal;
+	TimePoint start = g->startTimer();
+
 	switch (method)
 	{
 		case 0:
-			return pivot::getPivot(g, color);
+			retVal = pivot::getPivot(g, color);
+			break;
 		case 1:
-			return pivot::getPivotMaxDegree(g, color);
+			retVal = pivot::getPivotMaxDegree(g, color);
+			break;
 		case 2:
-			return pivot::getPivotMaxDegreeColor(g, color);
+			retVal = pivot::getPivotMaxDegreeColor(g, color);
+			break;
 		case 3:
-			return pivot::getParPivot(g, color);
+			retVal = pivot::getParPivot(g, color);
+			break;
 		case 4:
-			return pivot::getParPivotMaxDegree(g, color);
+			retVal = pivot::getParPivotMaxDegree(g, color);
+			break;
 		case 5:
-			return pivot::getParPivotMaxDegreeColor(g, color);
+			retVal = pivot::getParPivotMaxDegreeColor(g, color);
+			break;
 		case 6:
-			return pivot::getPivotRand(g, color);
+			retVal = pivot::getPivotRand(g, color);
+			break;
 		case 7:
-			return pivot::getParPivotRand(g, color);
+			retVal = pivot::getParPivotRand(g, color);
+			break;
 	}
+
+	g->endTimer(start, eTimer::PIVOT);
+	return retVal;
 }
 
 

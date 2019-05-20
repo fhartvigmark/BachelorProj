@@ -1,32 +1,53 @@
 //#include "iostream"
 #include "trim.h"
 
-int trim::doTrim(int trimlevel, enhancedgraph *g, int color){
-	switch (trimlevel)
-	{
-	case 1:
-		return trim::trim1(g, color);
-	case 2:
-		return trim::trim2(g, color);
-	case 3:
-		return trim::trim3(g, color);
-	default:
-		return -1;
-	}
-};
+int trim::doTrim(int trimlevel, enhancedgraph *g, int color) {
+	int retVal = -1;
+	TimePoint start = g->startTimer();
 
-int trim::doParTrim(int trimlevel, enhancedgraph *g, int color)
-{
 	switch (trimlevel)
 	{
-	case 1:
-		return trim::partrim1(g, color);
-	case 2:
-		return trim::partrim2(g, color);
-	default:
-		return trim::partrim3(g, color);
+		case 1:
+			retVal = trim::trim1(g, color);
+			break;
+		case 2:
+			retVal = trim::trim2(g, color);
+			break;
+		case 3:
+			retVal = trim::trim3(g, color);
+			break;
+		default:
+			retVal = -1;
+			break;
 	}
-};
+
+	g->endTimer(start, eTimer::TRIM);
+	return retVal;
+}
+
+int trim::doParTrim(int trimlevel, enhancedgraph *g, int color) {
+	int retVal = -1;
+	TimePoint start = g->startTimer();
+
+	switch (trimlevel)
+	{
+		case 1:
+			retVal = trim::partrim1(g, color);
+			break;
+		case 2:
+			retVal = trim::partrim2(g, color);
+			break;
+		case 3:
+			retVal = trim::partrim3(g, color);
+			break;
+		default:
+			retVal = -1;
+			break;
+	}
+
+	g->endTimer(start, eTimer::TRIM);
+	return retVal;
+}
 
 int trim::trim1(enhancedgraph *g, int color)
 {

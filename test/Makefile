@@ -70,7 +70,7 @@ $(TARGET): $(SNAP)/Snap.o $(OBJECTS)
 	$(G++) -o $(TARGET) $(OBJECTS) $(LD_FLAGS) $(CXXFLAGS) $(SNAP)/Snap.o -I$(SNAP) -I$(GLIB) $(LIBS)
 
 %.o: %.cpp
-	$(G++) $(G++_FLAGS) $(CXXFLAGS) $(DEPH) $(SNAP)/Snap.o -I$(SNAP) -I$(GLIB) -I$(SRC) $(LIBS) $<
+	$(G++) $(G++_FLAGS) $(CXXFLAGS) -I$(SNAP) -I$(GLIB) -I$(SRC) $(LIBS) $<
 
 $(SNAP)/Snap.o: 
 	make -C $(SNAP)

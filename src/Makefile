@@ -64,7 +64,7 @@ $(SNAP)/Snap.o:
 	make -C $(SNAP)
 
 %.o: %.cpp %.h $(DEPH) 
-	$(CC) $(CXXFLAGS) -c $< $(SNAP)/Snap.o -I$(SNAP) -I$(GLIB) $(LIBS)
+	$(CC) $(CXXFLAGS) -c $< -I$(SNAP) -I$(GLIB) $(LIBS)
 
 clean:
 	rm -f *.o  $(MAIN)  $(MAIN).exe

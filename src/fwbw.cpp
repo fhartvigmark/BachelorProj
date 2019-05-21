@@ -70,8 +70,23 @@ int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 	std::pair<int, int> newColors = bfs::parbfs(g, startColor, startNode);
 	g->endTimer(start, eTimer::FWBWs);
 
-	recFWBW(g, trimlevel, pivotmethod, startColor);
-	recFWBW(g, trimlevel, pivotmethod, newColors.first);
-	recFWBW(g, trimlevel, pivotmethod, newColors.second);
+	#pragma omp parallel 
+	{
+		#pragma omp task
+		{
+			recFWBW(g, trimlevel, pivotmethod, startColor);
+		}
+
+		#pragma omp task
+		{
+			recFWBW(g, trimlevel, pivotmethod, newColors.first);
+		}
+
+		#pragma omp task
+		{
+			recFWBW(g, trimlevel, pivotmethod, newColors.second);
+		}
+		
+	}
 	return 0;
 };

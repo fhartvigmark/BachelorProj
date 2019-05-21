@@ -217,7 +217,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 
-	#pragma omp parallel for schedule(dynamic)
+	#pragma omp parallel for schedule(static)
 	for (int i = 0; i < Ids->Len(); i++)
 	{
 		int node = Ids->GetVal(i);
@@ -276,7 +276,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 	while (!Queue.Empty())
 	{
 		int qsize = Queue.Len();
-		#pragma omp parallel for
+		#pragma omp parallel for schedule(static)
 		for (int q = 0; q < qsize; q++)
 		{
 			int oldnode;
@@ -504,7 +504,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 
-#pragma omp parallel for schedule(dynamic)
+	#pragma omp parallel for schedule(static)
 	for (int i = 0; i < Ids->Len(); i++)
 	{
 		int node = Ids->GetVal(i);
@@ -853,7 +853,7 @@ int trim::partrim3(enhancedgraph *g, int color)
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 
-#pragma omp parallel for schedule(dynamic)
+	#pragma omp parallel for schedule(static)
 	for (int i = 0; i < Ids->Len(); i++)
 	{
 		int node = Ids->GetVal(i);
@@ -980,7 +980,7 @@ int trim::partrim3(enhancedgraph *g, int color)
 					if (inDegree_C == 1 && NodeCI.IsInNId(node) && colors->GetDat(nodeC) == color)
 					{
 						//std::cout << "Found pattern 2 SCC \n";
-#pragma omp critical
+						#pragma omp critical
 						{
 							if (colors->GetDat(node) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
 							{
@@ -1059,7 +1059,7 @@ int trim::partrim3(enhancedgraph *g, int color)
 					}
 					if (outDegree_C == 1 && NodeCI.IsOutNId(node) && colors->GetDat(nodeC) == color)
 					{
-#pragma omp critical
+						#pragma omp critical
 						{
 							if (colors->GetDat(node) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
 							{
@@ -1114,7 +1114,7 @@ int trim::partrim3(enhancedgraph *g, int color)
 					if (outDegree_C == 1 && NodeCI.IsOutNId(node) && colors->GetDat(nodeC) == color)
 					{
 						//std::cout << "Found pattern 2 SCC \n";
-#pragma omp critical
+						#pragma omp critical
 						{
 							if (colors->GetDat(node) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
 							{

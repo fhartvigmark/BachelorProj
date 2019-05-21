@@ -248,7 +248,7 @@ int pivot::getParPivot(enhancedgraph *g, int color)
 
 	int retVal = -1;
 
-	#pragma omp parallel for schedule(dynamic)
+	#pragma omp parallel for schedule(static)
 	for (int i = 0; i < Ids->Len(); i++) {
 		if (colorMap->GetDat(Ids->GetVal(i)) == color) {
 
@@ -274,7 +274,7 @@ int pivot::getParPivotMaxDegree(enhancedgraph *g, int color)
 	struct Compare max; 
 	max.val = -1; 
 	max.node = -1;
-	#pragma omp parallel for reduction(maximum:max)
+	#pragma omp parallel for reduction(maximum:max) schedule(static)
 	for (int i = 0; i < Ids->Len(); i++) {
 
 		const TNGraph::TNodeI NI = graph->GetNI(Ids->GetVal(i));
@@ -302,7 +302,7 @@ int pivot::getParPivotMaxDegreeColor(enhancedgraph *g, int color)
 	struct Compare max; 
 	max.val = -1; 
 	max.node = -1;
-	#pragma omp parallel for reduction(maximum:max)
+	#pragma omp parallel for reduction(maximum:max) schedule(static)
 	for (int i = 0; i < Ids->Len(); i++) {
 		const TNGraph::TNodeI NI = graph->GetNI(Ids->GetVal(i));
 		int node = NI.GetId();

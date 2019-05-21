@@ -82,15 +82,27 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 }
 
 void enhancedgraph::reportFWBW(int depth) {
+	if (ANALYSE_ENABLED) {
+		callsFWBW++;
 
+		if (depth > depthFWBW) {
+			depthFWBW = depth;
+		}
+	}
 }
 
 void enhancedgraph::reportTrim(int color, int amount) {
-
+	if (ANALYSE_ENABLED) {
+		trimColor->push_back(color);
+		trimAmount->push_back(amount);
+	}
 }
 
 void enhancedgraph::reportPivot(int color, int node) {
-
+	if (ANALYSE_ENABLED) {
+		pivotColor->push_back(color);
+		pivotNode->push_back(node);
+	}
 }
 
 
@@ -128,6 +140,21 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 		omp_init_lock(&lPivot);
 		omp_init_lock(&lSetup);
 	}
+
+	//Initialize debug information variables and locks
+	if (ANALYSE_ENABLED) {
+		omp_init_lock(&lDebugFWBW);
+		omp_init_lock(&lDebugTrim);
+		omp_init_lock(&lDebugPivot);
+
+		callsFWBW = 0;
+		depthFWBW = 0;
+
+		trimAmount = {};
+		trimColor = {};
+		pivotNode = {};
+		pivotColor = {};
+	}
 }
 
 //Basic constructor, only sets constants and initilize timers
@@ -148,6 +175,21 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 		omp_init_lock(&lPivot);
 		omp_init_lock(&lSetup);
 	}
+
+	//Initialize debug information variables and locks
+	if (ANALYSE_ENABLED) {
+		omp_init_lock(&lDebugFWBW);
+		omp_init_lock(&lDebugTrim);
+		omp_init_lock(&lDebugPivot);
+
+		callsFWBW = 0;
+		depthFWBW = 0;
+
+		trimAmount = {};
+		trimColor = {};
+		pivotNode = {};
+		pivotColor = {};
+	}
 }
 
 enhancedgraph::~enhancedgraph() {
@@ -158,16 +200,16 @@ enhancedgraph::~enhancedgraph() {
     delete colorGen;
 
 	//Delete analysis elements
-	//omp_destroy_lock(&lDebugFWBW);
-	//omp_destroy_lock(&lDebugTrim);
-	//omp_destroy_lock(&lDebugPivot);
-	//TODO: destroy locks and make if
+	if (ANALYSE_ENABLED) {
+		omp_destroy_lock(&lDebugFWBW);
+		omp_destroy_lock(&lDebugTrim);
+		omp_destroy_lock(&lDebugPivot);
 
-	delete trimAmount;
-	delete trimColor;
-	delete pivotNode;
-	delete pivotColor;
-
+		delete trimAmount;
+		delete trimColor;
+		delete pivotNode;
+		delete pivotColor;
+	}
 
 	//Delete timing elements
 	if (TIMER_ENABLED) {

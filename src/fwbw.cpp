@@ -67,7 +67,7 @@ int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 	trim::doParTrim(trimlevel, g, startColor);
 	//First: fwColor, Second: bwColor
 	TimePoint start = g->startTimer();
-	std::pair<int, int> newColors = bfs::parbfs(g, startColor, startNode);
+	std::pair<int, int> newColors = bfs::colorbfs(g, startColor, startNode);
 	g->endTimer(start, eTimer::FWBWs);
 
 	#pragma omp parallel 

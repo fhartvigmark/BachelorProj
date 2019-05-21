@@ -11,4 +11,5 @@ class fwbw{
     private:
      	static int basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
 	 	static int parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
+		static int recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
 };

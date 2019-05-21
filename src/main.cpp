@@ -30,6 +30,11 @@ void printFile(enhancedgraph *enhgraph) {
 	cout << "Done\n";
 }
 
+void printInfo(enhancedgraph *enhgraph) {
+	//TODO: print fwbw depth, fwbw calls, pivot selections, trim amount
+	//TODO: add const and functions to enhgraph
+}
+
 void bootstrap(char **argv) {
 	//https://stackoverflow.com/questions/46482468/enable-cancellation-of-openmp-threads-from-inside-program
 	char *hasCancel = getenv("OMP_CANCELLATION");
@@ -68,6 +73,8 @@ int main(int argc, char **argv)
         Env.GetIfArgPrefixInt("-out=", false, "Print SCC output to file\t");
 	const bool Help =
         Env.GetIfArgPrefixInt("-h=", false, "Print help section\t\t");
+	const bool Analyse =
+        Env.GetIfArgPrefixInt("-a=", false, "Print information about the execution\t\t");
 
 	if (Help)
 	{
@@ -108,15 +115,15 @@ int main(int argc, char **argv)
 	
 
 	enhancedgraph *enhgraph;
-    enhgraph = new enhancedgraph(Graph, Timer, 10);
+    enhgraph = new enhancedgraph(Graph, Timer, Analyse, 10);
 	
 	enhgraph->endTimer(start, eTimer::SETUP);
 	cout << "Graph loaded\n";
 
 	
-	start = enhgraph->startTimer();
-	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
-	enhgraph->endTimer(start, eTimer::MAIN);
+	//start = enhgraph->startTimer();
+	//scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
+	//enhgraph->endTimer(start, eTimer::MAIN);
 
 
 	//int color = 100;
@@ -380,7 +387,6 @@ int main(int argc, char **argv)
 */
 
 
-	//TODO add analysis printing
 	if (Timer){
 		printTime(enhgraph);
 	}
@@ -388,6 +394,11 @@ int main(int argc, char **argv)
 	if (Output) {
 		printFile(enhgraph);
 	}
+
+	if (Analyse) {
+		printInfo(enhgraph);
+	}
+
 
     return 0;
 }

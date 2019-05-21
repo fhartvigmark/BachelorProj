@@ -17,7 +17,7 @@ struct BasicFWBWTest : testing::Test {
 		graph->AddEdge(3, 4);
 		graph->AddEdge(4, 3);
 
-		enhgraph = new enhancedgraph(graph, false, 10);
+		enhgraph = new enhancedgraph(graph, false, false, 10);
 	}
 
 	virtual ~BasicFWBWTest()
@@ -50,7 +50,7 @@ struct Graph1Test : testing::Test {
 		graph->AddEdge(5, 2);
 		graph->AddEdge(7, 5);
 
-		enhgraph = new enhancedgraph(graph, false, 10);
+		enhgraph = new enhancedgraph(graph, false, false, 10);
 	}
 
 	virtual ~Graph1Test()

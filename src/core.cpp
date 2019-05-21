@@ -4,6 +4,7 @@ ColorGenerator::ColorGenerator() {
 	lastColor = 0;
 }
 
+//Get current time
 TimePoint enhancedgraph::startTimer() {
 	if (TIMER_ENABLED) {
 		return Time::now();
@@ -55,6 +56,7 @@ void enhancedgraph::endTimer(TimePoint start, eTimer timer) {
 	}
 }
 
+//Get total runtime of a component
 int64_t enhancedgraph::getTime(eTimer timer) {
 	if (!TIMER_ENABLED) {
 		return -1;
@@ -79,7 +81,20 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 	}
 }
 
-enhancedgraph::enhancedgraph(PNGraph g, bool timer, int randwalk_iterations) : TIMER_ENABLED(timer), RAND_WALK_ITERATIONS(randwalk_iterations){
+void enhancedgraph::reportFWBW(int depth) {
+
+}
+
+void enhancedgraph::reportTrim(int color, int amount) {
+
+}
+
+void enhancedgraph::reportPivot(int color, int node) {
+
+}
+
+
+enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations){
 	graph = g;
 	colorGen = new ColorGenerator();
 	colors = new TIntH();
@@ -116,7 +131,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, int randwalk_iterations) : T
 }
 
 //Basic constructor, only sets constants and initilize timers
-enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
+enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), RAND_WALK_ITERATIONS(10){
 	//Initialize durations and duration locks
 	if (TIMER_ENABLED) {
 		tMain = Duration::zero();
@@ -134,3 +149,34 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), RAND_WALK_ITERATIONS(10){
 		omp_init_lock(&lSetup);
 	}
 }
+
+enhancedgraph::~enhancedgraph() {
+	//Delete graph elements
+	//delete *graph; TODO: clean up graph?
+	delete colors;
+	delete NIds;
+    delete colorGen;
+
+	//Delete analysis elements
+	//omp_destroy_lock(&lDebugFWBW);
+	//omp_destroy_lock(&lDebugTrim);
+	//omp_destroy_lock(&lDebugPivot);
+	//TODO: destroy locks and make if
+
+	delete trimAmount;
+	delete trimColor;
+	delete pivotNode;
+	delete pivotColor;
+
+
+	//Delete timing elements
+	if (TIMER_ENABLED) {
+		omp_destroy_lock(&lMain);
+		omp_destroy_lock(&lFirstFWBW);
+		omp_destroy_lock(&lFWBW);
+		omp_destroy_lock(&lTrim);
+		omp_destroy_lock(&lPivot);
+		omp_destroy_lock(&lSetup);
+	}
+}
+

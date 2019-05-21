@@ -2,6 +2,7 @@
 #include "Snap.h"
 #include <atomic>
 #include <chrono>
+#include <list>
 
 enum ePivot{Random, Max, MaxColor, ParRandom, ParMax, ParMaxColor, RandWalk};
 enum eMethod{FWBW, ParFWBW, RecFWBW};
@@ -27,21 +28,25 @@ class enhancedgraph
 	public:
 		const int RAND_WALK_ITERATIONS;
 		const bool TIMER_ENABLED;
+		const bool ANALYSE_ENABLED;
 
     	PNGraph graph;
 		TIntH *colors;
 		TIntV *NIds;
     	ColorGenerator *colorGen;
 
-		//TODO: add timers to functions
-		//TODO: test
 		TimePoint startTimer();
 		void endTimer(TimePoint start, eTimer timer);
 		int64_t getTime(eTimer timer);
 
-		//TODO: add deconstructor??
-		enhancedgraph(PNGraph g, bool timer, int randwalk_iterations);
+		void reportFWBW(int depth);
+		void reportTrim(int color, int amount);
+		void reportPivot(int color, int node);
+
+		enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations);
 		enhancedgraph();
+
+		~enhancedgraph();
 	private:
         Duration tMain;
         Duration tFirstFWBW;
@@ -56,4 +61,14 @@ class enhancedgraph
         omp_lock_t lTrim;
         omp_lock_t lPivot;
         omp_lock_t lSetup;
+
+		int64_t callsFWBW;
+		int64_t depthFWBW;
+		std::list<int> *trimAmount;
+		std::list<int> *trimColor;
+		std::list<int> *pivotNode;
+		std::list<int> *pivotColor;
+		omp_lock_t lDebugFWBW;
+		omp_lock_t lDebugTrim;
+		omp_lock_t lDebugPivot;
 };

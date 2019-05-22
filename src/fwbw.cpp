@@ -72,19 +72,22 @@ int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 
 	#pragma omp parallel 
 	{
-		#pragma omp task
+		#pragma omp single
 		{
-			recFWBW(g, trimlevel, pivotmethod, startColor);
-		}
+#pragma omp task
+			{
+				recFWBW(g, trimlevel, pivotmethod, startColor);
+			}
 
-		#pragma omp task
-		{
-			recFWBW(g, trimlevel, pivotmethod, newColors.first);
-		}
+#pragma omp task
+			{
+				recFWBW(g, trimlevel, pivotmethod, newColors.first);
+			}
 
-		#pragma omp task
-		{
-			recFWBW(g, trimlevel, pivotmethod, newColors.second);
+#pragma omp task
+			{
+				recFWBW(g, trimlevel, pivotmethod, newColors.second);
+			}
 		}
 		
 	}

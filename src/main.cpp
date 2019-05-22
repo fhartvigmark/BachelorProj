@@ -121,9 +121,9 @@ int main(int argc, char **argv)
 	cout << "Graph loaded\n";
 
 	
-	//start = enhgraph->startTimer();
-	//scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
-	//enhgraph->endTimer(start, eTimer::MAIN);
+	start = enhgraph->startTimer();
+	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
+	enhgraph->endTimer(start, eTimer::MAIN);
 
 
 	//int color = 100;

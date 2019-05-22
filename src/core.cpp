@@ -125,7 +125,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 	}
 
 	//Initialize durations and duration locks
-	if (TIMER_ENABLED) {
+	if (true) {
 		tMain = Duration::zero();
 		tFirstFWBW = Duration::zero();
 		tFWBW = Duration::zero();
@@ -142,7 +142,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 	}
 
 	//Initialize debug information variables and locks
-	if (ANALYSE_ENABLED) {
+	if (true) {
 		omp_init_lock(&lDebugFWBW);
 		omp_init_lock(&lDebugTrim);
 		omp_init_lock(&lDebugPivot);
@@ -150,17 +150,17 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 		callsFWBW = 0;
 		depthFWBW = 0;
 
-		trimAmount = {};
-		trimColor = {};
-		pivotNode = {};
-		pivotColor = {};
+		trimAmount = new std::list<int>;
+		trimColor = new std::list<int>;
+		pivotNode = new std::list<int>;
+		pivotColor = new std::list<int>;
 	}
 }
 
 //Basic constructor, only sets constants and initilize timers
 enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), RAND_WALK_ITERATIONS(10){
 	//Initialize durations and duration locks
-	if (TIMER_ENABLED) {
+	if (true) {
 		tMain = Duration::zero();
 		tFirstFWBW = Duration::zero();
 		tFWBW = Duration::zero();
@@ -177,7 +177,7 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 	}
 
 	//Initialize debug information variables and locks
-	if (ANALYSE_ENABLED) {
+	if (true) {
 		omp_init_lock(&lDebugFWBW);
 		omp_init_lock(&lDebugTrim);
 		omp_init_lock(&lDebugPivot);
@@ -200,7 +200,7 @@ enhancedgraph::~enhancedgraph() {
     delete colorGen;
 
 	//Delete analysis elements
-	if (ANALYSE_ENABLED) {
+	if (true) {
 		omp_destroy_lock(&lDebugFWBW);
 		omp_destroy_lock(&lDebugTrim);
 		omp_destroy_lock(&lDebugPivot);
@@ -212,7 +212,7 @@ enhancedgraph::~enhancedgraph() {
 	}
 
 	//Delete timing elements
-	if (TIMER_ENABLED) {
+	if (true) {
 		omp_destroy_lock(&lMain);
 		omp_destroy_lock(&lFirstFWBW);
 		omp_destroy_lock(&lFWBW);

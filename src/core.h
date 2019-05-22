@@ -48,6 +48,11 @@ class enhancedgraph
 
 		~enhancedgraph();
 	private:
+		std::list<int> *trimAmount;
+		std::list<int> *trimColor;
+		std::list<int> *pivotNode;
+		std::list<int> *pivotColor;
+
         Duration tMain;
         Duration tFirstFWBW;
         Duration tFWBW;
@@ -61,14 +66,10 @@ class enhancedgraph
         omp_lock_t lTrim;
         omp_lock_t lPivot;
         omp_lock_t lSetup;
-
-		int64_t callsFWBW;
-		int64_t depthFWBW;
-		std::list<int> *trimAmount;
-		std::list<int> *trimColor;
-		std::list<int> *pivotNode;
-		std::list<int> *pivotColor;
 		omp_lock_t lDebugFWBW;
 		omp_lock_t lDebugTrim;
 		omp_lock_t lDebugPivot;
+		
+		int64_t callsFWBW;
+		int64_t depthFWBW;
 };

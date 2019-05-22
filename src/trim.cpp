@@ -866,7 +866,7 @@ int trim::partrim3(enhancedgraph *g, int color)
 
 			for (int v = 0; v < NodeI.GetInDeg(); v++)
 			{
-				const int inNode = NodeI.GetInNId(v);
+				int inNode = NodeI.GetInNId(v);
 
 				if (colors->GetDat(inNode) == color && inNode != node)
 				{
@@ -891,17 +891,28 @@ int trim::partrim3(enhancedgraph *g, int color)
 
 			if (inDegree == 1 && colors->GetDat(nodeB) == color)
 			{
+				//#pragma omp critical
+				//{
+				//	std::cout << "Found potential pattern 1 on in-degrees, node: " << node << "\n";
+				//}
 				int inDegree_B = 0;
+				int inNode_B = 0;
 				TNGraph::TNodeI NodeBI = graph->GetNI(nodeB);
 				for (int v = 0; v < NodeBI.GetInDeg(); v++)
 				{
-					nodeC = NodeBI.GetInNId(v);
+					inNode_B = NodeBI.GetInNId(v);
 
-					if (colors->GetDat(nodeC) == color && nodeC != nodeB)
+					if (colors->GetDat(inNode_B) == color && inNode_B != nodeB)
 					{
-						inDegree_B++;
-						if (inDegree_B == 2)
+						if (inDegree_B == 0)
 						{
+							inDegree_B++;
+							nodeC = inNode_B;
+						}
+						else
+						{
+							//If out-deg is now 3, break
+							inDegree_B++;
 							break;
 						}
 					}
@@ -1025,17 +1036,28 @@ int trim::partrim3(enhancedgraph *g, int color)
 
 			if (outDegree == 1 && colors->GetDat(nodeB) == color)
 			{
+				//#pragma omp critical 
+				//{
+					//std::cout << "Found potential pattern 1 on out-degrees, node: " << node << "\n";
+				//}
 				int outDegree_B = 0;
+				int outNode_B = 0;
 				TNGraph::TNodeI NodeBI = graph->GetNI(nodeB);
 				for (int v = 0; v < NodeBI.GetInDeg(); v++)
 				{
-					nodeC = NodeBI.GetOutNId(v);
+					outNode_B = NodeBI.GetOutNId(v);
 
-					if (colors->GetDat(nodeC) == color && nodeC != nodeB)
+					if (colors->GetDat(outNode_B) == color && outNode_B != nodeB)
 					{
-						outDegree_B++;
-						if (outDegree_B == 2)
+						if (outDegree_B == 0)
 						{
+							outDegree_B++;
+							nodeC = outNode_B;
+						}
+						else
+						{
+							outDegree_B++;
+							//If out-deg is now 3, break
 							break;
 						}
 					}

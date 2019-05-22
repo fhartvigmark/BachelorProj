@@ -1,23 +1,33 @@
 #include <gtest/gtest.h>
 #include <fwbw.h>
+#include "iostream"
 
 struct BasicFWBWTest : testing::Test {
 	enhancedgraph *enhgraph;
 
 	BasicFWBWTest()
 	{
+		std::cout << "Setup 1\n";
+
 		PNGraph graph = TNGraph::New();
+		std::cout << "Setup 1.1\n";
 		graph->AddNode(1);
+		std::cout << "Setup 1.2\n";
 		graph->AddNode(2);
+		std::cout << "Setup 1.3\n";
 		graph->AddNode(3);
+		std::cout << "Setup 1.4\n";
 		graph->AddNode(4);
+		std::cout << "Setup 1.5\n";
 		graph->AddEdge(1, 2);
 		graph->AddEdge(2, 1);
 		graph->AddEdge(2, 3);
 		graph->AddEdge(3, 4);
 		graph->AddEdge(4, 3);
 
+		std::cout << "Setup 2\n";
 		enhgraph = new enhancedgraph(graph, false, 10);
+		std::cout << "Setup 3\n";
 	}
 
 	virtual ~BasicFWBWTest()
@@ -158,6 +168,7 @@ TEST_F(Graph1Test, RecSCCCheck)
 }
 
 TEST_F(BasicFWBWTest, ColorCheck){
+	std::cout << "Starting\n";
 	int status = fwbw::FWBW(enhgraph, 0, 0, 0, 0);
 	//No error
 	EXPECT_EQ(status, 0);

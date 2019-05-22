@@ -1,4 +1,5 @@
 #include "fwbw.h"
+#include "iostream"
 
 int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int method) {
 	switch (method){
@@ -16,6 +17,8 @@ int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor,
 
 //Coloring based basic fw-bw
 int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor){
+	std::cout << "FWBW\n";
+
     //Find pivot node
     int startNode = pivot::findPivot(g, startColor, pivotmethod);
     if (startNode==-1){
@@ -34,6 +37,7 @@ int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startC
 
     return 0;
 }
+
 
 //Coloring based parallel fw-bw
 int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor)
@@ -58,6 +62,7 @@ int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 	return 0;
 }
 
+
 //Coloring based recursive fw-bw
 int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor)
 {
@@ -73,28 +78,30 @@ int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 	TimePoint start = g->startTimer();
 	std::pair<int, int> newColors = bfs::colorbfs(g, startColor, startNode);
 	g->endTimer(start, eTimer::FWBWs);
-
-	#pragma omp parallel
 	{
-		#pragma omp single nowait
+		#pragma omp parallel
 		{
-			#pragma omp task shared(g)
+			#pragma omp single nowait
 			{
-				recFWBW(g, trimlevel, pivotmethod, startColor);
-			}
+				#pragma omp task shared(g)
+				{
+					recFWBW(g, trimlevel, pivotmethod, startColor);
+				}
 
-			#pragma omp task shared(g)
-			{
-				recFWBW(g, trimlevel, pivotmethod, newColors.first);
-			}
+				#pragma omp task shared(g)
+				{
+					recFWBW(g, trimlevel, pivotmethod, newColors.first);
+				}
 
-			#pragma omp task shared(g)
-			{
-				recFWBW(g, trimlevel, pivotmethod, newColors.second);
+				#pragma omp task shared(g)
+				{
+					recFWBW(g, trimlevel, pivotmethod, newColors.second);
+				}
 			}
+			#pragma omp taskwait
 		}
-		#pragma omp taskwait
 	}
+	
 	
 	return 0;
 }

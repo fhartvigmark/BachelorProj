@@ -119,6 +119,32 @@ void enhancedgraph::reportPivot(int color, int node) {
 	}
 }
 
+int64_t enhancedgraph::getCalls() {
+	return callsFWBW;
+}
+
+int64_t enhancedgraph::getDepth() {
+	return depthFWBW;
+}
+
+std::list<int>* enhancedgraph::getReports(eDebug data) {
+	switch (data)
+	{
+		case eDebug::tAmount:
+			return trimAmount;
+		case eDebug::tColor:
+			return trimColor;
+		case eDebug::tType:
+			return trimType;
+		case eDebug::pColor:
+			return pivotColor;
+		case eDebug::pNode:
+			return pivotNode;
+		default:
+			return {};
+	}
+}
+
 
 enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations){
 	graph = g;

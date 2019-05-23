@@ -7,6 +7,7 @@ void printTime(enhancedgraph *enhgraph) {
 	cout << "  " << "First FWBW\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
 	cout << "  " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
 	cout << "  " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+	cout << "  " << "First Trim\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
 	cout << "  " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
 }
 

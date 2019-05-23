@@ -40,6 +40,11 @@ void enhancedgraph::endTimer(TimePoint start, eTimer timer) {
 				tTrim += dur;
 				omp_unset_lock(&lTrim);
 				break;
+			case eTimer::FirstTRIM:
+				omp_set_lock(&lFirstTrim);
+				tFirstTrim += dur;
+				omp_unset_lock(&lFirstTrim);
+				break;
 			case eTimer::PIVOT:
 				omp_set_lock(&lPivot);
 				tPivot += dur;
@@ -72,6 +77,8 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 			return std::chrono::duration_cast<Ms>(tFWBW).count();
 		case eTimer::TRIM:
 			return std::chrono::duration_cast<Ms>(tTrim).count();
+		case eTimer::FirstTRIM:
+			return std::chrono::duration_cast<Ms>(tFirstTrim).count();
 		case eTimer::PIVOT:
 			return std::chrono::duration_cast<Ms>(tPivot).count();
 		case eTimer::SETUP:
@@ -130,6 +137,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 		tFirstFWBW = Duration::zero();
 		tFWBW = Duration::zero();
 		tTrim = Duration::zero();
+		tFirstTrim = Duration::zero();
 		tPivot = Duration::zero();
 		tSetup = Duration::zero();
 
@@ -137,6 +145,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 		omp_init_lock(&lFirstFWBW);
 		omp_init_lock(&lFWBW);
 		omp_init_lock(&lTrim);
+		omp_init_lock(&lFirstTrim);
 		omp_init_lock(&lPivot);
 		omp_init_lock(&lSetup);
 	}
@@ -165,6 +174,7 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 		tFirstFWBW = Duration::zero();
 		tFWBW = Duration::zero();
 		tTrim = Duration::zero();
+		tFirstTrim = Duration::zero();
 		tPivot = Duration::zero();
 		tSetup = Duration::zero();
 
@@ -172,6 +182,7 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 		omp_init_lock(&lFirstFWBW);
 		omp_init_lock(&lFWBW);
 		omp_init_lock(&lTrim);
+		omp_init_lock(&lFirstTrim);
 		omp_init_lock(&lPivot);
 		omp_init_lock(&lSetup);
 	}
@@ -217,6 +228,7 @@ enhancedgraph::~enhancedgraph() {
 		omp_destroy_lock(&lFirstFWBW);
 		omp_destroy_lock(&lFWBW);
 		omp_destroy_lock(&lTrim);
+		omp_destroy_lock(&lFirstTrim);
 		omp_destroy_lock(&lPivot);
 		omp_destroy_lock(&lSetup);
 	}

@@ -7,7 +7,7 @@
 enum ePivot{Random, Max, MaxColor, ParRandom, ParMax, ParMaxColor, RandWalk};
 enum eMethod{FWBW, ParFWBW, RecFWBW};
 enum eTrim{Trim1, Trim2, Trim3, ParTrim1, ParTrim2, ParTrim3};
-enum eTimer{MAIN, FirstFWBW, FWBWs, TRIM, PIVOT, SETUP};
+enum eTimer{MAIN, FirstFWBW, FWBWs, TRIM, FirstTRIM, PIVOT, SETUP};
 
 typedef std::chrono::high_resolution_clock Time;
 typedef std::chrono::high_resolution_clock::time_point TimePoint;
@@ -57,6 +57,7 @@ class enhancedgraph
         Duration tFirstFWBW;
         Duration tFWBW;
         Duration tTrim;
+        Duration tFirstTrim;
         Duration tPivot;
         Duration tSetup;
 
@@ -64,6 +65,7 @@ class enhancedgraph
         omp_lock_t lFirstFWBW;
         omp_lock_t lFWBW;
         omp_lock_t lTrim;
+        omp_lock_t lFirstTrim;
         omp_lock_t lPivot;
         omp_lock_t lSetup;
 		omp_lock_t lDebugFWBW;

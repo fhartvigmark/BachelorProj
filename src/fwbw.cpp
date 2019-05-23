@@ -5,7 +5,9 @@ int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor,
 
 	if (trimlevel > 0)
 	{
+		TimePoint start = g->startTimer();
 		trim::doParTrim(1, g, startColor);
+		g->endTimer(start, eTimer::FirstTRIM);
 	}
 
 	int startNode = pivot::findPivot(g, startColor, pivotmethod);
@@ -16,7 +18,7 @@ int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor,
 
 	TimePoint start = g->startTimer();
 	std::pair<int, int> newColors = bfs::parbfs(g, startColor, startNode);
-	g->endTimer(start, eTimer::FWBWs);
+	g->endTimer(start, eTimer::FirstFWBW);
 
 	switch (method)
 	{
@@ -24,32 +26,35 @@ int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor,
 		fwbw::basicFWBW(g, trimlevel, pivotmethod, startColor);
 		fwbw::basicFWBW(g, trimlevel, pivotmethod, newColors.first);
 		fwbw::basicFWBW(g, trimlevel, pivotmethod, newColors.second);
+		break;
 	case 1:
 		fwbw::parFWBW(g, trimlevel, pivotmethod, startColor);
 		fwbw::parFWBW(g, trimlevel, pivotmethod, newColors.first);
 		fwbw::parFWBW(g, trimlevel, pivotmethod, newColors.second);
+		break;
 	case 2:
-#pragma omp parallel
-	{
-#pragma omp single nowait
+		#pragma omp parallel
 		{
-#pragma omp task shared(g)
+			#pragma omp single nowait
 			{
-				recFWBW(g, trimlevel, pivotmethod, startColor);
-			}
+				#pragma omp task shared(g)
+				{
+					recFWBW(g, trimlevel, pivotmethod, startColor);
+				}
 
-#pragma omp task shared(g)
-			{
-				recFWBW(g, trimlevel, pivotmethod, newColors.first);
-			}
+				#pragma omp task shared(g)
+				{
+					recFWBW(g, trimlevel, pivotmethod, newColors.first);
+				}
 
-#pragma omp task shared(g)
-			{
-				recFWBW(g, trimlevel, pivotmethod, newColors.second);
+				#pragma omp task shared(g)
+				{
+					recFWBW(g, trimlevel, pivotmethod, newColors.second);
+				}
 			}
+			#pragma omp taskwait
 		}
-#pragma omp taskwait
-	}
+		break;
 	}
 	return 0;
 }
@@ -134,6 +139,6 @@ int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 		#pragma omp taskwait
 	}
 
-	
+
 	return 0;
 };

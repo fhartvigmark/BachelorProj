@@ -68,14 +68,14 @@ int main(int argc, char **argv)
         Env.GetIfArgPrefixInt("-p=", 0, "Pivot selection (0 for random)\t");
     const int FwBwMethod =
         Env.GetIfArgPrefixInt("-m=", 0, "Specify FW-BW variant\t\t");
-	const bool Timer =
-        Env.GetIfArgPrefixInt("-time=", false, "Time execution\t\t\t");
+	const int Timer =
+        Env.GetIfArgPrefixInt("-time=", 0, "Print timers\t\t\t");
 	const bool Output =
-        Env.GetIfArgPrefixInt("-out=", false, "Print SCC output to file\t");
+        Env.GetIfArgPrefixBool("-out=", false, "Print SCC output to file\t");
 	const bool Help =
-        Env.GetIfArgPrefixInt("-h=", false, "Print help section\t\t");
-	const bool Analyse =
-        Env.GetIfArgPrefixInt("-a=", false, "Print debug information\t\t");
+        Env.GetIfArgPrefixBool("-h=", false, "Print help section\t\t");
+	const int Analyse =
+        Env.GetIfArgPrefixInt("-a=", 0, "Print debug information\t\t");
 
 	if (Help)
 	{
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 		cout << "    " << "1 = trim-1" << "\n";
 		cout << "    " << "2 = trim-1,2" << "\n";
 		cout << "    " << "3 = trim-1,2,3" << "\n";
-		//TODO: partrim???
+		
 		cout << "  " << "Pivot methods:" << "\n";
 		cout << "    " << "0 = first occurrence" << "\n";
 		cout << "    " << "1 = max degree product" << "\n";
@@ -100,6 +100,19 @@ int main(int argc, char **argv)
 		cout << "    " << "0 = basic FWBW" << "\n";
 		cout << "    " << "1 = FWBW with parallel bfs" << "\n";
 		cout << "    " << "2 = Recursive FWBW" << "\n";
+
+
+		cout << "\n" << "Print:" << "\n";
+		cout << "  " << "Timers:" << "\n";
+		cout << "    " << "0 = no printing" << "\n";
+		cout << "    " << "1 = print to stdout" << "\n";
+		cout << "    " << "2 = print to file" << "\n";
+
+		cout << "  " << "Debug:" << "\n";
+		cout << "    " << "0 = no printing" << "\n";
+		cout << "    " << "1 = print to stdout" << "\n";
+		cout << "    " << "2 = print to file" << "\n";
+
 
 		return 0;
 	}

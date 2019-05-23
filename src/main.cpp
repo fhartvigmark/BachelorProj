@@ -1,7 +1,6 @@
 #include "main.h"
 
 TStr getFileName(TStr path) {
-	//cout << "\n" << path.GetFMid().GetCStr() << "\n";
 	return path.GetFMid();
 }
 
@@ -67,15 +66,13 @@ void printFile(enhancedgraph *enhgraph, TStr path, bool operation) {
 }
 
 void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
-	//TODO: print fwbw depth, fwbw calls, pivot selections, trim amount
-	//TODO: add getters
-	//TODO: add report calls to code
 	if (operation == 0) {
 		return;
 	}
 	int fwbwCalls = enhgraph->getCalls();
 	int fwbwDepth = enhgraph->getDepth();
 	int sccs = fwbwCalls;
+	int gsize = enhgraph->graph->GetNodes();
 
 	std::list<int> *trimAmount = enhgraph->getReports(eDebug::tAmount);
 	std::list<int> *trimColor = enhgraph->getReports(eDebug::tColor);
@@ -90,6 +87,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 	if (operation == 1) {
 		cout << "\nDebug information: \n";
 		cout << "  " << "#SCCs: " << sccs << "\n";
+		cout << "  " << "Graph size: " << gsize << "\n";
 		cout << "  " << "#FWBW calls: " << fwbwCalls << "\n";
 		cout << "  " << "#FWBW depth: " << fwbwDepth << "\n";
 		
@@ -127,7 +125,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 		file << "\nDebug information: \n";
 		file << "  " << "#SCCs: " << sccs << "\n";
 		file << "  " << "#FWBW calls: " << fwbwCalls << "\n";
-		file << "  " << "#FWBW depth: " << fwbwDepth << "\n";
+		file << "  " << "FWBW depth: " << fwbwDepth << "\n";
 		
 		file << "  " << "pivots: " << "\n";
 		while (!pivotNode->empty()) {

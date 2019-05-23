@@ -101,7 +101,7 @@ void enhancedgraph::reportFWBW(int depth) {
 }
 
 void enhancedgraph::reportTrim(int color, int amount, int type) {
-	if (ANALYSE_ENABLED && amount > 0) {
+	if (ANALYSE_ENABLED) {
 		omp_set_lock(&lDebugTrim);
 		trimColor->push_back(color);
 		trimAmount->push_back(amount);

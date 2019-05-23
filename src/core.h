@@ -40,7 +40,7 @@ class enhancedgraph
 		int64_t getTime(eTimer timer);
 
 		void reportFWBW(int depth);
-		void reportTrim(int color, int amount);
+		void reportTrim(int color, int amount, int type);
 		void reportPivot(int color, int node);
 
 		enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations);
@@ -50,6 +50,7 @@ class enhancedgraph
 	private:
 		std::list<int> *trimAmount;
 		std::list<int> *trimColor;
+		std::list<int> *trimType;
 		std::list<int> *pivotNode;
 		std::list<int> *pivotColor;
 

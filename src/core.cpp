@@ -90,25 +90,32 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 
 void enhancedgraph::reportFWBW(int depth) {
 	if (ANALYSE_ENABLED) {
+		omp_set_lock(&lDebugFWBW);
 		callsFWBW++;
 
 		if (depth > depthFWBW) {
 			depthFWBW = depth;
 		}
+		omp_unset_lock(&lDebugFWBW);
 	}
 }
 
-void enhancedgraph::reportTrim(int color, int amount) {
-	if (ANALYSE_ENABLED) {
+void enhancedgraph::reportTrim(int color, int amount, int type) {
+	if (ANALYSE_ENABLED && amount > 0) {
+		omp_set_lock(&lDebugTrim);
 		trimColor->push_back(color);
 		trimAmount->push_back(amount);
+		trimType->push_back(type);
+		omp_unset_lock(&lDebugTrim);
 	}
 }
 
 void enhancedgraph::reportPivot(int color, int node) {
-	if (ANALYSE_ENABLED) {
+	if (ANALYSE_ENABLED && node > -1) {
+		omp_set_lock(&lDebugPivot);
 		pivotColor->push_back(color);
 		pivotNode->push_back(node);
+		omp_unset_lock(&lDebugPivot);
 	}
 }
 
@@ -161,6 +168,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 
 		trimAmount = new std::list<int>;
 		trimColor = new std::list<int>;
+		trimType = new std::list<int>;
 		pivotNode = new std::list<int>;
 		pivotColor = new std::list<int>;
 	}
@@ -198,6 +206,7 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 
 		trimAmount = {};
 		trimColor = {};
+		trimType = {};
 		pivotNode = {};
 		pivotColor = {};
 	}
@@ -218,6 +227,7 @@ enhancedgraph::~enhancedgraph() {
 
 		delete trimAmount;
 		delete trimColor;
+		delete trimType;
 		delete pivotNode;
 		delete pivotColor;
 	}

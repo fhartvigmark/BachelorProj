@@ -496,136 +496,126 @@ TEST_F(SimpleTrim2GraphTest, ParTrim2FindsSize2SCCs)
 	EXPECT_NE(colors->GetDat(1), colors->GetDat(3));
 }
 
-TEST_F(SimpleChainTest, Trim2IgnoresChains)
-{
-	TIntH *colors = enhgraph->colors;
-	trim::doTrim(2, enhgraph, 0);
-	EXPECT_EQ(0, colors->GetDat(1));
-	EXPECT_EQ(0, colors->GetDat(2));
-	EXPECT_EQ(0, colors->GetDat(3));
-	EXPECT_EQ(0, colors->GetDat(4));
-	EXPECT_EQ(0, colors->GetDat(5));
-	EXPECT_EQ(0, colors->GetDat(6));
-}
-
-TEST_F(SimpleChainTest, ParTrim2IgnoresChains)
-{
-	TIntH *colors = enhgraph->colors;
-	trim::doParTrim(2, enhgraph, 0);
-	EXPECT_EQ(0, colors->GetDat(1));
-	EXPECT_EQ(0, colors->GetDat(2));
-	EXPECT_EQ(0, colors->GetDat(3));
-	EXPECT_EQ(0, colors->GetDat(4));
-	EXPECT_EQ(0, colors->GetDat(5));
-	EXPECT_EQ(0, colors->GetDat(6));
-}
-
 TEST_F(SimpleTrim3Pattern1Test, Trim3FindsPattern1)
 {
 	TIntH *colors = enhgraph->colors;
+	EXPECT_EQ(colors->GetDat(3), 0);
 	trim::doTrim(3, enhgraph, 0);
-	EXPECT_NE(0, colors->GetDat(1));
+	int scc = colors->GetDat(1);
+
+	EXPECT_NE(0, scc);
 	EXPECT_NE(0, colors->GetDat(2));
 	EXPECT_NE(0, colors->GetDat(3));
 
-	EXPECT_EQ(0, colors->GetDat(4));
-	EXPECT_EQ(0, colors->GetDat(5));
-	EXPECT_EQ(0, colors->GetDat(6));
-	EXPECT_EQ(0, colors->GetDat(7));
+	EXPECT_NE(scc, colors->GetDat(4));
+	EXPECT_NE(scc, colors->GetDat(5));
+	EXPECT_NE(scc, colors->GetDat(6));
+	EXPECT_NE(scc, colors->GetDat(7));
 
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(2));
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(3));
+	EXPECT_EQ(scc, colors->GetDat(2));
+	EXPECT_EQ(scc, colors->GetDat(3));
 }
 
 TEST_F(SimpleTrim3Pattern2Test, Trim3FindsPattern2)
 {
 	TIntH *colors = enhgraph->colors;
+	EXPECT_EQ(colors->GetDat(3), 0);
 	trim::doTrim(3, enhgraph, 0);
-	EXPECT_NE(0, colors->GetDat(1));
+	int scc = colors->GetDat(1);
+
+	EXPECT_NE(0, scc);
 	EXPECT_NE(0, colors->GetDat(2));
 	EXPECT_NE(0, colors->GetDat(3));
 
-	EXPECT_EQ(0, colors->GetDat(4));
-	EXPECT_EQ(0, colors->GetDat(5));
-	EXPECT_EQ(0, colors->GetDat(6));
-	EXPECT_EQ(0, colors->GetDat(7));
+	EXPECT_NE(scc, colors->GetDat(4));
+	EXPECT_NE(scc, colors->GetDat(5));
+	EXPECT_NE(scc, colors->GetDat(6));
+	EXPECT_NE(scc, colors->GetDat(7));
 
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(2));
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(3));
+	EXPECT_EQ(scc, colors->GetDat(2));
+	EXPECT_EQ(scc, colors->GetDat(3));
 }
 
 TEST_F(Trim3MixedPatternTest, Trim3FindsMultipleSCCs)
 {
 	TIntH *colors = enhgraph->colors;
 	trim::doTrim(3, enhgraph, 0);
+	int scc1 = colors->GetDat(1);
+	int scc2 = colors->GetDat(4);
 
-	EXPECT_NE(0, colors->GetDat(1));
+	EXPECT_NE(0, scc1);
 	EXPECT_NE(0, colors->GetDat(2));
 	EXPECT_NE(0, colors->GetDat(3));
 	EXPECT_NE(0, colors->GetDat(4));
 	EXPECT_NE(0, colors->GetDat(5));
 	EXPECT_NE(0, colors->GetDat(6));
 
-	EXPECT_NE(colors->GetDat(1), colors->GetDat(4));
+	EXPECT_NE(scc1, scc2);
 
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(2));
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(3));
+	EXPECT_EQ(scc1, colors->GetDat(2));
+	EXPECT_EQ(scc1, colors->GetDat(3));
 
-	EXPECT_EQ(colors->GetDat(4), colors->GetDat(5));
-	EXPECT_EQ(colors->GetDat(4), colors->GetDat(6));
+	EXPECT_EQ(scc2, colors->GetDat(5));
+	EXPECT_EQ(scc2, colors->GetDat(6));
 };
 
 TEST_F(SimpleTrim3Pattern1Test, ParTrim3FindsPattern1)
 {
 	TIntH *colors = enhgraph->colors;
 	trim::doParTrim(3, enhgraph, 0);
-	EXPECT_NE(0, colors->GetDat(1));
+	int scc = colors->GetDat(1);
+
+	EXPECT_NE(0, scc);
 	EXPECT_NE(0, colors->GetDat(2));
 	EXPECT_NE(0, colors->GetDat(3));
 
-	EXPECT_EQ(0, colors->GetDat(4));
-	EXPECT_EQ(0, colors->GetDat(5));
-	EXPECT_EQ(0, colors->GetDat(6));
-	EXPECT_EQ(0, colors->GetDat(7));
+	EXPECT_NE(scc, colors->GetDat(4));
+	EXPECT_NE(scc, colors->GetDat(5));
+	EXPECT_NE(scc, colors->GetDat(6));
+	EXPECT_NE(scc, colors->GetDat(7));
 
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(2));
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(3));
+	EXPECT_EQ(scc, colors->GetDat(2));
+	EXPECT_EQ(scc, colors->GetDat(3));
 }
 
 TEST_F(SimpleTrim3Pattern2Test, ParTrim3FindsPattern2)
 {
 	TIntH *colors = enhgraph->colors;
 	trim::doParTrim(3, enhgraph, 0);
-	EXPECT_NE(0, colors->GetDat(1));
+	int scc = colors->GetDat(1);
+
+	EXPECT_NE(0, scc);
 	EXPECT_NE(0, colors->GetDat(2));
 	EXPECT_NE(0, colors->GetDat(3));
 
-	EXPECT_EQ(0, colors->GetDat(4));
-	EXPECT_EQ(0, colors->GetDat(5));
-	EXPECT_EQ(0, colors->GetDat(6));
-	EXPECT_EQ(0, colors->GetDat(7));
+	EXPECT_NE(scc, colors->GetDat(4));
+	EXPECT_NE(scc, colors->GetDat(5));
+	EXPECT_NE(scc, colors->GetDat(6));
+	EXPECT_NE(scc, colors->GetDat(7));
 
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(2));
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(3));
+	EXPECT_EQ(scc, colors->GetDat(2));
+	EXPECT_EQ(scc, colors->GetDat(3));
 }
 
 TEST_F(Trim3MixedPatternTest, ParTrim3FindsMultipleSCCs)
 {
 	TIntH *colors = enhgraph->colors;
 	trim::doParTrim(3, enhgraph, 0);
+	int scc1 = colors->GetDat(1);
+	int scc2 = colors->GetDat(4);
 
-	EXPECT_NE(0, colors->GetDat(1));
+	EXPECT_NE(0, scc1);
 	EXPECT_NE(0, colors->GetDat(2));
 	EXPECT_NE(0, colors->GetDat(3));
 	EXPECT_NE(0, colors->GetDat(4));
 	EXPECT_NE(0, colors->GetDat(5));
 	EXPECT_NE(0, colors->GetDat(6));
 
-	EXPECT_NE(colors->GetDat(1), colors->GetDat(4));
+	EXPECT_NE(scc1, scc2);
 
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(2));
-	EXPECT_EQ(colors->GetDat(1), colors->GetDat(3));
+	EXPECT_EQ(scc1, colors->GetDat(2));
+	EXPECT_EQ(scc1, colors->GetDat(3));
 
-	EXPECT_EQ(colors->GetDat(4), colors->GetDat(5));
-	EXPECT_EQ(colors->GetDat(4), colors->GetDat(6));
+	EXPECT_EQ(scc2, colors->GetDat(5));
+	EXPECT_EQ(scc2, colors->GetDat(6));
 };

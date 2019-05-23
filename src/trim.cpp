@@ -1,4 +1,4 @@
-//#include "iostream"
+#include "iostream"
 #include "trim.h"
 
 int trim::doTrim(int trimlevel, enhancedgraph *g, int color) {
@@ -11,9 +11,12 @@ int trim::doTrim(int trimlevel, enhancedgraph *g, int color) {
 			retVal = trim::trim1(g, color);
 			break;
 		case 2:
+			trim::trim1(g, color);
 			retVal = trim::trim2(g, color);
 			break;
 		case 3:
+			trim::trim1(g, color);
+			trim::trim2(g, color);
 			retVal = trim::trim3(g, color);
 			break;
 		default:
@@ -35,9 +38,12 @@ int trim::doParTrim(int trimlevel, enhancedgraph *g, int color) {
 			retVal = trim::partrim1(g, color);
 			break;
 		case 2:
+			trim::partrim1(g, color);
 			retVal = trim::partrim2(g, color);
 			break;
 		case 3:
+			trim::partrim1(g, color);
+			trim::partrim2(g, color);
 			retVal = trim::partrim3(g, color);
 			break;
 		default:
@@ -65,7 +71,7 @@ int trim::trim1(enhancedgraph *g, int color)
 			int v = 0;
 			for (v = 0; v < NodeI.GetInDeg(); v++) 
             {
-                const int outNode = NodeI.GetInNId(v);
+                int outNode = NodeI.GetInNId(v);
 
                 if (colors->GetDat(outNode) == color && outNode != node) {
                     inDegree = 1;
@@ -84,7 +90,7 @@ int trim::trim1(enhancedgraph *g, int color)
 
 			for (v = 0; v < NodeI.GetOutDeg(); v++) 
             {
-                const int outNode = NodeI.GetOutNId(v);
+                int outNode = NodeI.GetOutNId(v);
 
                 if (colors->GetDat(outNode) == color && outNode != node) {
                     outDegree = 1;
@@ -109,7 +115,7 @@ int trim::trim1(enhancedgraph *g, int color)
 		int i;
 		for (i = 0; i < OldNodeI.GetInDeg(); i++)
 		{
-			const int node = OldNodeI.GetInNId(i);
+			int node = OldNodeI.GetInNId(i);
 			if (colors->GetDat(node) == color)
 			{
 				int inDegree = 0;
@@ -118,7 +124,7 @@ int trim::trim1(enhancedgraph *g, int color)
 				int v = 0;
 				for (v = 0; v < NodeI.GetInDeg(); v++)
 				{
-					const int outNode = NodeI.GetInNId(v);
+					int outNode = NodeI.GetInNId(v);
 
 					if (colors->GetDat(outNode) == color && outNode != node)
 					{
@@ -139,7 +145,7 @@ int trim::trim1(enhancedgraph *g, int color)
 
 				for (v = 0; v < NodeI.GetOutDeg(); v++)
 				{
-					const int outNode = NodeI.GetOutNId(v);
+					int outNode = NodeI.GetOutNId(v);
 
 					if (colors->GetDat(outNode) == color && outNode != node)
 					{
@@ -158,7 +164,7 @@ int trim::trim1(enhancedgraph *g, int color)
 		}
 		for (i = 0; i < OldNodeI.GetOutDeg(); i++)
 		{
-			const int node = OldNodeI.GetOutNId(i);
+			int node = OldNodeI.GetOutNId(i);
 			if (colors->GetDat(node) == color)
 			{
 				int inDegree = 0;
@@ -167,7 +173,7 @@ int trim::trim1(enhancedgraph *g, int color)
 				int v = 0;
 				for (v = 0; v < NodeI.GetInDeg(); v++)
 				{
-					const int outNode = NodeI.GetInNId(v);
+					int outNode = NodeI.GetInNId(v);
 
 					if (colors->GetDat(outNode) == color && outNode != node)
 					{
@@ -188,7 +194,7 @@ int trim::trim1(enhancedgraph *g, int color)
 
 				for (v = 0; v < NodeI.GetOutDeg(); v++)
 				{
-					const int outNode = NodeI.GetOutNId(v);
+					int outNode = NodeI.GetOutNId(v);
 
 					if (colors->GetDat(outNode) == color && outNode != node)
 					{
@@ -221,17 +227,29 @@ int trim::partrim1(enhancedgraph *g, int color)
 	for (int i = 0; i < Ids->Len(); i++)
 	{
 		int node = Ids->GetVal(i);
-		if (colors->GetDat(node) == color)
+		int nodeColor;
+		//std::cout << "Error on node " << node << "\n";
+		#pragma omp critical
+		{
+			nodeColor = colors->GetDat(node);
+		}
+		if (nodeColor == color)
 		{
 			int inDegree = 0;
 			TNGraph::TNodeI NodeI = graph->GetNI(node);
 
 			for (int v = 0; v < NodeI.GetInDeg(); v++)
 			{
-				const int outNode = NodeI.GetInNId(v);
+				int outNode = NodeI.GetInNId(v);
+				//std::cout << "Error on node " << outNode << "\n";
+				int outColor;
+#pragma omp critical 
+				{
+					outColor = colors->GetDat(outNode);
+				}
 
-				if (colors->GetDat(outNode) == color && outNode != node)
-					{
+				if (outColor == color && outNode != node)
+				{
 					inDegree = 1;
 					break;
 				}
@@ -239,9 +257,9 @@ int trim::partrim1(enhancedgraph *g, int color)
 
 			if (inDegree == 0)
 			{
-				colors->AddDat(node, g->colorGen->getNext());
 				#pragma omp critical
 				{
+					colors->AddDat(node, g->colorGen->getNext());
 					Queue.Push(node);
 				}
 				continue;
@@ -252,7 +270,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 
 			for (int v = 0; v < NodeI.GetOutDeg(); v++)
 			{
-				const int outNode = NodeI.GetOutNId(v);
+				int outNode = NodeI.GetOutNId(v);
 
 				if (colors->GetDat(outNode) == color && outNode != node)
 				{
@@ -263,9 +281,9 @@ int trim::partrim1(enhancedgraph *g, int color)
 
 			if (outDegree == 0)
 			{
-				colors->AddDat(node, g->colorGen->getNext());
 				#pragma omp critical
 				{
+					colors->AddDat(node, g->colorGen->getNext());
 					Queue.Push(node);
 				}
 				continue;
@@ -290,7 +308,13 @@ int trim::partrim1(enhancedgraph *g, int color)
 			for (int i = 0; i < OldNodeI.GetInDeg(); i++)
 			{
 				int node = OldNodeI.GetInNId(i);
-				if (colors->GetDat(node) == color)
+
+				int nodeColor;
+#pragma omp critical 
+				{
+					nodeColor = colors->GetDat(node);
+				}
+				if (nodeColor == color)
 				{
 					int inDegree = 0;
 					TNGraph::TNodeI NodeI = graph->GetNI(node);
@@ -309,9 +333,9 @@ int trim::partrim1(enhancedgraph *g, int color)
 
 					if (inDegree == 0)
 					{
-						colors->AddDat(node, g->colorGen->getNext());
 						#pragma omp critical 
 						{
+							colors->AddDat(node, g->colorGen->getNext());
 							Queue.Push(node);
 						}
 						continue;
@@ -333,9 +357,9 @@ int trim::partrim1(enhancedgraph *g, int color)
 
 					if (outDegree == 0)
 					{
-						colors->AddDat(node, g->colorGen->getNext());
 						#pragma omp critical 
 						{
+							colors->AddDat(node, g->colorGen->getNext());
 							Queue.Push(node);
 						}
 						continue;
@@ -345,14 +369,19 @@ int trim::partrim1(enhancedgraph *g, int color)
 			for (int i = 0; i < OldNodeI.GetOutDeg(); i++)
 			{
 				int node = OldNodeI.GetOutNId(i);
-				if (colors->GetDat(node) == color)
+				int nodeColor;
+#pragma omp critical
+				{
+					nodeColor = colors->GetDat(node);
+				}
+				if (nodeColor == color)
 				{
 					int inDegree = 0;
 					TNGraph::TNodeI NodeI = graph->GetNI(node);
 
 					for (int v = 0; v < NodeI.GetInDeg(); v++)
 					{
-						const int outNode = NodeI.GetInNId(v);
+						int outNode = NodeI.GetInNId(v);
 
 						if (colors->GetDat(outNode) == color && outNode != node)
 						{
@@ -363,9 +392,9 @@ int trim::partrim1(enhancedgraph *g, int color)
 
 					if (inDegree == 0)
 					{
-						colors->AddDat(node, g->colorGen->getNext());
 						#pragma omp critical
 						{
+							colors->AddDat(node, g->colorGen->getNext());
 							Queue.Push(node);
 						}
 						continue;
@@ -387,9 +416,9 @@ int trim::partrim1(enhancedgraph *g, int color)
 
 					if (outDegree == 0)
 					{
-						colors->AddDat(node, g->colorGen->getNext());
 						#pragma omp critical
 						{
+							colors->AddDat(node, g->colorGen->getNext());
 							Queue.Push(node);
 						}
 						continue;
@@ -421,7 +450,7 @@ int trim::trim2(enhancedgraph *g, int color)
 
 			for (int v = 0; v < NodeI.GetInDeg(); v++)
 			{
-				const int inNode = NodeI.GetInNId(v);
+				int inNode = NodeI.GetInNId(v);
 
 				if (colors->GetDat(inNode) == color && inNode != node)
 				{
@@ -437,7 +466,7 @@ int trim::trim2(enhancedgraph *g, int color)
 				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
 				for (int v = 0; v < LastNodeI.GetInDeg(); v++)
 				{
-					const int outoutNode = LastNodeI.GetInNId(v);
+					int outoutNode = LastNodeI.GetInNId(v);
 
 					if (colors->GetDat(outoutNode) == color && outoutNode != lastNode)
 					{
@@ -460,7 +489,7 @@ int trim::trim2(enhancedgraph *g, int color)
 
 			for (int v = 0; v < NodeI.GetOutDeg(); v++)
 			{
-				const int outNode = NodeI.GetOutNId(v);
+				int outNode = NodeI.GetOutNId(v);
 
 				if (colors->GetDat(outNode) == color && outNode != node)
 				{
@@ -476,7 +505,7 @@ int trim::trim2(enhancedgraph *g, int color)
 				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
 				for (int v = 0; v < LastNodeI.GetOutDeg(); v++)
 				{
-					const int outoutNode = LastNodeI.GetOutNId(v);
+					int outoutNode = LastNodeI.GetOutNId(v);
 
 					if (colors->GetDat(outoutNode) == color && outoutNode != lastNode)
 					{
@@ -516,7 +545,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 
 			for (int v = 0; v < NodeI.GetInDeg(); v++)
 			{
-				const int inNode = NodeI.GetInNId(v);
+				int inNode = NodeI.GetInNId(v);
 
 				if (colors->GetDat(inNode) == color && inNode != node)
 				{
@@ -531,7 +560,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
 				for (int v = 0; v < LastNodeI.GetInDeg(); v++)
 				{
-					const int outoutNode = LastNodeI.GetInNId(v);
+					int outoutNode = LastNodeI.GetInNId(v);
 
 					if (colors->GetDat(outoutNode) == color && outoutNode != lastNode)
 					{
@@ -555,7 +584,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 
 			for (int v = 0; v < NodeI.GetOutDeg(); v++)
 			{
-				const int outNode = NodeI.GetOutNId(v);
+				int outNode = NodeI.GetOutNId(v);
 
 				if (colors->GetDat(outNode) == color && outNode != node)
 				{
@@ -570,7 +599,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 				TNGraph::TNodeI LastNodeI = graph->GetNI(lastNode);
 				for (int v = 0; v < LastNodeI.GetOutDeg(); v++)
 				{
-					const int outoutNode = LastNodeI.GetOutNId(v);
+					int outoutNode = LastNodeI.GetOutNId(v);
 
 					if (colors->GetDat(outoutNode) == color && outoutNode != lastNode)
 					{
@@ -609,7 +638,7 @@ int trim::trim3(enhancedgraph *g, int color){
 
 			for (int v = 0; v < NodeI.GetInDeg(); v++)
 			{
-				const int inNode = NodeI.GetInNId(v);
+				int inNode = NodeI.GetInNId(v);
 
 				if (colors->GetDat(inNode) == color && inNode != node)
 				{
@@ -725,7 +754,7 @@ int trim::trim3(enhancedgraph *g, int color){
 
 			for (int v = 0; v < NodeI.GetOutDeg(); v++)
 			{
-				const int outNode = NodeI.GetOutNId(v);
+				int outNode = NodeI.GetOutNId(v);
 
 				if (colors->GetDat(outNode) == color && outNode != node)
 				{
@@ -1011,7 +1040,7 @@ int trim::partrim3(enhancedgraph *g, int color)
 
 			for (int v = 0; v < NodeI.GetOutDeg(); v++)
 			{
-				const int outNode = NodeI.GetOutNId(v);
+				int outNode = NodeI.GetOutNId(v);
 
 				if (colors->GetDat(outNode) == color && outNode != node)
 				{

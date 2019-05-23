@@ -1,21 +1,56 @@
 #include "main.h"
 
-void printTime(enhancedgraph *enhgraph) {
-	cout << "\nTime used: \n";
-	cout << "  " << "Setup\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
-	cout << "  " << "SCC\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
-	cout << "  " << "First FWBW\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
-	cout << "  " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
-	cout << "  " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
-	cout << "  " << "First Trim\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
-	cout << "  " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
+TStr getFileName(TStr path) {
+	//cout << "\n" << path.GetFMid().GetCStr() << "\n";
+	return path.GetFMid();
 }
 
-void printFile(enhancedgraph *enhgraph) {
-	cout << "\nWriting output\n";
+void printTime(enhancedgraph *enhgraph, TStr path, int operation) {
+	if (operation == 1) {
+		cout << "\nTime used: \n";
+		cout << "  " << "Setup\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
+		cout << "  " << "SCC\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
+		cout << "  " << "First FWBW\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
+		cout << "  " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
+		cout << "  " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		cout << "  " << "First Trim\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		cout << "  " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
+	} else if (operation == 2) {
+		cout << "\nWriting timer output\n";
+
+		TStr fileName = getFileName(path);
+		fileName += ".time";
+
+		ofstream file;
+		file.open(fileName.GetCStr());
+
+		file << "\nTime used: \n";
+		file << "  " << "Setup\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
+		file << "  " << "SCC\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
+		file << "  " << "First FWBW\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
+		file << "  " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
+		file << "  " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		file << "  " << "First Trim\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		file << "  " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
+
+		file.close();
+
+		cout << "Done\n";
+	}
+}
+
+void printFile(enhancedgraph *enhgraph, TStr path, bool operation) {
+	if (!operation) {
+		return;
+	}
+
+	cout << "\nWriting SCC output\n";
+
+	TStr fileName = getFileName(path);
+	fileName += ".scc";
 
 	ofstream file;
-	file.open("output.txt");
+	file.open(fileName.GetCStr());
 
 	TIntH *colors = enhgraph->colors;
 	PNGraph graph = enhgraph->graph;
@@ -31,9 +66,28 @@ void printFile(enhancedgraph *enhgraph) {
 	cout << "Done\n";
 }
 
-void printInfo(enhancedgraph *enhgraph) {
+void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 	//TODO: print fwbw depth, fwbw calls, pivot selections, trim amount
-	//TODO: add const and functions to enhgraph
+	//TODO: add getters
+	//TODO: add report calls to code
+	if (operation == 1) {
+		cout << "\nDebug information: \n";
+
+		
+	} else if (operation == 2) {
+		cout << "\nWriting debug output\n";
+
+		TStr fileName = getFileName(path);
+		fileName += ".debug";
+
+		ofstream file;
+		file.open(fileName.GetCStr());
+
+
+		file.close();
+
+		cout << "Done\n";
+	}
 }
 
 void bootstrap(char **argv) {
@@ -68,12 +122,12 @@ int main(int argc, char **argv)
         Env.GetIfArgPrefixInt("-p=", 0, "Pivot selection (0 for random)\t");
     const int FwBwMethod =
         Env.GetIfArgPrefixInt("-m=", 0, "Specify FW-BW variant\t\t");
-	const int Timer =
-        Env.GetIfArgPrefixInt("-time=", 0, "Print timers\t\t\t");
-	const bool Output =
-        Env.GetIfArgPrefixBool("-out=", false, "Print SCC output to file\t");
 	const bool Help =
         Env.GetIfArgPrefixBool("-h=", false, "Print help section\t\t");
+	const bool Output =
+        Env.GetIfArgPrefixBool("-out=", false, "Print SCC output to file\t");
+	const int Timer =
+        Env.GetIfArgPrefixInt("-time=", 0, "Print timers\t\t\t");
 	const int Analyse =
         Env.GetIfArgPrefixInt("-a=", 0, "Print debug information\t\t");
 
@@ -118,6 +172,8 @@ int main(int argc, char **argv)
 	}
 	
 	cout << "\n";
+
+	
 
     // Load the graph 
 	cout << "Loading graph\n";
@@ -401,18 +457,9 @@ int main(int argc, char **argv)
 */
 
 
-	if (Timer){
-		printTime(enhgraph);
-	}
-
-	if (Output) {
-		printFile(enhgraph);
-	}
-
-	if (Analyse) {
-		printInfo(enhgraph);
-	}
-
+	printTime(enhgraph, InEdges, Timer);
+	printFile(enhgraph, InEdges, Output);
+	printInfo(enhgraph, InEdges, Analyse);
 
     return 0;
 }

@@ -9,7 +9,7 @@ class fwbw{
 	public:
 		static int FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int method);
     private:
-     	static int basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
-	 	static int parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
-		static int recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor);
+     	static int basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth);
+	 	static int parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth);
+		static int recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth);
 };

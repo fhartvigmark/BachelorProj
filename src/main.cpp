@@ -1,20 +1,55 @@
 #include "main.h"
 
-void printTime(enhancedgraph *enhgraph) {
-	cout << "\nTime used: \n";
-	cout << "  " << "Setup\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
-	cout << "  " << "SCC\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
-	cout << "  " << "First FWBW\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
-	cout << "  " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
-	cout << "  " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
-	cout << "  " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
+TStr getFileName(TStr path) {
+	return path.GetFMid();
 }
 
-void printFile(enhancedgraph *enhgraph) {
-	cout << "\nWriting output\n";
+void printTime(enhancedgraph *enhgraph, TStr path, int operation) {
+	if (operation == 1) {
+		cout << "\nTime used: \n";
+		cout << "  " << "Setup\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
+		cout << "  " << "SCC\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
+		cout << "  " << "First FWBW\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
+		cout << "  " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
+		cout << "  " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		cout << "  " << "First Trim\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		cout << "  " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
+	} else if (operation == 2) {
+		cout << "\nWriting timer output\n";
+
+		TStr fileName = getFileName(path);
+		fileName += ".time";
+
+		ofstream file;
+		file.open(fileName.GetCStr());
+
+		file << "\nTime used: \n";
+		file << "  " << "Setup\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
+		file << "  " << "SCC\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
+		file << "  " << "First FWBW\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
+		file << "  " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
+		file << "  " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		file << "  " << "First Trim\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		file << "  " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
+
+		file.close();
+
+		cout << "Done\n";
+	}
+}
+
+void printFile(enhancedgraph *enhgraph, TStr path, bool operation) {
+	if (!operation) {
+		return;
+	}
+
+	cout << "\nWriting SCC output\n";
+
+	TStr fileName = getFileName(path);
+	fileName += ".scc";
 
 	ofstream file;
-	file.open("output.txt");
+	file.open(fileName.GetCStr());
 
 	TIntH *colors = enhgraph->colors;
 	PNGraph graph = enhgraph->graph;
@@ -30,9 +65,94 @@ void printFile(enhancedgraph *enhgraph) {
 	cout << "Done\n";
 }
 
-void printInfo(enhancedgraph *enhgraph) {
-	//TODO: print fwbw depth, fwbw calls, pivot selections, trim amount
-	//TODO: add const and functions to enhgraph
+void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
+	if (operation == 0) {
+		return;
+	}
+	int fwbwCalls = enhgraph->getCalls();
+	int fwbwDepth = enhgraph->getDepth();
+	int sccs = fwbwCalls;
+	int gsize = enhgraph->graph->GetNodes();
+
+	std::list<int> *trimAmount = enhgraph->getReports(eDebug::tAmount);
+	std::list<int> *trimColor = enhgraph->getReports(eDebug::tColor);
+	std::list<int> *trimType = enhgraph->getReports(eDebug::tType);
+	std::list<int> *pivotNode = enhgraph->getReports(eDebug::pNode);
+	std::list<int> *pivotColor = enhgraph->getReports(eDebug::pColor);
+
+	for (auto it = trimAmount->cbegin(); it != trimAmount->cend(); it++) {
+		sccs += *it;
+	}
+
+	if (operation == 1) {
+		cout << "\nDebug information: \n";
+		cout << "  " << "#SCCs: " << sccs << "\n";
+		cout << "  " << "Graph size: " << gsize << "\n";
+		cout << "  " << "#FWBW calls: " << fwbwCalls << "\n";
+		cout << "  " << "#FWBW depth: " << fwbwDepth << "\n";
+		
+		cout << "  " << "pivots: " << "\n";
+		while (!pivotNode->empty()) {
+			int node = pivotNode->front();
+			pivotNode->pop_front();
+			int color = pivotColor->front();
+			pivotColor->pop_front();
+
+			cout << "    " << "Chosen node " << node << " for color " << color << "\n";
+		}
+
+		cout << "  " << "trims: " << "\n";
+		while (!trimAmount->empty()) {
+			int amount = trimAmount->front();
+			trimAmount->pop_front();
+			int color = trimColor->front();
+			trimColor->pop_front();
+			int type = trimType->front();
+			trimType->pop_front();
+
+			cout << "    " << "Trim " << type << " trimmed " << amount << " for color " << color << "\n";
+		}
+
+	} else if (operation == 2) {
+		cout << "\nWriting debug output\n";
+
+		TStr fileName = getFileName(path);
+		fileName += ".debug";
+
+		ofstream file;
+		file.open(fileName.GetCStr());
+
+		file << "\nDebug information: \n";
+		file << "  " << "#SCCs: " << sccs << "\n";
+		file << "  " << "#FWBW calls: " << fwbwCalls << "\n";
+		file << "  " << "FWBW depth: " << fwbwDepth << "\n";
+		
+		file << "  " << "pivots: " << "\n";
+		while (!pivotNode->empty()) {
+			int node = pivotNode->front();
+			pivotNode->pop_front();
+			int color = pivotColor->front();
+			pivotColor->pop_front();
+
+			file << "    " << "Chosen node " << node << " for color " << color << "\n";
+		}
+
+		file << "  " << "trims: " << "\n";
+		while (!trimAmount->empty()) {
+			int amount = trimAmount->front();
+			trimAmount->pop_front();
+			int color = trimColor->front();
+			trimColor->pop_front();
+			int type = trimType->front();
+			trimType->pop_front();
+
+			file << "    " << "Trim " << type << " trimmed " << amount << " for color " << color << "\n";
+		}
+
+		file.close();
+
+		cout << "Done\n";
+	}
 }
 
 void bootstrap(char **argv) {
@@ -67,14 +187,14 @@ int main(int argc, char **argv)
         Env.GetIfArgPrefixInt("-p=", 0, "Pivot selection (0 for random)\t");
     const int FwBwMethod =
         Env.GetIfArgPrefixInt("-m=", 0, "Specify FW-BW variant\t\t");
-	const bool Timer =
-        Env.GetIfArgPrefixInt("-time=", false, "Time execution\t\t\t");
-	const bool Output =
-        Env.GetIfArgPrefixInt("-out=", false, "Print SCC output to file\t");
 	const bool Help =
-        Env.GetIfArgPrefixInt("-h=", false, "Print help section\t\t");
-	const bool Analyse =
-        Env.GetIfArgPrefixInt("-a=", false, "Print debug information\t\t");
+        Env.GetIfArgPrefixBool("-h=", false, "Print help section\t\t");
+	const bool Output =
+        Env.GetIfArgPrefixBool("-out=", false, "Print SCC output to file\t");
+	const int Timer =
+        Env.GetIfArgPrefixInt("-time=", 0, "Print timers\t\t\t");
+	const int Analyse =
+        Env.GetIfArgPrefixInt("-a=", 0, "Print debug information\t\t");
 
 	if (Help)
 	{
@@ -84,7 +204,7 @@ int main(int argc, char **argv)
 		cout << "    " << "1 = trim-1" << "\n";
 		cout << "    " << "2 = trim-1,2" << "\n";
 		cout << "    " << "3 = trim-1,2,3" << "\n";
-		//TODO: partrim???
+		
 		cout << "  " << "Pivot methods:" << "\n";
 		cout << "    " << "0 = first occurrence" << "\n";
 		cout << "    " << "1 = max degree product" << "\n";
@@ -100,10 +220,25 @@ int main(int argc, char **argv)
 		cout << "    " << "1 = FWBW with parallel bfs" << "\n";
 		cout << "    " << "2 = Recursive FWBW" << "\n";
 
+
+		cout << "\n" << "Print:" << "\n";
+		cout << "  " << "Timers:" << "\n";
+		cout << "    " << "0 = no printing" << "\n";
+		cout << "    " << "1 = print to stdout" << "\n";
+		cout << "    " << "2 = print to file" << "\n";
+
+		cout << "  " << "Debug:" << "\n";
+		cout << "    " << "0 = no printing" << "\n";
+		cout << "    " << "1 = print to stdout" << "\n";
+		cout << "    " << "2 = print to file" << "\n";
+
+
 		return 0;
 	}
 	
 	cout << "\n";
+
+	
 
     // Load the graph 
 	cout << "Loading graph\n";
@@ -387,18 +522,9 @@ int main(int argc, char **argv)
 */
 
 
-	if (Timer){
-		printTime(enhgraph);
-	}
-
-	if (Output) {
-		printFile(enhgraph);
-	}
-
-	if (Analyse) {
-		printInfo(enhgraph);
-	}
-
+	printTime(enhgraph, InEdges, Timer);
+	printFile(enhgraph, InEdges, Output);
+	printInfo(enhgraph, InEdges, Analyse);
 
     return 0;
 }

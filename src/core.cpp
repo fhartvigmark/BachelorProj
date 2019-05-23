@@ -40,6 +40,11 @@ void enhancedgraph::endTimer(TimePoint start, eTimer timer) {
 				tTrim += dur;
 				omp_unset_lock(&lTrim);
 				break;
+			case eTimer::FirstTRIM:
+				omp_set_lock(&lFirstTrim);
+				tFirstTrim += dur;
+				omp_unset_lock(&lFirstTrim);
+				break;
 			case eTimer::PIVOT:
 				omp_set_lock(&lPivot);
 				tPivot += dur;
@@ -72,6 +77,8 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 			return std::chrono::duration_cast<Ms>(tFWBW).count();
 		case eTimer::TRIM:
 			return std::chrono::duration_cast<Ms>(tTrim).count();
+		case eTimer::FirstTRIM:
+			return std::chrono::duration_cast<Ms>(tFirstTrim).count();
 		case eTimer::PIVOT:
 			return std::chrono::duration_cast<Ms>(tPivot).count();
 		case eTimer::SETUP:
@@ -83,25 +90,58 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 
 void enhancedgraph::reportFWBW(int depth) {
 	if (ANALYSE_ENABLED) {
+		omp_set_lock(&lDebugFWBW);
 		callsFWBW++;
 
 		if (depth > depthFWBW) {
 			depthFWBW = depth;
 		}
+		omp_unset_lock(&lDebugFWBW);
 	}
 }
 
-void enhancedgraph::reportTrim(int color, int amount) {
+void enhancedgraph::reportTrim(int color, int amount, int type) {
 	if (ANALYSE_ENABLED) {
+		omp_set_lock(&lDebugTrim);
 		trimColor->push_back(color);
 		trimAmount->push_back(amount);
+		trimType->push_back(type);
+		omp_unset_lock(&lDebugTrim);
 	}
 }
 
 void enhancedgraph::reportPivot(int color, int node) {
-	if (ANALYSE_ENABLED) {
+	if (ANALYSE_ENABLED && node > -1) {
+		omp_set_lock(&lDebugPivot);
 		pivotColor->push_back(color);
 		pivotNode->push_back(node);
+		omp_unset_lock(&lDebugPivot);
+	}
+}
+
+int64_t enhancedgraph::getCalls() {
+	return callsFWBW;
+}
+
+int64_t enhancedgraph::getDepth() {
+	return depthFWBW;
+}
+
+std::list<int>* enhancedgraph::getReports(eDebug data) {
+	switch (data)
+	{
+		case eDebug::tAmount:
+			return trimAmount;
+		case eDebug::tColor:
+			return trimColor;
+		case eDebug::tType:
+			return trimType;
+		case eDebug::pColor:
+			return pivotColor;
+		case eDebug::pNode:
+			return pivotNode;
+		default:
+			return {};
 	}
 }
 
@@ -130,6 +170,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 		tFirstFWBW = Duration::zero();
 		tFWBW = Duration::zero();
 		tTrim = Duration::zero();
+		tFirstTrim = Duration::zero();
 		tPivot = Duration::zero();
 		tSetup = Duration::zero();
 
@@ -137,6 +178,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 		omp_init_lock(&lFirstFWBW);
 		omp_init_lock(&lFWBW);
 		omp_init_lock(&lTrim);
+		omp_init_lock(&lFirstTrim);
 		omp_init_lock(&lPivot);
 		omp_init_lock(&lSetup);
 	}
@@ -152,6 +194,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 
 		trimAmount = new std::list<int>;
 		trimColor = new std::list<int>;
+		trimType = new std::list<int>;
 		pivotNode = new std::list<int>;
 		pivotColor = new std::list<int>;
 	}
@@ -165,6 +208,7 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 		tFirstFWBW = Duration::zero();
 		tFWBW = Duration::zero();
 		tTrim = Duration::zero();
+		tFirstTrim = Duration::zero();
 		tPivot = Duration::zero();
 		tSetup = Duration::zero();
 
@@ -172,6 +216,7 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 		omp_init_lock(&lFirstFWBW);
 		omp_init_lock(&lFWBW);
 		omp_init_lock(&lTrim);
+		omp_init_lock(&lFirstTrim);
 		omp_init_lock(&lPivot);
 		omp_init_lock(&lSetup);
 	}
@@ -187,6 +232,7 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 
 		trimAmount = {};
 		trimColor = {};
+		trimType = {};
 		pivotNode = {};
 		pivotColor = {};
 	}
@@ -207,6 +253,7 @@ enhancedgraph::~enhancedgraph() {
 
 		delete trimAmount;
 		delete trimColor;
+		delete trimType;
 		delete pivotNode;
 		delete pivotColor;
 	}
@@ -217,6 +264,7 @@ enhancedgraph::~enhancedgraph() {
 		omp_destroy_lock(&lFirstFWBW);
 		omp_destroy_lock(&lFWBW);
 		omp_destroy_lock(&lTrim);
+		omp_destroy_lock(&lFirstTrim);
 		omp_destroy_lock(&lPivot);
 		omp_destroy_lock(&lSetup);
 	}

@@ -33,6 +33,7 @@ int pivot::findPivot(enhancedgraph *g, int color, int method) {
 	}
 
 	g->endTimer(start, eTimer::PIVOT);
+	g->reportPivot(color, retVal);
 	return retVal;
 }
 

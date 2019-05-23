@@ -60,6 +60,7 @@ int trim::trim1(enhancedgraph *g, int color)
 	TSnapQueue<int> Queue;
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
+	int count = 0;
 
 	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
     {
@@ -81,6 +82,7 @@ int trim::trim1(enhancedgraph *g, int color)
 
 			if (inDegree == 0) {
 				colors->AddDat(node, g->colorGen->getNext());
+				count++;
 				Queue.Push(node);
 				continue;
 			}
@@ -100,6 +102,7 @@ int trim::trim1(enhancedgraph *g, int color)
 
 			if (outDegree == 0) {
 				colors->AddDat(node, g->colorGen->getNext());
+				count++;
 				Queue.Push(node);
 				continue;
 			}
@@ -136,6 +139,7 @@ int trim::trim1(enhancedgraph *g, int color)
 				if (inDegree == 0)
 				{
 					colors->AddDat(node, g->colorGen->getNext());
+					count++;
 					Queue.Push(node);
 					continue;
 				}
@@ -157,6 +161,7 @@ int trim::trim1(enhancedgraph *g, int color)
 				if (outDegree == 0)
 				{
 					colors->AddDat(node, g->colorGen->getNext());
+					count++;
 					Queue.Push(node);
 					continue;
 				}
@@ -185,6 +190,7 @@ int trim::trim1(enhancedgraph *g, int color)
 				if (inDegree == 0)
 				{
 					colors->AddDat(node, g->colorGen->getNext());
+					count++;
 					Queue.Push(node);
 					continue;
 				}
@@ -206,13 +212,15 @@ int trim::trim1(enhancedgraph *g, int color)
 				if (outDegree == 0)
 				{
 					colors->AddDat(node, g->colorGen->getNext());
+					count++;
 					Queue.Push(node);
 					continue;
 				}
 			}
 		}
 	}
-	
+
+	g->reportTrim(color, count, 1);
     return -1;
 };
 
@@ -222,8 +230,10 @@ int trim::partrim1(enhancedgraph *g, int color)
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
+	int count = 0;
+	int count2 = 0;
 
-	#pragma omp parallel for schedule(static)
+	#pragma omp parallel for schedule(static) reduction(+:count)
 	for (int i = 0; i < Ids->Len(); i++)
 	{
 		int node = Ids->GetVal(i);
@@ -243,7 +253,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 				int outNode = NodeI.GetInNId(v);
 				//std::cout << "Error on node " << outNode << "\n";
 				int outColor;
-#pragma omp critical 
+				#pragma omp critical 
 				{
 					outColor = colors->GetDat(outNode);
 				}
@@ -260,6 +270,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 				#pragma omp critical
 				{
 					colors->AddDat(node, g->colorGen->getNext());
+					count++;
 					Queue.Push(node);
 				}
 				continue;
@@ -284,6 +295,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 				#pragma omp critical
 				{
 					colors->AddDat(node, g->colorGen->getNext());
+					count++;
 					Queue.Push(node);
 				}
 				continue;
@@ -294,7 +306,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 	while (!Queue.Empty())
 	{
 		int qsize = Queue.Len();
-		#pragma omp parallel for schedule(static)
+		#pragma omp parallel for schedule(static) reduction(+:count2)
 		for (int q = 0; q < qsize; q++)
 		{
 			int oldnode;
@@ -310,7 +322,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 				int node = OldNodeI.GetInNId(i);
 
 				int nodeColor;
-#pragma omp critical 
+				#pragma omp critical 
 				{
 					nodeColor = colors->GetDat(node);
 				}
@@ -336,6 +348,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 						#pragma omp critical 
 						{
 							colors->AddDat(node, g->colorGen->getNext());
+							count2++;
 							Queue.Push(node);
 						}
 						continue;
@@ -360,6 +373,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 						#pragma omp critical 
 						{
 							colors->AddDat(node, g->colorGen->getNext());
+							count2++;
 							Queue.Push(node);
 						}
 						continue;
@@ -370,7 +384,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 			{
 				int node = OldNodeI.GetOutNId(i);
 				int nodeColor;
-#pragma omp critical
+				#pragma omp critical
 				{
 					nodeColor = colors->GetDat(node);
 				}
@@ -395,6 +409,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 						#pragma omp critical
 						{
 							colors->AddDat(node, g->colorGen->getNext());
+							count2++;
 							Queue.Push(node);
 						}
 						continue;
@@ -419,6 +434,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 						#pragma omp critical
 						{
 							colors->AddDat(node, g->colorGen->getNext());
+							count2++;
 							Queue.Push(node);
 						}
 						continue;
@@ -429,6 +445,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 		
 	}
 
+	g->reportTrim(color, count + count2, 1);
 	return -1;
 };
 
@@ -437,6 +454,7 @@ int trim::trim2(enhancedgraph *g, int color)
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
+	int count = 0;
 
 	for (int i = 0; i < Ids->Len(); i++)
 	{	
@@ -480,6 +498,7 @@ int trim::trim2(enhancedgraph *g, int color)
 					int newSCC = g->colorGen->getNext();
 					colors->AddDat(node, newSCC);
 					colors->AddDat(lastNode, newSCC);
+					count++;
 					continue;
 				}
 			}
@@ -519,11 +538,14 @@ int trim::trim2(enhancedgraph *g, int color)
 					int newSCC = g->colorGen->getNext();
 					colors->AddDat(node, newSCC);
 					colors->AddDat(lastNode, newSCC);
+					count++;
 					continue;
 				}
 			}
 		}
 	}
+
+	g->reportTrim(color, count, 2);
 	return -1;
 };
 
@@ -532,8 +554,9 @@ int trim::partrim2(enhancedgraph *g, int color)
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
+	int count = 0;
 
-	#pragma omp parallel for schedule(static)
+	#pragma omp parallel for schedule(static) reduction(+:count)
 	for (int i = 0; i < Ids->Len(); i++)
 	{
 		int node = Ids->GetVal(i);
@@ -574,6 +597,7 @@ int trim::partrim2(enhancedgraph *g, int color)
 						int newSCC = g->colorGen->getNext();
 						colors->AddDat(node, newSCC);
 						colors->AddDat(lastNode, newSCC);
+						count++;
 					}
 					continue;
 				}
@@ -612,12 +636,15 @@ int trim::partrim2(enhancedgraph *g, int color)
 						int newSCC = g->colorGen->getNext();
 						colors->AddDat(node, newSCC);
 						colors->AddDat(lastNode, newSCC);
+						count++;
 					}
 					continue;
 				}
 			}
 		}
 	}
+
+	g->reportTrim(color, count, 2);
 	return -1;
 };
 
@@ -625,6 +652,7 @@ int trim::trim3(enhancedgraph *g, int color){
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
+	int count = 0;
 
 	for (int i = 0; i < Ids->Len(); i++)
 	{
@@ -695,6 +723,7 @@ int trim::trim3(enhancedgraph *g, int color){
 						colors->AddDat(node, newSCC);
 						colors->AddDat(nodeB, newSCC);
 						colors->AddDat(nodeC, newSCC);
+						count++;
 					}
 					continue;
 				}
@@ -744,6 +773,7 @@ int trim::trim3(enhancedgraph *g, int color){
 						colors->AddDat(node, newSCC);
 						colors->AddDat(nodeB, newSCC);
 						colors->AddDat(nodeC, newSCC);
+						count++;
 					}
 					continue;
 				}
@@ -817,6 +847,7 @@ int trim::trim3(enhancedgraph *g, int color){
 						colors->AddDat(node, newSCC);
 						colors->AddDat(nodeB, newSCC);
 						colors->AddDat(nodeC, newSCC);
+						count++;
 					}
 					continue;
 				}
@@ -866,6 +897,7 @@ int trim::trim3(enhancedgraph *g, int color){
 						colors->AddDat(node, newSCC);
 						colors->AddDat(nodeB, newSCC);
 						colors->AddDat(nodeC, newSCC);
+						count++;
 					}
 					continue;
 				}
@@ -873,6 +905,7 @@ int trim::trim3(enhancedgraph *g, int color){
 		}
 	}
 
+	g->reportTrim(color, count, 3);
 	return -1;
 };
 
@@ -881,8 +914,9 @@ int trim::partrim3(enhancedgraph *g, int color)
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
+	int count = 0;
 
-	#pragma omp parallel for schedule(static)
+	#pragma omp parallel for schedule(static) reduction(+:count)
 	for (int i = 0; i < Ids->Len(); i++)
 	{
 		int node = Ids->GetVal(i);
@@ -973,6 +1007,7 @@ int trim::partrim3(enhancedgraph *g, int color)
 								colors->AddDat(node, newSCC);
 								colors->AddDat(nodeB, newSCC);
 								colors->AddDat(nodeC, newSCC);
+								count++;
 							}
 						}
 					}
@@ -1028,6 +1063,7 @@ int trim::partrim3(enhancedgraph *g, int color)
 								colors->AddDat(node, newSCC);
 								colors->AddDat(nodeB, newSCC);
 								colors->AddDat(nodeC, newSCC);
+								count++;
 							}
 						}
 					}
@@ -1118,6 +1154,7 @@ int trim::partrim3(enhancedgraph *g, int color)
 								colors->AddDat(node, newSCC);
 								colors->AddDat(nodeB, newSCC);
 								colors->AddDat(nodeC, newSCC);
+								count++;
 							}
 						}
 					}
@@ -1173,6 +1210,7 @@ int trim::partrim3(enhancedgraph *g, int color)
 								colors->AddDat(node, newSCC);
 								colors->AddDat(nodeB, newSCC);
 								colors->AddDat(nodeC, newSCC);
+								count++;
 							}
 						}
 					}
@@ -1182,5 +1220,6 @@ int trim::partrim3(enhancedgraph *g, int color)
 		}
 	}
 
+	g->reportTrim(color, count, 3);
 	return -1;
 };

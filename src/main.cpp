@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 	const bool Help =
         Env.GetIfArgPrefixInt("-h=", false, "Print help section\t\t");
 	const bool Analyse =
-        Env.GetIfArgPrefixInt("-a=", false, "Print information about the execution\t\t");
+        Env.GetIfArgPrefixInt("-a=", false, "Print debug information\t\t");
 
 	if (Help)
 	{

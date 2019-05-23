@@ -70,10 +70,51 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 	//TODO: print fwbw depth, fwbw calls, pivot selections, trim amount
 	//TODO: add getters
 	//TODO: add report calls to code
+	if (operation == 0) {
+		return;
+	}
+	int fwbwCalls = enhgraph->getCalls();
+	int fwbwDepth = enhgraph->getDepth();
+	int sccs = fwbwCalls;
+
+	std::list<int> *trimAmount = enhgraph->getReports(eDebug::tAmount);
+	std::list<int> *trimColor = enhgraph->getReports(eDebug::tColor);
+	std::list<int> *trimType = enhgraph->getReports(eDebug::tType);
+	std::list<int> *pivotNode = enhgraph->getReports(eDebug::pNode);
+	std::list<int> *pivotColor = enhgraph->getReports(eDebug::pColor);
+
+	for (auto it = trimAmount->cbegin(); it != trimAmount->cend(); it++) {
+		sccs += *it;
+	}
+
 	if (operation == 1) {
 		cout << "\nDebug information: \n";
-
+		cout << "  " << "#SCCs: " << sccs << "\n";
+		cout << "  " << "#FWBW calls: " << fwbwCalls << "\n";
+		cout << "  " << "#FWBW depth: " << fwbwDepth << "\n";
 		
+		cout << "  " << "pivots: " << "\n";
+		while (!pivotNode->empty()) {
+			int node = pivotNode->front();
+			pivotNode->pop_front();
+			int color = pivotColor->front();
+			pivotColor->pop_front();
+
+			cout << "    " << "Chosen node " << node << " for color " << color << "\n";
+		}
+
+		cout << "  " << "trims: " << "\n";
+		while (!trimAmount->empty()) {
+			int amount = trimAmount->front();
+			trimAmount->pop_front();
+			int color = trimColor->front();
+			trimColor->pop_front();
+			int type = trimType->front();
+			trimType->pop_front();
+
+			cout << "    " << "Trim " << type << " trimmed " << amount << " for color " << color << "\n";
+		}
+
 	} else if (operation == 2) {
 		cout << "\nWriting debug output\n";
 
@@ -83,6 +124,32 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 		ofstream file;
 		file.open(fileName.GetCStr());
 
+		file << "\nDebug information: \n";
+		file << "  " << "#SCCs: " << sccs << "\n";
+		file << "  " << "#FWBW calls: " << fwbwCalls << "\n";
+		file << "  " << "#FWBW depth: " << fwbwDepth << "\n";
+		
+		file << "  " << "pivots: " << "\n";
+		while (!pivotNode->empty()) {
+			int node = pivotNode->front();
+			pivotNode->pop_front();
+			int color = pivotColor->front();
+			pivotColor->pop_front();
+
+			file << "    " << "Chosen node " << node << " for color " << color << "\n";
+		}
+
+		file << "  " << "trims: " << "\n";
+		while (!trimAmount->empty()) {
+			int amount = trimAmount->front();
+			trimAmount->pop_front();
+			int color = trimColor->front();
+			trimColor->pop_front();
+			int type = trimType->front();
+			trimType->pop_front();
+
+			file << "    " << "Trim " << type << " trimmed " << amount << " for color " << color << "\n";
+		}
 
 		file.close();
 

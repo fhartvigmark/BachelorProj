@@ -51,6 +51,7 @@ vector<int> generateSCClist(string filename)
 
 int main(int argc, char **argv)
 {
+	int retVal = 0;
 	string scc1FileName = "";
 	string scc2FileName = "";
 	if (argc == 3)
@@ -69,15 +70,23 @@ int main(int argc, char **argv)
 
 	if(scclist1.size()!=scclist2.size()){
 		cout << "SCCs have different sizes";
-		return 0;
+		retVal = -1;
 	}
 
 	for (int i = 0; i < scclist1.size(); i++)
 	{
 		if(scclist1.at(i)!=scclist2.at(i)){
 			cout << "Size of SCC " << i << " doesn't match " << scclist1.at(i) << " vs. " << scclist2.at(i) << "\n";
+			retVal -1;
 		}
 	}
 
-	return 0;
+	if(retVal == 0){
+		cout << "SCCs seems to match \n";
+	}else{
+		cout << "SCCs appear to be different \n";
+	}
+	
+
+	return retVal;
 }

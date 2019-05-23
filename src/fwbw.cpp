@@ -1,16 +1,58 @@
 #include "fwbw.h"
 
-int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int method) {
-	switch (method){
-        case 0:
-            return fwbw::basicFWBW(g, trimlevel, pivotmethod, startColor);
-		case 1:
-            return fwbw::parFWBW(g, trimlevel, pivotmethod, startColor);	
-		case 2:
-			return fwbw::recFWBW(g, trimlevel, pivotmethod, startColor);		
-    }
-}
+int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int method)
+{
 
+	if (trimlevel > 0)
+	{
+		trim::doParTrim(1, g, startColor);
+	}
+
+	int startNode = pivot::findPivot(g, startColor, pivotmethod);
+	if (startNode == -1)
+	{
+		return -1;
+	}
+
+	TimePoint start = g->startTimer();
+	std::pair<int, int> newColors = bfs::parbfs(g, startColor, startNode);
+	g->endTimer(start, eTimer::FWBWs);
+
+	switch (method)
+	{
+	case 0:
+		fwbw::basicFWBW(g, trimlevel, pivotmethod, startColor);
+		fwbw::basicFWBW(g, trimlevel, pivotmethod, newColors.first);
+		fwbw::basicFWBW(g, trimlevel, pivotmethod, newColors.second);
+	case 1:
+		fwbw::parFWBW(g, trimlevel, pivotmethod, startColor);
+		fwbw::parFWBW(g, trimlevel, pivotmethod, newColors.first);
+		fwbw::parFWBW(g, trimlevel, pivotmethod, newColors.second);
+	case 2:
+#pragma omp parallel
+	{
+#pragma omp single nowait
+		{
+#pragma omp task shared(g)
+			{
+				recFWBW(g, trimlevel, pivotmethod, startColor);
+			}
+
+#pragma omp task shared(g)
+			{
+				recFWBW(g, trimlevel, pivotmethod, newColors.first);
+			}
+
+#pragma omp task shared(g)
+			{
+				recFWBW(g, trimlevel, pivotmethod, newColors.second);
+			}
+		}
+#pragma omp taskwait
+	}
+	}
+	return 0;
+}
 
 //Coloring based basic fw-bw
 int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor){

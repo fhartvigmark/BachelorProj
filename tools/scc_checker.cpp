@@ -36,7 +36,7 @@ vector<scc> generateSCClist(string filename)
 		sccFile.close();
 	}
 	else
-		cout << "Unable to open file";
+		cout << "Unable to open file\n";
 	
 	vector<scc> sccSizes(0);
 
@@ -60,8 +60,25 @@ vector<scc> generateSCClist(string filename)
 	return sccSizes;
 }
 
+void generateOutput(string filename, vector<scc> list){
+	ofstream outfile(filename);
+
+	if (outfile.is_open())
+	{
+		for (int i = 0; i < list.size(); i++)
+		{
+			outfile << list.at(i).color << " " << list.at(i).size << "\n";
+		}
+		
+		outfile.close();
+	}
+	else
+		cout << "Unable to open output file\n";
+}
+
 int main(int argc, char **argv)
 {
+	bool generateOutputs = false;
 	int retVal = 0;
 	string scc1FileName = "";
 	string scc2FileName = "";
@@ -70,14 +87,26 @@ int main(int argc, char **argv)
 		scc1FileName = argv[1];
 		scc2FileName = argv[2];
 	}
+	else if (argc == 4)
+	{
+		scc1FileName = argv[1];
+		scc2FileName = argv[2];
+		generateOutputs = true;
+	}
 	else
 	{
-		cout << "Usage: ./scc_checker scc1File scc2File\n";
+		cout << "Usage: ./scc_checker scc1File scc2File {OPTIONAL: o}  \n";
+		cout << "o flag generates outputfiles \n";
 		return 1;
 	}
 
 	vector<scc> scclist1 = generateSCClist(scc1FileName);
 	vector<scc> scclist2 = generateSCClist(scc2FileName);
+
+	if(generateOutputs){
+		generateOutput("outfile1.txt", scclist1);
+		generateOutput("outfile2.txt", scclist2);
+	}
 
 	int upperLimit = min(scclist1.size(), scclist2.size());
 
@@ -85,7 +114,6 @@ int main(int argc, char **argv)
 		cout << "SCCs have different sizes";
 		retVal = -1;
 	}
-
 
 	for (int i = 0; i < upperLimit; i++)
 	{

@@ -85,6 +85,8 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 	std::list<int> *trimType = enhgraph->getReports(eDebug::tType);
 	std::list<int> *pivotNode = enhgraph->getReports(eDebug::pNode);
 	std::list<int> *pivotColor = enhgraph->getReports(eDebug::pColor);
+	std::list<int> *bfsAmount = enhgraph->getReports(eDebug::bAmount);
+	std::list<int> *bfsColor = enhgraph->getReports(eDebug::bColor);
 
 	for (auto it = trimAmount->cbegin(); it != trimAmount->cend(); it++) {
 		sccs += *it;
@@ -120,6 +122,17 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 			trimType->pop_front();
 
 			cout << "    " << "Trim " << type << " trimmed " << amount << " for color " << color << "\n";
+		}
+
+		cout << "  " << "BFS calls: " << bfsColor->size() << "\n";
+		cout << "  " << "BFS SCCs: " << "\n";
+		while (!pivotNode->empty()) {
+			int amount = bfsAmount->front();
+			bfsAmount->pop_front();
+			int color = bfsColor->front();
+			bfsColor->pop_front();
+
+			cout << "    " << "BFS found SCC of size " << amount << " for color " << color << "\n";
 		}
 
 	} else if (operation == 2) {

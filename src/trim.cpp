@@ -4,20 +4,30 @@
 int trim::doTrim(int trimlevel, enhancedgraph *g, int color) {
 	int retVal = -1;
 	TimePoint start = g->startTimer();
+	TimePoint start2;
 
 	switch (trimlevel)
 	{
 		case 1:
 			retVal = trim::trim1(g, color);
+			g->endTimer(start, eTimer::TRIM1);
 			break;
 		case 2:
 			trim::trim1(g, color);
+			g->endTimer(start, eTimer::TRIM1);
+			start2 = g->startTimer();
 			retVal = trim::trim2(g, color);
+			g->endTimer(start2, eTimer::TRIM2);
 			break;
 		case 3:
 			trim::trim1(g, color);
+			g->endTimer(start, eTimer::TRIM1);
+			start2 = g->startTimer();
 			trim::trim2(g, color);
+			g->endTimer(start2, eTimer::TRIM2);
+			start2 = g->startTimer();
 			retVal = trim::trim3(g, color);
+			g->endTimer(start2, eTimer::TRIM3);
 			break;
 		default:
 			retVal = -1;
@@ -36,15 +46,25 @@ int trim::doParTrim(int trimlevel, enhancedgraph *g, int color) {
 	{
 		case 1:
 			retVal = trim::partrim1(g, color);
+			g->endTimer(start, eTimer::TRIM1);
+
 			break;
 		case 2:
 			trim::partrim1(g, color);
+			g->endTimer(start, eTimer::TRIM1);
+			start = g->startTimer();
 			retVal = trim::partrim2(g, color);
+			g->endTimer(start, eTimer::TRIM2);
 			break;
 		case 3:
 			trim::partrim1(g, color);
+			g->endTimer(start, eTimer::TRIM1);
+			start = g->startTimer();
 			trim::partrim2(g, color);
+			g->endTimer(start, eTimer::TRIM2);
+			start = g->startTimer();
 			retVal = trim::partrim3(g, color);
+			g->endTimer(start, eTimer::TRIM3);
 			break;
 		default:
 			retVal = -1;

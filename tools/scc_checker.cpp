@@ -2,12 +2,19 @@
 #include <iostream>
 #include <map>
 #include <fstream>
+#include <iterator>
 #include <sstream>
 #include <algorithm>
 #include <vector>
 using namespace std;
 
-vector<int> generateSCClist(string filename)
+struct scc
+{
+	int color;
+	int size;
+};
+
+vector<scc> generateSCClist(string filename)
 {
 	string line;
 	ifstream sccFile(filename);
@@ -30,23 +37,26 @@ vector<int> generateSCClist(string filename)
 	}
 	else
 		cout << "Unable to open file";
-
-	vector<int> sccSizes(0);
 	
+	vector<scc> sccSizes(0);
+
 	for_each(sccMap.begin(), sccMap.end(),
 			 [&sccSizes](const std::pair<int, int> &entry) {
-				 sccSizes.push_back(entry.second);
+				 scc current_scc = {entry.first, entry.second};
+				 sccSizes.push_back(current_scc);
 			 });
 
-	sort(sccSizes.begin(), sccSizes.end());
-	reverse(sccSizes.begin(), sccSizes.end());
-	
-	cout << filename << " contains " << sccSizes.size() << " SCCs \n";
+	std::sort(sccSizes.begin(), sccSizes.end(),
+			  [](auto const &a, auto const &b) { return a.size > b.size; });
+
+	cout << filename << " contains the following SCCs: \n";
 	for (int i = 0; i < sccSizes.size(); i++)
 	{
-		cout << "SCC " << i << " has size " << sccSizes.at(i) << "\n";
+		cout << "SCC color " << sccSizes.at(i).color << " has size " << sccSizes.at(i).size << "\n";
 	}
 	
+	
+	cout << filename << " contains " << sccSizes.size() << " SCCs \n";
 	return sccSizes;
 }
 
@@ -66,18 +76,21 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	vector<int> scclist1 = generateSCClist(scc1FileName);
-	vector<int> scclist2 = generateSCClist(scc2FileName);
+	vector<scc> scclist1 = generateSCClist(scc1FileName);
+	vector<scc> scclist2 = generateSCClist(scc2FileName);
+
+	int upperLimit = min(scclist1.size(), scclist2.size());
 
 	if(scclist1.size()!=scclist2.size()){
 		cout << "SCCs have different sizes";
 		retVal = -1;
 	}
 
-	for (int i = 0; i < scclist1.size(); i++)
+
+	for (int i = 0; i < upperLimit; i++)
 	{
-		if(scclist1.at(i)!=scclist2.at(i)){
-			cout << "Size of SCC " << i << " doesn't match " << scclist1.at(i) << " vs. " << scclist2.at(i) << "\n";
+		if(scclist1.at(i).size!=scclist2.at(i).size){
+			cout << "Size of SCC " << i << " doesn't match " << scclist1.at(i).size << " vs. " << scclist2.at(i).size << "\n";
 			retVal -1;
 		}
 	}

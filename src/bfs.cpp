@@ -5,6 +5,7 @@ std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
     TSnapQueue<int> Queue;
     TIntH *colors = g->colors;
     PNGraph pgraph = g->graph;
+	int count = 0;
 
     Queue.Push(startNode);
 
@@ -65,6 +66,7 @@ std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
         }else if (nodeColor == fwColor)
         {
             colors->AddDat(node, sccColor);
+			count++;
 
             //Get node iterator for the current node
             const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
@@ -82,6 +84,8 @@ std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
             }
         }
     }
+
+	g->reportBFS(color, count);
     return std::make_pair(fwColor, bwColor);
 }
 
@@ -89,6 +93,7 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 	TSnapQueue<int> Queue;
 	TIntH *colors = g->colors;
 	PNGraph pgraph = g->graph;
+	int totalCount = 0;
 
 	Queue.Push(startNode);
 
@@ -139,8 +144,9 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 	while (!Queue.Empty())
 	{
 		int qsize = Queue.Len();
+		int count = 0;
 
-		#pragma omp parallel for 
+		#pragma omp parallel for reduction(+:count)
 		for (int i = 0; i < qsize; i++)
 		{
 			int node = 0;
@@ -176,6 +182,7 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 			else if (nodeColor == fwColor)
 			{
 				colors->AddDat(node, sccColor);
+				count++;
 
 				//Get node iterator for the current node
 				const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
@@ -194,7 +201,11 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 				}
 			}
 		}
+
+		totalCount += count;
 	}
+
+	g->reportBFS(color, totalCount);
 	return std::make_pair(fwColor, bwColor);
 }
 
@@ -203,6 +214,7 @@ int bfs::fwbfs(enhancedgraph *g, int color, int startNode) {
     TSnapQueue<int> Queue;
     TIntH *colors = g->colors;
     PNGraph pgraph = g->graph;
+	int count = 0;
 
     Queue.Push(startNode);
 
@@ -244,6 +256,7 @@ int bfs::fwbfs(enhancedgraph *g, int color, int startNode) {
 		if (nodeColor == fwColor)
         {
             colors->AddDat(node, sccColor);
+			count++;
 
             //Get node iterator for the current node
             const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
@@ -261,6 +274,7 @@ int bfs::fwbfs(enhancedgraph *g, int color, int startNode) {
             }
         }
     }
+	g->reportBFS(color, count);
     return fwColor;
 }
 
@@ -268,6 +282,7 @@ int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) {
 	TSnapQueue<int> Queue;
 	TIntH *colors = g->colors;
 	PNGraph pgraph = g->graph;
+	int totalCount = 0;
 
 	Queue.Push(startNode);
 
@@ -318,8 +333,9 @@ int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) {
 	while (!Queue.Empty())
 	{
 		int qsize = Queue.Len();
+		int count = 0;
 
-		#pragma omp parallel for 
+		#pragma omp parallel for reduction(+:count)
 		for (int i = 0; i < qsize; i++)
 		{
 			int node = 0;
@@ -353,6 +369,10 @@ int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) {
 				}
 			}
 		}
+
+		totalCount += count;
 	}
+
+	g->reportBFS(color, totalCount);
 	return fwColor;
 }

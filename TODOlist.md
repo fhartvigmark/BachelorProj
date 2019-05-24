@@ -39,4 +39,3 @@
 * SCC output structure _(in progress)_
 * Graph analysis tool, and plotting
 * Testing tool
- Read output files, group by SCC, compare groupings

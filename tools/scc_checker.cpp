@@ -104,8 +104,8 @@ int main(int argc, char **argv)
 	vector<scc> scclist2 = generateSCClist(scc2FileName);
 
 	if(generateOutputs){
-		generateOutput("outfile1.txt", scclist1);
-		generateOutput("outfile2.txt", scclist2);
+		generateOutput("outfile1.out", scclist1);
+		generateOutput("outfile2.out", scclist2);
 	}
 
 	int upperLimit = min(scclist1.size(), scclist2.size());

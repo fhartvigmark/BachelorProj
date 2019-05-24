@@ -7,7 +7,7 @@
 enum ePivot{Random, Max, MaxColor, ParRandom, ParMax, ParMaxColor, RandWalk};
 enum eMethod{FWBW, ParFWBW, RecFWBW};
 enum eTrim{Trim1, Trim2, Trim3, ParTrim1, ParTrim2, ParTrim3};
-enum eTimer{MAIN, FirstFWBW, FWBWs, TRIM, FirstTRIM, PIVOT, SETUP};
+enum eTimer{MAIN, FirstFWBW, FWBWs, TRIM, FirstTRIM, TRIM1, TRIM2, TRIM3, PIVOT, SETUP};
 enum eDebug{tAmount, tColor, tType, pColor, pNode};
 
 typedef std::chrono::high_resolution_clock Time;
@@ -44,7 +44,9 @@ class enhancedgraph
 		void reportTrim(int color, int amount, int type);
 		void reportPivot(int color, int node);
 
-		int64_t getCalls();
+		int64_t getCallsFWBW();
+		int64_t getCallsTrim();
+		int64_t getCallsPivot();
 		int64_t getDepth();
 		std::list<int>* getReports(eDebug data);
 
@@ -64,6 +66,9 @@ class enhancedgraph
         Duration tFirstFWBW;
         Duration tFWBW;
         Duration tTrim;
+        Duration tTrim1;
+        Duration tTrim2;
+        Duration tTrim3;
         Duration tFirstTrim;
         Duration tPivot;
         Duration tSetup;
@@ -80,5 +85,7 @@ class enhancedgraph
 		omp_lock_t lDebugPivot;
 		
 		int64_t callsFWBW;
+		int64_t callsTrim;
+		int64_t callsPivot;
 		int64_t depthFWBW;
 };

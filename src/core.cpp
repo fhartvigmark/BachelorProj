@@ -40,6 +40,21 @@ void enhancedgraph::endTimer(TimePoint start, eTimer timer) {
 				tTrim += dur;
 				omp_unset_lock(&lTrim);
 				break;
+			case eTimer::TRIM1:
+				omp_set_lock(&lTrim);
+				tTrim1 += dur;
+				omp_unset_lock(&lTrim);
+				break;
+			case eTimer::TRIM2:
+				omp_set_lock(&lTrim);
+				tTrim2 += dur;
+				omp_unset_lock(&lTrim);
+				break;
+			case eTimer::TRIM3:
+				omp_set_lock(&lTrim);
+				tTrim3 += dur;
+				omp_unset_lock(&lTrim);
+				break;
 			case eTimer::FirstTRIM:
 				omp_set_lock(&lFirstTrim);
 				tFirstTrim += dur;
@@ -77,6 +92,12 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 			return std::chrono::duration_cast<Ms>(tFWBW).count();
 		case eTimer::TRIM:
 			return std::chrono::duration_cast<Ms>(tTrim).count();
+		case eTimer::TRIM1:
+			return std::chrono::duration_cast<Ms>(tTrim1).count();
+		case eTimer::TRIM2:
+			return std::chrono::duration_cast<Ms>(tTrim2).count();
+		case eTimer::TRIM3:
+			return std::chrono::duration_cast<Ms>(tTrim3).count();
 		case eTimer::FirstTRIM:
 			return std::chrono::duration_cast<Ms>(tFirstTrim).count();
 		case eTimer::PIVOT:
@@ -106,21 +127,36 @@ void enhancedgraph::reportTrim(int color, int amount, int type) {
 		trimColor->push_back(color);
 		trimAmount->push_back(amount);
 		trimType->push_back(type);
+
+		callsTrim++;
 		omp_unset_lock(&lDebugTrim);
 	}
 }
 
 void enhancedgraph::reportPivot(int color, int node) {
-	if (ANALYSE_ENABLED && node > -1) {
+	if (ANALYSE_ENABLED) {
 		omp_set_lock(&lDebugPivot);
-		pivotColor->push_back(color);
-		pivotNode->push_back(node);
+		if (node > -1) {
+			pivotColor->push_back(color);
+			pivotNode->push_back(node);
+		}
+		
+		callsPivot++;
 		omp_unset_lock(&lDebugPivot);
 	}
+	
 }
 
-int64_t enhancedgraph::getCalls() {
+int64_t enhancedgraph::getCallsFWBW() {
 	return callsFWBW;
+}
+
+int64_t enhancedgraph::getCallsTrim() {
+	return callsTrim;
+}
+
+int64_t enhancedgraph::getCallsPivot() {
+	return callsPivot;
 }
 
 int64_t enhancedgraph::getDepth() {
@@ -170,6 +206,9 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 		tFirstFWBW = Duration::zero();
 		tFWBW = Duration::zero();
 		tTrim = Duration::zero();
+		tTrim1 = Duration::zero();
+		tTrim2 = Duration::zero();
+		tTrim3 = Duration::zero();
 		tFirstTrim = Duration::zero();
 		tPivot = Duration::zero();
 		tSetup = Duration::zero();
@@ -208,6 +247,9 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 		tFirstFWBW = Duration::zero();
 		tFWBW = Duration::zero();
 		tTrim = Duration::zero();
+		tTrim1 = Duration::zero();
+		tTrim2 = Duration::zero();
+		tTrim3 = Duration::zero();
 		tFirstTrim = Duration::zero();
 		tPivot = Duration::zero();
 		tSetup = Duration::zero();

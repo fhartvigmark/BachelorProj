@@ -126,7 +126,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 
 		cout << "  " << "BFS calls: " << bfsColor->size() << "\n";
 		cout << "  " << "BFS SCCs: " << "\n";
-		while (!pivotNode->empty()) {
+		while (!bfsAmount->empty()) {
 			int amount = bfsAmount->front();
 			bfsAmount->pop_front();
 			int color = bfsColor->front();

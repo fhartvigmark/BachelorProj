@@ -243,6 +243,8 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 		omp_init_lock(&lDebugPivot);
 
 		callsFWBW = 0;
+		callsTrim = 0;
+		callsPivot = 0;
 		depthFWBW = 0;
 
 		trimAmount = new std::list<int>;
@@ -287,6 +289,8 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 		omp_init_lock(&lDebugPivot);
 
 		callsFWBW = 0;
+		callsTrim = 0;
+		callsPivot = 0;
 		depthFWBW = 0;
 
 		trimAmount = {};

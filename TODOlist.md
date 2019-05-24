@@ -31,11 +31,8 @@
 * Color based pivot selection is tedious. We have copied Hong's own method
 
 # Tasks
-* Parallel baseline implementation _(in progress)_
-   * Recursive FWBW
 * Synthetic graph generation
 * Test on big graphs
 * Debug information
-* SCC output structure _(in progress)_
 * Graph analysis tool, and plotting
 * Testing tool

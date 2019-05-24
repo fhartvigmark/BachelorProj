@@ -121,6 +121,15 @@ void enhancedgraph::reportFWBW(int depth) {
 	}
 }
 
+void enhancedgraph::reportBFS(int color, int amount) {
+	if (ANALYSE_ENABLED) {
+		omp_set_lock(&lDebugBFS);
+		bfsColor->push_back(color);
+		bfsAmount->push_back(amount);
+		omp_unset_lock(&lDebugBFS);
+	}
+}
+
 void enhancedgraph::reportTrim(int color, int amount, int type) {
 	if (ANALYSE_ENABLED) {
 		omp_set_lock(&lDebugTrim);
@@ -176,6 +185,10 @@ std::list<int>* enhancedgraph::getReports(eDebug data) {
 			return pivotColor;
 		case eDebug::pNode:
 			return pivotNode;
+		case eDebug::bAmount:
+			return bfsAmount;
+		case eDebug::bColor:
+			return bfsColor;
 		default:
 			return {};
 	}
@@ -225,6 +238,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 	//Initialize debug information variables and locks
 	if (true) {
 		omp_init_lock(&lDebugFWBW);
+		omp_init_lock(&lDebugBFS);
 		omp_init_lock(&lDebugTrim);
 		omp_init_lock(&lDebugPivot);
 
@@ -236,6 +250,8 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 		trimType = new std::list<int>;
 		pivotNode = new std::list<int>;
 		pivotColor = new std::list<int>;
+		bfsColor = new std::list<int>;
+		bfsAmount = new std::list<int>;
 	}
 }
 
@@ -266,6 +282,7 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 	//Initialize debug information variables and locks
 	if (true) {
 		omp_init_lock(&lDebugFWBW);
+		omp_init_lock(&lDebugBFS);
 		omp_init_lock(&lDebugTrim);
 		omp_init_lock(&lDebugPivot);
 
@@ -277,6 +294,8 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 		trimType = {};
 		pivotNode = {};
 		pivotColor = {};
+		bfsColor = {};
+		bfsAmount = {};
 	}
 }
 
@@ -290,6 +309,7 @@ enhancedgraph::~enhancedgraph() {
 	//Delete analysis elements
 	if (true) {
 		omp_destroy_lock(&lDebugFWBW);
+		omp_destroy_lock(&lDebugBFS);
 		omp_destroy_lock(&lDebugTrim);
 		omp_destroy_lock(&lDebugPivot);
 
@@ -298,6 +318,8 @@ enhancedgraph::~enhancedgraph() {
 		delete trimType;
 		delete pivotNode;
 		delete pivotColor;
+		delete bfsColor;
+		delete bfsAmount;
 	}
 
 	//Delete timing elements

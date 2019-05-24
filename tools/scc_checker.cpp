@@ -31,14 +31,15 @@ vector<int> generateSCClist(string filename)
 	else
 		cout << "Unable to open file";
 
-	vector<int> sccSizes(sccMap.size());
-
+	vector<int> sccSizes(0);
+	
 	for_each(sccMap.begin(), sccMap.end(),
 			 [&sccSizes](const std::pair<int, int> &entry) {
 				 sccSizes.push_back(entry.second);
 			 });
 
 	sort(sccSizes.begin(), sccSizes.end());
+	reverse(sccSizes.begin(), sccSizes.end());
 	
 	cout << filename << " contains " << sccSizes.size() << " SCCs \n";
 	for (int i = 0; i < sccSizes.size(); i++)

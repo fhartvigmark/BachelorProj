@@ -10,7 +10,7 @@ int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor,
 		g->endTimer(start, eTimer::FirstTRIM);
 	}
 
-	int startNode = pivot::findPivot(g, startColor, pivotmethod);
+	int startNode = pivot::findParPivot(g, startColor, pivotmethod);
 	if (startNode == -1)
 	{
 		return -1;
@@ -88,7 +88,7 @@ int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startC
 int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth)
 {
 	//Find pivot node
-	int startNode = pivot::findPivot(g, startColor, pivotmethod);
+	int startNode = pivot::findParPivot(g, startColor, pivotmethod);
 	if (startNode == -1)
 	{
 		return -1;
@@ -119,7 +119,7 @@ int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 		return -1;
 	}
 
-	trim::doParTrim(trimlevel, g, startColor);
+	trim::doTrim(trimlevel, g, startColor);
 	//First: fwColor, Second: bwColor
 	TimePoint start = g->startTimer();
 	std::pair<int, int> newColors = bfs::colorbfs(g, startColor, startNode);

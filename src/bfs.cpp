@@ -106,15 +106,15 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 	{
 		int qsize = Queue.Len();
 
-		#pragma omp parallel for 
+		#pragma omp parallel for schedule(static)
 		for (int i = 0; i<qsize; i++)
 		{
 			int node = 0;
 
 			#pragma omp critical
 			{
-			node = Queue.Top();
-			Queue.Pop();
+				node = Queue.Top();
+				Queue.Pop();
 			}
 
 			if (colors->GetDat(node) == color)
@@ -146,15 +146,15 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 		int qsize = Queue.Len();
 		int count = 0;
 
-		#pragma omp parallel for reduction(+:count)
+		#pragma omp parallel for reduction(+:count) schedule(static)
 		for (int i = 0; i < qsize; i++)
 		{
 			int node = 0;
 
 			#pragma omp critical
 			{
-			node = Queue.Top();
-			Queue.Pop();
+				node = Queue.Top();
+				Queue.Pop();
 			}
 
 			const int nodeColor = colors->GetDat(node);

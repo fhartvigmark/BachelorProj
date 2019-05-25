@@ -48,7 +48,6 @@ int trim::doParTrim(int trimlevel, enhancedgraph *g, int color) {
 		case 1:
 			retVal = trim::partrim1(g, color, true);
 			g->endTimer(start, eTimer::TRIM1);
-
 			break;
 		case 2:
 			trim::partrim1(g, color, true);
@@ -260,10 +259,8 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 		int node = Ids->GetVal(i);
 		int nodeColor;
 		//std::cout << "Error on node " << node << "\n";
-		#pragma omp critical
-		{
-			nodeColor = colors->GetDat(node);
-		}
+		nodeColor = colors->GetDat(node);
+
 		if (nodeColor == color)
 		{
 			int inDegree = 0;
@@ -274,10 +271,8 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 				int outNode = NodeI.GetInNId(v);
 				//std::cout << "Error on node " << outNode << "\n";
 				int outColor;
-				#pragma omp critical 
-				{
-					outColor = colors->GetDat(outNode);
-				}
+				outColor = colors->GetDat(outNode);
+
 
 				if (outColor == color && outNode != node)
 				{
@@ -323,10 +318,12 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 			}
 		}
 	}
-
+	
 	while (!Queue.Empty())
 	{
 		int qsize = Queue.Len();
+		int count2 = 0;
+
 		#pragma omp parallel for schedule(static) reduction(+:count2) if(parallel)
 		for (int q = 0; q < qsize; q++)
 		{
@@ -405,10 +402,8 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 			{
 				int node = OldNodeI.GetOutNId(i);
 				int nodeColor;
-				#pragma omp critical
-				{
-					nodeColor = colors->GetDat(node);
-				}
+				nodeColor = colors->GetDat(node);
+			
 				if (nodeColor == color)
 				{
 					int inDegree = 0;
@@ -464,9 +459,10 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 			}
 		}
 		
+		count += count2;
 	}
 
-	g->reportTrim(color, count + count2, 1);
+	g->reportTrim(color, count, 1);
 	return -1;
 };
 

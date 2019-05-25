@@ -7,7 +7,7 @@ int pivot::findPivot(enhancedgraph *g, int color, int method) {
 	switch (method)
 	{
 		case 0:
-			retVal = pivot::getParPivot(g, color, false);
+			retVal = pivot::getPivot(g, color);
 			break;
 		case 1:
 			retVal = pivot::getParPivotMaxDegree(g, color, false);
@@ -16,7 +16,7 @@ int pivot::findPivot(enhancedgraph *g, int color, int method) {
 			retVal = pivot::getParPivotMaxDegreeColor(g, color, false);
 			break;
 		case 3:
-			retVal = pivot::getParPivotRand(g, color, false);
+			retVal = pivot::getPivotRand(g, color);
 			break;
 	}
 
@@ -151,14 +151,20 @@ int randwalk(enhancedgraph *g, int color, int node, const int k) {
 int pivot::getPivot(enhancedgraph *g, int color)
 {
     TIntH *colorMap = g->colors;
-    for (THashKeyDatI<TInt, TInt> i = colorMap->BegI(); i < colorMap->EndI(); i++)
-    {
-        if (i.GetDat()==color)
-        {
-            return i.GetKey();
-        }
-        
-    }
+	TIntV *Ids = g->NIds;
+	for (int i = 0; i < Ids->Len(); i++) {
+		if (colorMap->GetDat(Ids->GetVal(i)) == color) {
+			return Ids->GetVal(i);
+		}
+	}
+    //for (THashKeyDatI<TInt, TInt> i = colorMap->BegI(); i < colorMap->EndI(); i++)
+    //{
+    //    if (i.GetDat()==color)
+    //    {
+    //        return i.GetKey();
+    //    }
+    //    
+    //}
     return -1;
 };
 

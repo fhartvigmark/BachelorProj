@@ -5,12 +5,14 @@ struct pivot_state {
     int expectedOutput;
     int color;
 	int method;
+	bool parallel;
 
 	friend std::ostream& operator<<(std::ostream& os, const pivot_state& obj) {
         return os
             << "expected output: " << obj.expectedOutput
             << ", color: " << obj.color
-            << ", method: " << obj.method;
+            << ", method: " << obj.method
+			<< ", parallel: " << obj.parallel;
     }
 };
 
@@ -109,7 +111,13 @@ TEST(Default, OmpCancelEnabled) {
 
 TEST_P(SimpleGraphTest, CanFindStartnode) {
     auto gs = GetParam();
-    int startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
+    int startnode = 0;
+	if (gs.parallel) {
+		startnode = pivot::findParPivot(enhgraph, gs.color, gs.method);
+	} else {
+		startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
+	}
+	
 
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
@@ -118,12 +126,12 @@ TEST_P(SimpleGraphTest, CanFindStartnode) {
 		{
 			EXPECT_NE(gs.color, i.GetDat());
 		}
-	} else if (gs.method == 3) {
+	} else if (gs.method == 0 && gs.parallel) {
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
 		//EXPECT_TRUE(startnode <= omp_get_max_threads());
 		//TODO: fix???
 		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
-	} else if (gs.method == 6 || gs.method == 7) {
+	} else if (gs.method == 3) {
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
 		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
 	} else {
@@ -135,7 +143,12 @@ TEST_P(SimpleGraphTest, CanFindStartnode) {
 
 TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) {
     auto gs = GetParam();
-    int startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
+    int startnode = 0;
+	if (gs.parallel) {
+		startnode = pivot::findParPivot(enhgraph, gs.color, gs.method);
+	} else {
+		startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
+	}
 
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
@@ -153,7 +166,12 @@ TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) {
 
 TEST_P(AdvancedColorGraphTest, FindsMaxDegree) {
     auto gs = GetParam();
-	int startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
+	int startnode = 0;
+	if (gs.parallel) {
+		startnode = pivot::findParPivot(enhgraph, gs.color, gs.method);
+	} else {
+		startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
+	}
 
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
@@ -176,44 +194,44 @@ TEST_P(AdvancedColorGraphTest, FindsMaxDegree) {
 
 INSTANTIATE_TEST_CASE_P(Default, AdvancedColorGraphTest,
 						testing::Values(
-							pivot_state{3, 1, 1},
-							pivot_state{2, 1, 2},
-							pivot_state{3, 1, 4},
-							pivot_state{2, 1, 5},
-							pivot_state{-1, 0, 1},
-							pivot_state{-1, 0, 2},
-							pivot_state{-1, 0, 4},
-							pivot_state{-1, 0, 5},
-							pivot_state{4, 2, 1},
-							pivot_state{4, 2, 2},
-							pivot_state{4, 2, 4},
-							pivot_state{4, 2, 5}));
+							pivot_state{3, 1, 1, false},
+							pivot_state{2, 1, 2, false},
+							pivot_state{3, 1, 1, true},
+							pivot_state{2, 1, 2, true},
+							pivot_state{-1, 0, 1, false},
+							pivot_state{-1, 0, 2, false},
+							pivot_state{-1, 0, 1, true},
+							pivot_state{-1, 0, 2, true},
+							pivot_state{4, 2, 1, false},
+							pivot_state{4, 2, 2, false},
+							pivot_state{4, 2, 1, true},
+							pivot_state{4, 2, 2, true}));
 
 INSTANTIATE_TEST_CASE_P(Default, SimpleGraphTest,
 						testing::Values(
-							pivot_state{1, 0, 0},
-							pivot_state{-1, 2, 0},
-							pivot_state{1, 0, 3},
-							pivot_state{-1, 2, 3},
-							pivot_state{1, 0, 6},
-							pivot_state{-1, 2, 6},
-							pivot_state{1, 0, 7},
-							pivot_state{-1, 2, 7}));
+							pivot_state{1, 0, 0, false},
+							pivot_state{-1, 2, 0, false},
+							pivot_state{1, 0, 0, true},
+							pivot_state{-1, 2, 0, true},
+							pivot_state{1, 0, 3, false},
+							pivot_state{-1, 2, 3, false},
+							pivot_state{1, 0, 3, true},
+							pivot_state{-1, 2, 3, true}));
 INSTANTIATE_TEST_CASE_P(Default, ColorGraphTest,
 						testing::Values(
-							pivot_state{2, 0, 0},
-							pivot_state{3, 40, 0},
-							pivot_state{1, 2, 0},
-							pivot_state{-1, 39, 0},
-							pivot_state{2, 0, 3},
-							pivot_state{3, 40, 3},
-							pivot_state{1, 2, 3},
-							pivot_state{-1, 39, 3},
-							pivot_state{2, 0, 6},
-							pivot_state{3, 40, 6},
-							pivot_state{1, 2, 6},
-							pivot_state{-1, 39, 6},
-							pivot_state{2, 0, 7},
-							pivot_state{3, 40, 7},
-							pivot_state{1, 2, 7},
-							pivot_state{-1, 39, 7}));
+							pivot_state{2, 0, 0, false},
+							pivot_state{3, 40, 0, false},
+							pivot_state{1, 2, 0, false},
+							pivot_state{-1, 39, 0, false},
+							pivot_state{2, 0, 0, true},
+							pivot_state{3, 40, 0, true},
+							pivot_state{1, 2, 0, true},
+							pivot_state{-1, 39, 0, true},
+							pivot_state{2, 0, 3, false},
+							pivot_state{3, 40, 3, false},
+							pivot_state{1, 2, 3, false},
+							pivot_state{-1, 39, 3, false},
+							pivot_state{2, 0, 3, true},
+							pivot_state{3, 40, 3, true},
+							pivot_state{1, 2, 3, true},
+							pivot_state{-1, 39, 3, true}));

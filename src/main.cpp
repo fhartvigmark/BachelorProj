@@ -231,11 +231,7 @@ int main(int argc, char **argv)
 		cout << "    " << "0 = first occurrence" << "\n";
 		cout << "    " << "1 = max degree product" << "\n";
 		cout << "    " << "2 = max degree product with colors" << "\n";
-		cout << "    " << "3 = parallel version of 0" << "\n";
-		cout << "    " << "4 = parallel version of 1" << "\n";
-		cout << "    " << "5 = parallel version of 2" << "\n";
-		cout << "    " << "6 = randomwalk" << "\n";
-		cout << "    " << "7 = parallel randomwalk" << "\n";
+		cout << "    " << "3 = randomwalk" << "\n";
 
 		cout << "  " << "FWBW method:" << "\n";
 		cout << "    " << "0 = basic FWBW" << "\n";
@@ -282,14 +278,43 @@ int main(int argc, char **argv)
 	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
 	enhgraph->endTimer(start, eTimer::MAIN);
 
+	//omp_set_num_threads(1);
 
-	//int color = 100;
-	//TIntH *colorMap = enhgraph->colors;
-	//PNGraph graph = enhgraph->graph;
-	//TIntV *Ids = enhgraph->NIds;
-	//int retVal = -1;
+	//start = enhgraph->startTimer();
+	//for (int j = 0; j < 100; j++) {
+	//	pivot::findPivot(enhgraph, -1, PivotMethod);
+	//	//trim::doTrim(1, enhgraph, -1);
+	//}
+	//enhgraph->endTimer(start, eTimer::MAIN);
+
+	//start = enhgraph->startTimer();
+	//for (int j = 0; j < 100; j++) {
+	//	pivot::findParPivot(enhgraph, -1, PivotMethod);
+	//	//trim::doParTrim(1, enhgraph, -1);
+	//}
+	//enhgraph->endTimer(start, eTimer::FirstFWBW);
+
 
 /*
+	int color = 100;
+	TIntH *colorMap = enhgraph->colors;
+	PNGraph graph = enhgraph->graph;
+	TIntV *Ids = enhgraph->NIds;
+	int retVal = -1;
+
+	start = enhgraph->startTimer();
+	for (int j = 0; j < 100; j++) {
+		for (THashKeyDatI<TInt, TInt> i = colorMap->BegI(); i < colorMap->EndI(); i++)
+		{
+			if (i.GetDat()==color)
+			{
+				retVal = i.GetKey();
+			}
+			
+		}
+	}
+	enhgraph->endTimer(start, eTimer::MAIN);
+
 	start = enhgraph->startTimer();
 	for (int j = 0; j < 100; j++) {
 		for (THashKeyDatI<TInt, TInt> i = colorMap->BegI(); i < colorMap->EndI(); i++)

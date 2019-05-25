@@ -210,7 +210,7 @@ int main(int argc, char **argv)
     const int FwBwMethod =
         Env.GetIfArgPrefixInt("-m=", 0, "Specify FW-BW variant\t\t");
 	const int MaxThreads =
-        Env.GetIfArgPrefixInt("-w", omp_get_max_threads(), "Specify maximum workers\t\t");
+        Env.GetIfArgPrefixInt("-w=", omp_get_max_threads(), "Specify maximum workers\t\t");
 	const bool Help =
         Env.GetIfArgPrefixBool("-h=", false, "Print help section\t\t");
 	const bool Output =
@@ -281,21 +281,21 @@ int main(int argc, char **argv)
 	enhgraph->endTimer(start, eTimer::MAIN);
 
 	
-
-	//start = enhgraph->startTimer();
-	//for (int j = 0; j < 100; j++) {
-	//	pivot::findPivot(enhgraph, -1, PivotMethod);
-	//	//trim::doTrim(1, enhgraph, -1);
-	//}
-	//enhgraph->endTimer(start, eTimer::MAIN);
-
-	//start = enhgraph->startTimer();
-	//for (int j = 0; j < 100; j++) {
-	//	pivot::findParPivot(enhgraph, -1, PivotMethod);
-	//	//trim::doParTrim(1, enhgraph, -1);
-	//}
-	//enhgraph->endTimer(start, eTimer::FirstFWBW);
-
+/*
+	start = enhgraph->startTimer();
+	for (int j = 0; j < 100; j++) {
+		pivot::findPivot(enhgraph, -1, PivotMethod);
+		//trim::doTrim(1, enhgraph, -1);
+	}
+	enhgraph->endTimer(start, eTimer::MAIN);
+	
+	start = enhgraph->startTimer();
+	for (int j = 0; j < 100; j++) {
+		pivot::findParPivot(enhgraph, -1, PivotMethod);
+		//trim::doParTrim(1, enhgraph, -1);
+	}
+	enhgraph->endTimer(start, eTimer::FirstFWBW);
+*/
 
 /*
 	int color = 100;

@@ -50,9 +50,9 @@
 * Graph folder
 * Testing plan
 * Make code consistent
-  * Trim
+  * ~Trim~ (investigate trim-1)
   * ~Pivot~
-  * BFS
+  * ~BFS~
   * FWBW
 * Optimization
   * Max degree pivot preprocess.

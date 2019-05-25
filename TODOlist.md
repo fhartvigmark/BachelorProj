@@ -47,7 +47,12 @@
 * Graph folder
 * Testing plan
 * Make code consistent
+  * Trim
+  * Pivot
+  * BFS
+  * FWBW
 * Optimization
+  * Max degree pivot preprocess.
   * Trim/Pivot order
   * Hashtable pack
   * Hastable internal KeyDat vector

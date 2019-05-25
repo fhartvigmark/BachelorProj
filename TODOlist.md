@@ -1,5 +1,5 @@
 # Report tasks
-* Redo intro
+* ~Redo intro~
 * Split theory into two sections (related work, prelimenaries)
 * Make comparative table in related works section
 * Write small paragraph for each algorithm
@@ -31,8 +31,27 @@
 * Color based pivot selection is tedious. We have copied Hong's own method
 
 # Tasks
-* Synthetic graph generation
+* tools
+  * Synthetic graph generation tool
+  * Graph analysis tool
+  * OpenMP settings tool
+  * ~Testing tool~
 * Test on big graphs
 * Debug information
-* Graph analysis tool, and plotting
-* Testing tool
+  * Verbose setting
+  * FWBW-tree
+* Threads
+  * Max threads option
+  * Dynamic thread allocation / thread pool
+* Output folder
+* Graph folder
+* Testing plan
+* Make code consistent
+* Optimization
+  * Trim/Pivot order
+  * Hashtable pack
+  * Hastable internal KeyDat vector
+  * Static vs dynamic
+  * BFS FW/BW emptiness check
+  * Emptiness check of remaining when using maxdegree pivot?
+

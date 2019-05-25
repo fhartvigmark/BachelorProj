@@ -10,13 +10,14 @@ class pivot
 {
   public:
 	static int findPivot(enhancedgraph *g, int color, int method);
+	static int findParPivot(enhancedgraph *g, int color, int method);
   private:
     static int getPivot(enhancedgraph *g, int color);
     static int getPivotMaxDegree(enhancedgraph *g, int color);
     static int getPivotMaxDegreeColor(enhancedgraph *g, int color);
 	static int getPivotRand(enhancedgraph *g, int color);
-	static int getParPivot(enhancedgraph *g, int color);
-    static int getParPivotMaxDegree(enhancedgraph *g, int color);
-    static int getParPivotMaxDegreeColor(enhancedgraph *g, int color);
-	static int getParPivotRand(enhancedgraph *g, int color);
+	static int getParPivot(enhancedgraph *g, int color, bool parallel);
+    static int getParPivotMaxDegree(enhancedgraph *g, int color, bool parallel);
+    static int getParPivotMaxDegreeColor(enhancedgraph *g, int color, bool parallel);
+	static int getParPivotRand(enhancedgraph *g, int color, bool parallel);
 };

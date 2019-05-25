@@ -9,24 +9,24 @@ int trim::doTrim(int trimlevel, enhancedgraph *g, int color) {
 	switch (trimlevel)
 	{
 		case 1:
-			retVal = trim::trim1(g, color);
+			retVal = trim::partrim1(g, color, false);
 			g->endTimer(start, eTimer::TRIM1);
 			break;
 		case 2:
-			trim::trim1(g, color);
+			trim::partrim1(g, color, false);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			retVal = trim::trim2(g, color);
+			retVal = trim::partrim2(g, color, false);
 			g->endTimer(start2, eTimer::TRIM2);
 			break;
 		case 3:
-			trim::trim1(g, color);
+			trim::partrim1(g, color, false);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			trim::trim2(g, color);
+			trim::partrim2(g, color, false);
 			g->endTimer(start2, eTimer::TRIM2);
 			start2 = g->startTimer();
-			retVal = trim::trim3(g, color);
+			retVal = trim::partrim3(g, color, false);
 			g->endTimer(start2, eTimer::TRIM3);
 			break;
 		default:
@@ -41,30 +41,31 @@ int trim::doTrim(int trimlevel, enhancedgraph *g, int color) {
 int trim::doParTrim(int trimlevel, enhancedgraph *g, int color) {
 	int retVal = -1;
 	TimePoint start = g->startTimer();
+	TimePoint start2;
 
 	switch (trimlevel)
 	{
 		case 1:
-			retVal = trim::partrim1(g, color);
+			retVal = trim::partrim1(g, color, true);
 			g->endTimer(start, eTimer::TRIM1);
 
 			break;
 		case 2:
-			trim::partrim1(g, color);
+			trim::partrim1(g, color, true);
 			g->endTimer(start, eTimer::TRIM1);
-			start = g->startTimer();
-			retVal = trim::partrim2(g, color);
-			g->endTimer(start, eTimer::TRIM2);
+			start2 = g->startTimer();
+			retVal = trim::partrim2(g, color, true);
+			g->endTimer(start2, eTimer::TRIM2);
 			break;
 		case 3:
-			trim::partrim1(g, color);
+			trim::partrim1(g, color, true);
 			g->endTimer(start, eTimer::TRIM1);
-			start = g->startTimer();
-			trim::partrim2(g, color);
-			g->endTimer(start, eTimer::TRIM2);
-			start = g->startTimer();
-			retVal = trim::partrim3(g, color);
-			g->endTimer(start, eTimer::TRIM3);
+			start2 = g->startTimer();
+			trim::partrim2(g, color, true);
+			g->endTimer(start2, eTimer::TRIM2);
+			start2 = g->startTimer();
+			retVal = trim::partrim3(g, color, true);
+			g->endTimer(start2, eTimer::TRIM3);
 			break;
 		default:
 			retVal = -1;
@@ -244,7 +245,7 @@ int trim::trim1(enhancedgraph *g, int color)
     return -1;
 };
 
-int trim::partrim1(enhancedgraph *g, int color)
+int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 {
 	TSnapQueue<int> Queue;
 	TIntH *colors = g->colors;
@@ -253,7 +254,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 	int count = 0;
 	int count2 = 0;
 
-	#pragma omp parallel for schedule(static) reduction(+:count)
+	#pragma omp parallel for schedule(static) reduction(+:count) if(parallel)
 	for (int i = 0; i < Ids->Len(); i++)
 	{
 		int node = Ids->GetVal(i);
@@ -326,7 +327,7 @@ int trim::partrim1(enhancedgraph *g, int color)
 	while (!Queue.Empty())
 	{
 		int qsize = Queue.Len();
-		#pragma omp parallel for schedule(static) reduction(+:count2)
+		#pragma omp parallel for schedule(static) reduction(+:count2) if(parallel)
 		for (int q = 0; q < qsize; q++)
 		{
 			int oldnode;
@@ -569,14 +570,14 @@ int trim::trim2(enhancedgraph *g, int color)
 	return -1;
 };
 
-int trim::partrim2(enhancedgraph *g, int color)
+int trim::partrim2(enhancedgraph *g, int color, bool parallel)
 {
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 	int count = 0;
 
-	#pragma omp parallel for schedule(static) reduction(+:count)
+	#pragma omp parallel for schedule(static) reduction(+:count) if(parallel)
 	for (int i = 0; i < Ids->Len(); i++)
 	{
 		int node = Ids->GetVal(i);
@@ -929,14 +930,14 @@ int trim::trim3(enhancedgraph *g, int color){
 	return -1;
 };
 
-int trim::partrim3(enhancedgraph *g, int color)
+int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 {
 	TIntH *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 	int count = 0;
 
-	#pragma omp parallel for schedule(static) reduction(+:count)
+	#pragma omp parallel for schedule(static) reduction(+:count) if(parallel)
 	for (int i = 0; i < Ids->Len(); i++)
 	{
 		int node = Ids->GetVal(i);

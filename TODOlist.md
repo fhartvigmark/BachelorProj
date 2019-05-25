@@ -33,7 +33,7 @@
 # Tasks
 * **Comments**
 * **Code cleanup**
-* Refactor pivot to have sequential and parallel public method like trim
+* ~Refactor pivot to have sequential and parallel public method like trim~
 * tools
   * Synthetic graph generation tool
   * Graph analysis tool
@@ -44,7 +44,7 @@
   * Verbose setting
   * FWBW-tree
 * Threads
-  * Max threads option
+  * ~Max threads option~ (Not fully tested)
   * Dynamic thread allocation / thread pool
 * Output folder
 * Graph folder

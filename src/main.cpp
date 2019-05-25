@@ -209,6 +209,8 @@ int main(int argc, char **argv)
         Env.GetIfArgPrefixInt("-p=", 0, "Pivot selection (0 for random)\t");
     const int FwBwMethod =
         Env.GetIfArgPrefixInt("-m=", 0, "Specify FW-BW variant\t\t");
+	const int MaxThreads =
+        Env.GetIfArgPrefixInt("-w", omp_get_max_threads(), "Specify maximum workers\t\t");
 	const bool Help =
         Env.GetIfArgPrefixBool("-h=", false, "Print help section\t\t");
 	const bool Output =
@@ -256,7 +258,7 @@ int main(int argc, char **argv)
 	
 	cout << "\n";
 
-	
+	omp_set_num_threads(MaxThreads);
 
     // Load the graph 
 	cout << "Loading graph\n";
@@ -278,7 +280,7 @@ int main(int argc, char **argv)
 	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
 	enhgraph->endTimer(start, eTimer::MAIN);
 
-	//omp_set_num_threads(1);
+	
 
 	//start = enhgraph->startTimer();
 	//for (int j = 0; j < 100; j++) {

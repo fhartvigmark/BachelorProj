@@ -31,6 +31,9 @@
 * Color based pivot selection is tedious. We have copied Hong's own method
 
 # Tasks
+* **Comments**
+* **Code cleanup**
+* Refactor pivot to have sequential and parallel public method like trim
 * tools
   * Synthetic graph generation tool
   * Graph analysis tool
@@ -48,7 +51,7 @@
 * Testing plan
 * Make code consistent
   * Trim
-  * Pivot
+  * ~Pivot~
   * BFS
   * FWBW
 * Optimization

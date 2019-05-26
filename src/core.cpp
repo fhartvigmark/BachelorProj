@@ -1,4 +1,5 @@
 #include "core.h"
+#include "iostream"
 
 ColorGenerator::ColorGenerator() {
 	lastColor = 0;
@@ -338,3 +339,192 @@ enhancedgraph::~enhancedgraph() {
 	}
 }
 
+int Random::myRand(unsigned int seed, int limit) {
+	return (rand_r(&seed)%limit);
+}
+
+int Random::randstep(enhancedgraph *g, int color, int node, unsigned int seed) {
+	TIntH *colors = g->colors;
+    PNGraph graph = g->graph;
+
+	//Find number of edges of same color
+	int edges = 0;
+
+	TNGraph::TNodeI NodeI = graph->GetNI(node);
+	int v;
+	for (v = 0; v < NodeI.GetOutDeg(); v++)
+	{
+		const int outNode = NodeI.GetOutNId(v);
+
+		if (colors->GetDat(outNode) == color)
+		{
+			edges += 1;
+		}
+	}
+	
+	NodeI = graph->GetNI(node);
+	for (v = 0; v < NodeI.GetInDeg(); v++)
+	{
+		const int outNode = NodeI.GetInNId(v);
+
+		if (colors->GetDat(outNode) == color)
+		{
+			edges += 1;
+		}
+	}
+	
+	if (edges <= 0) {
+		return node;
+	}
+	int index = myRand(seed, edges);
+	edges = 0;
+
+	//Find the edges with chosen index
+	NodeI = graph->GetNI(node);
+	for (v = 0; v < NodeI.GetOutDeg(); v++)
+	{
+		const int outNode = NodeI.GetOutNId(v);
+
+		if (colors->GetDat(outNode) == color)
+		{
+			if (edges == index) {
+				return outNode;
+			}
+			edges += 1;
+		}
+	}
+	
+	NodeI = graph->GetNI(node);
+	for (v = 0; v < NodeI.GetInDeg(); v++)
+	{
+		const int outNode = NodeI.GetInNId(v);
+
+		if (colors->GetDat(outNode) == color)
+		{
+			if (edges == index) {
+				return outNode;
+			}
+			edges += 1;
+		}
+	}
+
+	return node;
+}
+
+int Random::randstepIn(enhancedgraph *g, int color, const int node, unsigned int seed) {
+	TIntH *colors = g->colors;
+    PNGraph graph = g->graph;
+
+	//Find number of edges of same color
+	int edges = 0;
+
+	//#pragma omp critical
+	//std::cout << "NodeI " << node << "\n";
+	TNGraph::TNodeI NodeI = graph->GetNI(node);
+	for (int v = 0; v < NodeI.GetInDeg(); v++)
+	{
+		int outNode = NodeI.GetInNId(v);
+
+		if (colors->GetDat(outNode) == color)
+		{
+			edges += 1;
+		}
+	}
+	
+	if (edges <= 0) {
+		return node;
+	}
+	int index = myRand(seed, edges);
+	edges = 0;
+
+	//Find the edges with chosen index
+	for (int v = 0; v < NodeI.GetInDeg(); v++)
+	{
+		int outNode = NodeI.GetInNId(v);
+
+		if (colors->GetDat(outNode) == color)
+		{
+			if (edges == index) {
+				return outNode;
+			}
+			edges += 1;
+		}
+	}
+
+	return node;
+}
+
+int Random::randstepOut(enhancedgraph *g, int color, const int node, unsigned int seed) {
+	TIntH *colors = g->colors;
+    PNGraph graph = g->graph;
+
+	//Find number of edges of same color
+	int edges = 0;
+
+	//#pragma omp critical
+	//std::cout << "NodeO " << node << "\n";
+	TNGraph::TNodeI NodeI = graph->GetNI(node);
+
+	for (int v = 0; v < NodeI.GetOutDeg(); v++)
+	{
+		int outNode = NodeI.GetOutNId(v);
+
+		if (colors->GetDat(outNode) == color)
+		{
+			edges += 1;
+		}
+	}
+	
+	
+	if (edges == 0) {
+		return node;
+	}
+	int index = myRand(seed, edges);
+	edges = 0;
+
+	//Find the edges with chosen index
+	for (int v = 0; v < NodeI.GetOutDeg(); v++)
+	{
+		int outNode = NodeI.GetOutNId(v);
+
+		if (colors->GetDat(outNode) == color)
+		{
+			if (edges == index) {
+				return outNode;
+			}
+			edges += 1;
+		}
+	}
+
+	return node;
+}
+
+//Performs a simple random walk for k iterations starting from the given node
+//only looks at in/out edges of same color as start node
+int Random::randwalk(enhancedgraph *g, int color, int node, const int k, int r, bool direction) {
+	unsigned int seed = time(NULL) * (r+1);
+	int currentNode = node;
+
+	for (int i = 0; i < k; i++) {
+		if (direction) {
+			currentNode = randstepOut(g, color, currentNode, seed);
+		} else {
+			currentNode = randstepIn(g, color, currentNode, seed);
+		}
+	}
+
+	return currentNode;
+}
+
+//Performs a simple random walk for k iterations starting from the given node
+//only looks at in/out edges of same color as start node
+int Random::randwalk(enhancedgraph *g, int color, int node, const int k) {
+	unsigned int seed = time(NULL);
+	int currentNode = node;
+
+	for (int i = 0; i < k; i++) {
+		currentNode = randstep(g, color, currentNode, seed);
+	}
+
+	return currentNode;
+}

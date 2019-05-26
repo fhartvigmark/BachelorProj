@@ -1,4 +1,5 @@
 #include "bfs.h"
+#include "iostream"
 
 //Maybe include mark
 std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
@@ -204,6 +205,150 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 
 		totalCount += count;
 	}
+
+	g->reportBFS(color, totalCount);
+	return std::make_pair(fwColor, bwColor);
+}
+
+std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int startNode) {
+	TIntH *colors = g->colors;
+	PNGraph pgraph = g->graph;
+	int totalCount = 0;
+
+	const int sccColor = g->colorGen->getNext();
+	const int fwColor = g->colorGen->getNext();
+	const int bwColor = g->colorGen->getNext();
+
+	
+
+	#pragma omp parallel reduction(+:totalCount)
+	{
+		TSnapQueue<int> *Queue = new TSnapQueue<int>();
+		int id = omp_get_thread_num();
+		int threadNode;
+		if (id == 0) {
+			threadNode = startNode;
+		} else {
+			threadNode = Random::randwalk(g, color, startNode, 5, id, true);
+		}
+		
+		
+		//#pragma omp critical
+		//std::cout << threadNode << "\n";
+		#pragma omp barrier
+		Queue->Push(threadNode);
+		//#pragma omp critical
+		//std::cout << "Done " << id << "\n";
+
+		
+
+		//#pragma omp critical
+		//std::cout << "Past barrier " << id << "\n";
+
+		int v = 0;
+		while(!Queue->Empty())
+		{
+			int node = Queue->Top();
+			Queue->Pop();
+
+			if (colors->GetDat(node) == color) {
+				//#pragma omp critical
+				colors->AddDat(node, fwColor);
+
+
+				//Get node iterator for the current node
+				const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
+
+				//Add all out edges that have not already been visited to the queue
+				for (v = 0; v < NodeI.GetOutDeg(); v++) 
+				{
+					const int outNode = NodeI.GetOutNId(v);
+
+					if (colors->GetDat(outNode) == color)
+					{
+						//#pragma omp critical
+						Queue->Push(outNode);
+					}
+				}
+			}
+		}
+
+		if (id == 0) {
+			threadNode = startNode;
+		} else {
+			threadNode = Random::randwalk(g, color, startNode, 5, id, false);
+		}
+		
+		//#pragma omp critical
+		//std::cout << threadNode << "\n";
+		#pragma omp barrier
+		Queue->Push(threadNode);
+
+		
+		//#pragma omp critical
+		//std::cout << "Past barrier2 " << id << "\n";
+		
+		while (!Queue->Empty())
+		{
+			int node = Queue->Top();
+			Queue->Pop();
+			int nodeColor = colors->GetDat(node);
+
+			if (nodeColor == color)
+			{
+				//#pragma omp critical
+				colors->AddDat(node, bwColor);
+
+				//Get node iterator for the current node
+				const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
+
+				//Add all out edges that have not already been visited to the queue
+				for (v = 0; v < NodeI.GetInDeg(); v++)
+				{
+					const int inNode = NodeI.GetInNId(v);
+					const int inNodeColor = colors->GetDat(inNode);
+
+					if ((inNodeColor == color) || (inNodeColor == fwColor))
+					{
+						//#pragma omp critical
+						Queue->Push(inNode);
+					}
+				}
+			}else if (nodeColor == fwColor)
+			{
+				//#pragma omp critical
+				colors->AddDat(node, sccColor);
+				totalCount++;
+
+				//Get node iterator for the current node
+				const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
+
+				//Add all out edges that have not already been visited to the queue
+				for (v = 0; v < NodeI.GetInDeg(); v++)
+				{
+					const int inNode = NodeI.GetInNId(v);
+					const int inNodeColor = colors->GetDat(inNode);
+
+					if ((inNodeColor == color) || (inNodeColor == fwColor))
+					{
+						//#pragma omp critical
+						Queue->Push(inNode);
+					}
+				}
+			}
+
+			//delete Queue;
+		}
+
+		//#pragma omp critical
+		//std::cout << "Complete " << id << "\n";
+	}
+
+	//for (TNGraph::TNodeI NI = pgraph->BegNI(); NI < pgraph->EndNI(); NI++)
+   //{
+	//	int node = NI.GetId();
+	//	std::cout << node << " " << colors->GetDat(node) << "\n";
+	//}
 
 	g->reportBFS(color, totalCount);
 	return std::make_pair(fwColor, bwColor);

@@ -93,3 +93,15 @@ class enhancedgraph
 		int64_t callsPivot;
 		int64_t depthFWBW;
 };
+
+class Random
+{
+	public:
+		static int randwalk(enhancedgraph *g, int color, int node, const int k);
+		static int randwalk(enhancedgraph *g, int color, int node, const int k, int r, bool direction);
+	private:
+		static int randstep(enhancedgraph *g, int color, int node, unsigned int seed);
+		static int randstepOut(enhancedgraph *g, int color, const int node, unsigned int seed);
+		static int randstepIn(enhancedgraph *g, int color, const int node, unsigned int seed);
+		static int myRand(unsigned int seed, int limit);	
+};

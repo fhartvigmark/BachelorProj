@@ -56,91 +56,6 @@ int pivot::findParPivot(enhancedgraph *g, int color, int method) {
 //		Local methods
 //--------------------------------
 
-int myRand(unsigned int seed, int limit) {
-	return (rand_r(&seed)%limit);
-}
-
-int randstep(enhancedgraph *g, int color, int node, unsigned int seed) {
-	TIntH *colors = g->colors;
-    PNGraph graph = g->graph;
-
-	//Find number of edges of same color
-	int edges = 0;
-
-	TNGraph::TNodeI NodeI = graph->GetNI(node);
-	int v;
-	for (v = 0; v < NodeI.GetOutDeg(); v++)
-	{
-		const int outNode = NodeI.GetOutNId(v);
-
-		if (colors->GetDat(outNode) == color)
-		{
-			edges += 1;
-		}
-	}
-	
-	NodeI = graph->GetNI(node);
-	for (v = 0; v < NodeI.GetInDeg(); v++)
-	{
-		const int outNode = NodeI.GetInNId(v);
-
-		if (colors->GetDat(outNode) == color)
-		{
-			edges += 1;
-		}
-	}
-	
-	if (edges <= 0) {
-		return node;
-	}
-	int index = myRand(seed, edges);
-	edges = 0;
-
-	//Find the edges with chosen index
-	NodeI = graph->GetNI(node);
-	for (v = 0; v < NodeI.GetOutDeg(); v++)
-	{
-		const int outNode = NodeI.GetOutNId(v);
-
-		if (colors->GetDat(outNode) == color)
-		{
-			if (edges == index) {
-				return outNode;
-			}
-			edges += 1;
-		}
-	}
-	
-	NodeI = graph->GetNI(node);
-	for (v = 0; v < NodeI.GetInDeg(); v++)
-	{
-		const int outNode = NodeI.GetInNId(v);
-
-		if (colors->GetDat(outNode) == color)
-		{
-			if (edges == index) {
-				return outNode;
-			}
-			edges += 1;
-		}
-	}
-
-	return node;
-}
-
-//Performs a simple random walk for k iterations starting from the given node
-//only looks at in/out edges of same color as start node
-int randwalk(enhancedgraph *g, int color, int node, const int k) {
-	unsigned int seed = time(NULL);
-	int currentNode = node;
-
-	for (int i = 0; i < k; i++) {
-		currentNode = randstep(g, color, currentNode, seed);
-	}
-
-	return currentNode;
-}
-
 
 
 //--------------------------------
@@ -251,7 +166,7 @@ int pivot::getPivotRand(enhancedgraph *g, int color)
 		return node;
 	}
 
-	return randwalk(g, color, node, g->RAND_WALK_ITERATIONS);
+	return Random::randwalk(g, color, node, g->RAND_WALK_ITERATIONS);
 };
 
 
@@ -377,7 +292,7 @@ int pivot::getParPivotRand(enhancedgraph *g, int color, bool parallel)
 		return node;
 	}
 
-	return randwalk(g, color, node, g->RAND_WALK_ITERATIONS);
+	return Random::randwalk(g, color, node, g->RAND_WALK_ITERATIONS);
 };
 
 

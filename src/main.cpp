@@ -281,294 +281,38 @@ int main(int argc, char **argv)
 	enhgraph->endTimer(start, eTimer::MAIN);
 
 	
-/*
-	start = enhgraph->startTimer();
-	for (int j = 0; j < 100; j++) {
-		pivot::findPivot(enhgraph, -1, PivotMethod);
-		//trim::doTrim(1, enhgraph, -1);
-	}
-	enhgraph->endTimer(start, eTimer::MAIN);
+
+	/*
+	for (int j = 0; j < 1; j++) {
+		//pivot::findPivot(enhgraph, -1, PivotMethod);
+		TimePoint start = enhgraph->startTimer();
+		//trim::doTrim(Trimlevels, enhgraph, 0);
+		if (FwBwMethod == 0) {
+			bfs::colorbfs(enhgraph, 0, 13130);
+			//trim::doTrim(Trimlevels, enhgraph, 0);
+		} else if (FwBwMethod == 1)
+		{
+			bfs::parbfs(enhgraph, 0, 13130);
+			//trim::doParTrim(Trimlevels, enhgraph, 0);
+		}
+		else if (FwBwMethod == 2)
+		{
+			bfs::randomRelaxedSearch(enhgraph, 0, 13130);
+			//trim::doParTrim(Trimlevels, enhgraph, 0);
+		}
+		
+		
+		enhgraph->endTimer(start, eTimer::MAIN);
+	}*/
 	
-	start = enhgraph->startTimer();
-	for (int j = 0; j < 100; j++) {
-		pivot::findParPivot(enhgraph, -1, PivotMethod);
-		//trim::doParTrim(1, enhgraph, -1);
-	}
-	enhgraph->endTimer(start, eTimer::FirstFWBW);
-*/
-
-/*
-	int color = 100;
-	TIntH *colorMap = enhgraph->colors;
-	PNGraph graph = enhgraph->graph;
-	TIntV *Ids = enhgraph->NIds;
-	int retVal = -1;
-
-	start = enhgraph->startTimer();
-	for (int j = 0; j < 100; j++) {
-		for (THashKeyDatI<TInt, TInt> i = colorMap->BegI(); i < colorMap->EndI(); i++)
-		{
-			if (i.GetDat()==color)
-			{
-				retVal = i.GetKey();
-			}
-			
-		}
-	}
-	enhgraph->endTimer(start, eTimer::MAIN);
-
-	start = enhgraph->startTimer();
-	for (int j = 0; j < 100; j++) {
-		for (THashKeyDatI<TInt, TInt> i = colorMap->BegI(); i < colorMap->EndI(); i++)
-		{
-			if (i.GetDat()==color)
-			{
-				retVal = i.GetKey();
-			}
-			
-		}
-	}
-	enhgraph->endTimer(start, eTimer::FirstFWBW);
-
-
-	start = enhgraph->startTimer();
-	for (int j = 0; j < 100; j++) {
-		for (int i = 0; i < Ids->Len(); i++) {
-			if (colorMap->GetDat(Ids->GetVal(i)) == color) {
-				retVal = Ids->GetVal(i);
-			}
-		}
-	}
-	enhgraph->endTimer(start, eTimer::FWBWs);
-
-
-	start = enhgraph->startTimer();
-	for (int j = 0; j < 100; j++) {
-		#pragma omp parallel for schedule(dynamic)
-		for (int i = 0; i < Ids->Len(); i++) {
-			if (colorMap->GetDat(Ids->GetVal(i)) == color) {
-
-				#pragma omp cancellation point for	
-				#pragma omp critical
-				{
-					retVal = Ids->GetVal(i);
-				}
-				#pragma omp cancel for
-			}
-		}
-	}
-	enhgraph->endTimer(start, eTimer::TRIM);
-
-
-	start = enhgraph->startTimer();
-	for (int j = 0; j < 100; j++) {
-		#pragma omp parallel for schedule(static)
-		for (int i = 0; i < Ids->Len(); i++) {
-			if (colorMap->GetDat(Ids->GetVal(i)) == color) {
-
-				#pragma omp cancellation point for	
-				#pragma omp critical
-				{
-					retVal = Ids->GetVal(i);
-				}
-				#pragma omp cancel for
-			}
-		}
-	}
-	enhgraph->endTimer(start, eTimer::PIVOT);
-*/
-
-/*
-	start = enhgraph->startTimer();
-	for (int j = 0; j < 100; j++)
-	{
-		TSnapQueue<int> Queue;
-		int color=0;
-		TIntH *colors = enhgraph->colors;
-		PNGraph graph = enhgraph->graph;
-		for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
-		{
-			int node = NI.GetId();
-			if (colors->GetDat(node) == color) {
-				int inDegree = 0;
-				TNGraph::TNodeI NodeI = graph->GetNI(node);
-
-				int v = 0;
-				for (v = 0; v < NodeI.GetInDeg(); v++) 
-				{
-					const int outNode = NodeI.GetInNId(v);
-
-					if (colors->GetDat(outNode) == color && outNode != node) {
-						inDegree = 1;
-						break;
-					}
-				}
-
-				if (inDegree == 0) {
-					//colors->AddDat(node, g->colorGen->getNext());
-					Queue.Push(node);
-					continue;
-				}
-
-				int outDegree = 0;
-				NodeI = graph->GetNI(node);
-
-				for (v = 0; v < NodeI.GetOutDeg(); v++) 
-				{
-					const int outNode = NodeI.GetOutNId(v);
-
-					if (colors->GetDat(outNode) == color && outNode != node) {
-						outDegree = 1;
-						break;
-					}
-				}
-
-				if (outDegree == 0) {
-					//colors->AddDat(node, g->colorGen->getNext());
-					Queue.Push(node);
-					continue;
-				}
-			}
-		}
-	}
-	enhgraph->endTimer(start, eTimer::FirstFWBW);
-
-
-	start = enhgraph->startTimer();
-	for (int j = 0; j < 100; j++)
-	{
-		int color=0;
-		TSnapQueue<int> Queue;
-		TIntH *colors = enhgraph->colors;
-		PNGraph graph = enhgraph->graph;
-		TIntV *Ids = enhgraph->NIds;
-
-		#pragma omp parallel for schedule(dynamic)
-		for (int i = 0; i < Ids->Len(); i++)
-		{
-			int node = Ids->GetVal(i);
-			if (colors->GetDat(node) == color)
-			{
-				int inDegree = 0;
-				TNGraph::TNodeI NodeI = graph->GetNI(node);
-
-				for (int v = 0; v < NodeI.GetInDeg(); v++)
-				{
-					const int outNode = NodeI.GetInNId(v);
-
-					if (colors->GetDat(outNode) == color && outNode != node)
-						{
-						inDegree = 1;
-						break;
-					}
-				}
-
-				if (inDegree == 0)
-				{
-					//colors->AddDat(node, g->colorGen->getNext());
-					#pragma omp critical
-					{
-						Queue.Push(node);
-					}
-					continue;
-				}
-
-				int outDegree = 0;
-				NodeI = graph->GetNI(node);
-
-				for (int v = 0; v < NodeI.GetOutDeg(); v++)
-				{
-					const int outNode = NodeI.GetOutNId(v);
-
-					if (colors->GetDat(outNode) == color && outNode != node)
-					{
-						outDegree = 1;
-						break;
-					}
-				}
-
-				if (outDegree == 0)
-				{
-					//colors->AddDat(node, g->colorGen->getNext());
-					#pragma omp critical
-					{
-						Queue.Push(node);
-					}
-					continue;
-				}
-			}
-		}
-	}
-	enhgraph->endTimer(start, eTimer::FWBWs);
-
-
-	start = enhgraph->startTimer();
-	for (int j = 0; j < 100; j++)
-	{
-		int color=0;
-		TSnapQueue<int> Queue;
-		TIntH *colors = enhgraph->colors;
-		PNGraph graph = enhgraph->graph;
-		TIntV *Ids = enhgraph->NIds;
-
-		#pragma omp parallel for schedule(static)
-		for (int i = 0; i < Ids->Len(); i++)
-		{
-			int node = Ids->GetVal(i);
-			if (colors->GetDat(node) == color)
-			{
-				int inDegree = 0;
-				TNGraph::TNodeI NodeI = graph->GetNI(node);
-
-				for (int v = 0; v < NodeI.GetInDeg(); v++)
-				{
-					const int outNode = NodeI.GetInNId(v);
-
-					if (colors->GetDat(outNode) == color && outNode != node)
-						{
-						inDegree = 1;
-						break;
-					}
-				}
-
-				if (inDegree == 0)
-				{
-					//colors->AddDat(node, g->colorGen->getNext());
-					#pragma omp critical
-					{
-						Queue.Push(node);
-					}
-					continue;
-				}
-
-				int outDegree = 0;
-				NodeI = graph->GetNI(node);
-
-				for (int v = 0; v < NodeI.GetOutDeg(); v++)
-				{
-					const int outNode = NodeI.GetOutNId(v);
-
-					if (colors->GetDat(outNode) == color && outNode != node)
-					{
-						outDegree = 1;
-						break;
-					}
-				}
-
-				if (outDegree == 0)
-				{
-					//colors->AddDat(node, g->colorGen->getNext());
-					#pragma omp critical
-					{
-						Queue.Push(node);
-					}
-					continue;
-				}
-			}
-		}
-	}
-	enhgraph->endTimer(start, eTimer::TRIM);
-*/
+	/*
+	for (int j = 0; j < 10; j++) {
+		//pivot::findPivot(enhgraph, -1, PivotMethod);
+		TimePoint start = enhgraph->startTimer();
+		//trim::doTrim(Trimlevels, enhgraph, 0);
+		bfs::parbfs(enhgraph, 0, 13130);
+		enhgraph->endTimer(start, eTimer::FirstFWBW);
+	}*/
 
 
 	printTime(enhgraph, InEdges, Timer);

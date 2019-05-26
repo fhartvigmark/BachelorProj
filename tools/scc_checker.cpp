@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 	int upperLimit = min(scclist1.size(), scclist2.size());
 
 	if(scclist1.size()!=scclist2.size()){
-		cout << "SCCs have different sizes";
+		cout << "SCCs have different sizes " << scclist1.size() << " vs. " << scclist2.size() << "\n";
 		retVal = -1;
 	}
 

@@ -22,12 +22,15 @@ class ColorMap
 		int GetDat(int i);
 		int Len();
 		int BegI();
+		int EndI();
 
-		ColorMap(int size);
+		ColorMap(int size, int start);
 		~ColorMap();
 	private:
 		int *array;
 		int length;
+		int beg;
+		int end;
 };
 
 class ColorGenerator

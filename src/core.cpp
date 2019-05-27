@@ -13,12 +13,26 @@ int ColorMap::Len() {
 }
 
 int ColorMap::BegI() {
-	return 1;
+	return beg;
 }
 
-ColorMap::ColorMap(int size) {
-	length = size+1;
+int ColorMap::EndI() {
+	return end;
+}
+
+ColorMap::ColorMap(int size, int start) {
+	length = size;
 	array = new int[size+1];
+
+	//std::cout << "Start is " << start << "\n";
+
+	if (start == 0) {
+		beg = 0;
+		end = length;
+	} else {
+		beg = 1;
+		end = length + 1;
+	}
 }
 ColorMap::~ColorMap() {
 	delete[] array;
@@ -224,7 +238,9 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 	colorGen = new ColorGenerator();
 	//colors = new TIntH();
 	//colors->Gen(g->GetNodes());
-	colors = new ColorMap(g->GetNodes());
+	int first = g->BegNI().GetId();
+
+	colors = new ColorMap(g->GetNodes(), first);
 	NIds = new TIntV(g->GetNodes());
 
 	//Add all colors and node ids to colormap and node vector

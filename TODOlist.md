@@ -56,10 +56,10 @@
   * ~BFS~ (investigate parBFS)
   * FWBW
 * BFS
-  * parBFS slow
+  * **parBFS slow**
   * ~RelaxedSearch BFS-variant~ (needs testing on bigger graphs, also bigger graphs in unit testing)
   * RandomRelaxedSearch BFS-variant (in progress)
-* Optimization
+* **Optimization**
   * Max degree pivot preprocess.
   * Trim/Pivot order
   * Hashtable pack
@@ -67,4 +67,9 @@
   * Static vs dynamic
   * BFS FW/BW emptiness check
   * Emptiness check of remaining when using maxdegree pivot?
+  * ~Remove color HashMap~
+  * Replace Snap graph
+  * Replace Snap Queue
+  * Pivot min and max index
+  * Trim min and max index
 

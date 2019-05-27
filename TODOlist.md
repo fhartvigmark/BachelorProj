@@ -56,7 +56,7 @@
   * FWBW
 * BFS
   * parBFS slow
-  * RelaxedSearch BFS-variant (in progress)
+  * ~RelaxedSearch BFS-variant~ (needs testing on bigger graphs, also bigger graphs in unit testing)
   * RandomRelaxedSearch BFS-variant (in progress)
 * Optimization
   * Max degree pivot preprocess.

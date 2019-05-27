@@ -243,6 +243,35 @@ struct Trim3MixedPatternTest : testing::Test
 	}
 };
 
+struct Trim3SelfEdgesTest : testing::Test
+{
+	enhancedgraph *enhgraph;
+
+	Trim3SelfEdgesTest()
+	{
+		PNGraph graph = TNGraph::New();
+		graph->AddNode(1);
+		graph->AddNode(2);
+		graph->AddNode(3);
+		graph->AddNode(4);
+		graph->AddEdge(1, 2);
+		graph->AddEdge(2, 3);
+		graph->AddEdge(2, 1);
+		graph->AddEdge(3, 2);
+		graph->AddEdge(1, 1);
+		graph->AddEdge(2, 2);
+		graph->AddEdge(3, 3);
+		graph->AddEdge(2, 4);
+
+		enhgraph = new enhancedgraph(graph, false, false, 10);
+	}
+
+	virtual ~Trim3SelfEdgesTest()
+	{
+		delete enhgraph;
+	}
+};
+
 TEST_F(SimpleGraphTest, TrimFindsSCCs) {
 	TIntH *colors = enhgraph->colors;
     trim::doTrim(1, enhgraph, 0);
@@ -618,4 +647,39 @@ TEST_F(Trim3MixedPatternTest, ParTrim3FindsMultipleSCCs)
 
 	EXPECT_EQ(scc2, colors->GetDat(5));
 	EXPECT_EQ(scc2, colors->GetDat(6));
+};
+
+TEST_F(Trim3SelfEdgesTest, Trim3EdgeCase)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doTrim(3, enhgraph, 0);
+	int scc1 = colors->GetDat(1);
+	int scc2 = colors->GetDat(4);
+
+	EXPECT_NE(0, scc1);
+	EXPECT_NE(0, colors->GetDat(2));
+	EXPECT_NE(0, colors->GetDat(3));
+
+	EXPECT_NE(scc1, scc2);
+
+	EXPECT_EQ(scc1, colors->GetDat(2));
+	EXPECT_EQ(scc1, colors->GetDat(3));
+
+};
+
+TEST_F(Trim3SelfEdgesTest, ParTrim3EdgeCase)
+{
+	TIntH *colors = enhgraph->colors;
+	trim::doParTrim(3, enhgraph, 0);
+	int scc1 = colors->GetDat(1);
+	int scc2 = colors->GetDat(4);
+
+	EXPECT_NE(0, scc1);
+	EXPECT_NE(0, colors->GetDat(2));
+	EXPECT_NE(0, colors->GetDat(3));
+
+	EXPECT_NE(scc1, scc2);
+
+	EXPECT_EQ(scc1, colors->GetDat(2));
+	EXPECT_EQ(scc1, colors->GetDat(3));
 };

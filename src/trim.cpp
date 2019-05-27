@@ -1127,7 +1127,7 @@ int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 				TNGraph::TNodeI NodeBI = graph->GetNI(nodeB);
 				for (int v = 0; v < NodeBI.GetInDeg(); v++)
 				{
-					outNode_B = NodeBI.GetOutNId(v);
+					outNode_B = NodeBI.GetInNId(v);
 
 					if (colors->GetDat(outNode_B) == color && outNode_B != nodeB)
 					{

@@ -13,10 +13,12 @@ struct graph_state {
 
 std::pair<int, int> testBFS(int variant, enhancedgraph *g, int color, int startNode){
 	switch (variant){
-		case 0 :
+		case 0:
 			return bfs::colorbfs(g, color, startNode);
-		case 1 :
+		case 1:
 			return bfs::parbfs(g, color, startNode);
+		case 2:
+			return bfs::relaxedSearch(g, color, startNode);
 	}
 }
 
@@ -218,19 +220,26 @@ INSTANTIATE_TEST_CASE_P(Default, SimpleReachabilityTest,
 							graph_state{0, 3, 0, {3}, {}, {1, 2}},
 							graph_state{1, 1, 0, {1}, {2, 3}, {}},
 							graph_state{1, 2, 0, {2}, {3}, {1}},
-							graph_state{1, 3, 0, {3}, {}, {1, 2}}));
+							graph_state{1, 3, 0, {3}, {}, {1, 2}},
+							graph_state{2, 1, 0, {1}, {2, 3}, {}},
+							graph_state{2, 2, 0, {2}, {3}, {1}},
+							graph_state{2, 3, 0, {3}, {}, {1, 2}}));
 INSTANTIATE_TEST_CASE_P(Default, SimpleColorTest,
 						testing::Values(
 							graph_state{0, 1, 0, {1}, {2}, {}},
 							graph_state{0, 2, 0, {2}, {}, {1}},
 							graph_state{1, 1, 0, {1}, {2}, {}},
-							graph_state{1, 2, 0, {2}, {}, {1}}));
+							graph_state{1, 2, 0, {2}, {}, {1}},
+							graph_state{2, 1, 0, {1}, {2}, {}},
+							graph_state{2, 2, 0, {2}, {}, {1}}));
 INSTANTIATE_TEST_CASE_P(Default, SmallCycleTest,
 						testing::Values(
 							graph_state{0, 1, 0, {1, 2}, {}, {}},
 							graph_state{0, 2, 0, {1, 2}, {}, {} },
 							graph_state{1, 1, 0, {1, 2}, {}, {}},
-							graph_state{1, 2, 0, {1, 2}, {}, {}}));
+							graph_state{1, 2, 0, {1, 2}, {}, {}},
+							graph_state{2, 1, 0, {1, 2}, {}, {}},
+							graph_state{2, 2, 0, {1, 2}, {}, {}}));
 INSTANTIATE_TEST_CASE_P(Default, AdvancedCycleTest,
 						testing::Values(
 							graph_state{0, 2, 0, {2, 4, 5}, {3}, {1}},
@@ -238,4 +247,7 @@ INSTANTIATE_TEST_CASE_P(Default, AdvancedCycleTest,
 							graph_state{0, 5, 0, {2, 4, 5}, {3}, {1}},
 							graph_state{1, 2, 0, {2, 4, 5}, {3}, {1}},
 							graph_state{1, 4, 0, {2, 4, 5}, {3}, {1}},
-							graph_state{1, 5, 0, {2, 4, 5}, {3}, {1}}));
+							graph_state{1, 5, 0, {2, 4, 5}, {3}, {1}},
+							graph_state{2, 2, 0, {2, 4, 5}, {3}, {1}},
+							graph_state{2, 4, 0, {2, 4, 5}, {3}, {1}},
+							graph_state{2, 5, 0, {2, 4, 5}, {3}, {1}}));

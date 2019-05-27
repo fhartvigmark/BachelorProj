@@ -15,7 +15,6 @@ struct SimpleSetupTest : testing::Test {
         enhgraph->graph = graph;
         ColorMap *colors = new ColorMap(0, 1);
         enhgraph->colors = colors;
-		enhgraph->NIds = new TIntV();
         enhgraph->colorGen = new ColorGenerator();
     }
 
@@ -90,18 +89,6 @@ TEST_F(SimpleSetupTest, TimerNotEnabledGet) {
 TEST_F(SimpleSetupTest, TimerNotEnabledEnd) {
 	enhgraph->endTimer(Time::now(), eTimer::MAIN);
 	EXPECT_EQ(-1, enhgraph->getTime(eTimer::MAIN));
-}
-
-TEST_F(MapSetupTest, VectorStartsWithAllNodes) {
-	TIntV *nodes = enhgraph->NIds;
-	EXPECT_EQ(3, nodes->Len());
-}
-
-TEST_F(MapSetupTest, VectorStartsWithCorrectValues) {
-	TIntV *nodes = enhgraph->NIds;
-	EXPECT_EQ(1, nodes->GetVal(0));
-	EXPECT_EQ(2, nodes->GetVal(1));
-	EXPECT_EQ(3, nodes->GetVal(2));
 }
 
 TEST_F(MapSetupTest, MapStartsWithAllNodes) {

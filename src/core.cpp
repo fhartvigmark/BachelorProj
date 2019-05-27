@@ -241,17 +241,12 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 	int first = g->BegNI().GetId();
 
 	colors = new ColorMap(g->GetNodes(), first);
-	NIds = new TIntV(g->GetNodes());
+
 
 	//Add all colors and node ids to colormap and node vector
-	int i = 0;
-
 	for (PNGraph::TObj::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
 	{
 		colors->AddDat(NI.GetId(), 0);
-		NIds->SetVal(i, NI.GetId());
-
-		i++;
 	}
 
 	//Initialize durations and duration locks
@@ -348,7 +343,6 @@ enhancedgraph::~enhancedgraph() {
 	//Delete graph elements
 	//delete *graph; TODO: clean up graph?
 	delete colors;
-	delete NIds;
     delete colorGen;
 
 	//Delete analysis elements

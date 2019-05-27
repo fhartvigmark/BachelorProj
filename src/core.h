@@ -51,7 +51,6 @@ class enhancedgraph
 
     	PNGraph graph;
 		ColorMap *colors;
-		TIntV *NIds;
     	ColorGenerator *colorGen;
 
 		TimePoint startTimer();

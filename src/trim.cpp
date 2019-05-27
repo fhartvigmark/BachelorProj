@@ -75,8 +75,7 @@ int trim::doParTrim(int trimlevel, enhancedgraph *g, int color) {
 	return retVal;
 }
 
-int trim::trim1(enhancedgraph *g, int color)
-{
+int trim::trim1(enhancedgraph *g, int color) {
 	TSnapQueue<int> Queue;
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
@@ -242,10 +241,9 @@ int trim::trim1(enhancedgraph *g, int color)
 
 	g->reportTrim(color, count, 1);
     return -1;
-};
+}
 
-int trim::partrim1(enhancedgraph *g, int color, bool parallel)
-{
+int trim::partrim1(enhancedgraph *g, int color, bool parallel) {
 	TSnapQueue<int> Queue;
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
@@ -462,18 +460,16 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 
 	g->reportTrim(color, count, 1);
 	return -1;
-};
+}
 
-int trim::trim2(enhancedgraph *g, int color)
-{
+int trim::trim2(enhancedgraph *g, int color) {
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
-	TIntV *Ids = g->NIds;
 	int count = 0;
 
-	for (int i = 0; i < Ids->Len(); i++)
+	for (int i = colors->BegI(); i < colors->EndI(); i++)
 	{	
-		int node = Ids->GetVal(i);
+		int node = i;
 		//std::cout << "looking at node " << node << "\n"; 
 		if (colors->GetDat(node) == color)
 		{
@@ -562,10 +558,9 @@ int trim::trim2(enhancedgraph *g, int color)
 
 	g->reportTrim(color, count, 2);
 	return -1;
-};
+}
 
-int trim::partrim2(enhancedgraph *g, int color, bool parallel)
-{
+int trim::partrim2(enhancedgraph *g, int color, bool parallel) {
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	int count = 0;
@@ -659,17 +654,16 @@ int trim::partrim2(enhancedgraph *g, int color, bool parallel)
 
 	g->reportTrim(color, count, 2);
 	return -1;
-};
+}
 
-int trim::trim3(enhancedgraph *g, int color){
+int trim::trim3(enhancedgraph *g, int color) {
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
-	TIntV *Ids = g->NIds;
 	int count = 0;
 
-	for (int i = 0; i < Ids->Len(); i++)
+	for (int i = colors->BegI(); i < colors->EndI(); i++)
 	{
-		int node = Ids->GetVal(i);
+		int node = i;
 		if (colors->GetDat(node) == color)
 		{
 			int inDegree = 0;
@@ -920,10 +914,9 @@ int trim::trim3(enhancedgraph *g, int color){
 
 	g->reportTrim(color, count, 3);
 	return -1;
-};
+}
 
-int trim::partrim3(enhancedgraph *g, int color, bool parallel)
-{
+int trim::partrim3(enhancedgraph *g, int color, bool parallel) {
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	int count = 0;
@@ -1241,4 +1234,4 @@ int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 
 	g->reportTrim(color, count, 3);
 	return -1;
-};
+}

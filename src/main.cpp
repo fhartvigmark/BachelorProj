@@ -280,31 +280,31 @@ int main(int argc, char **argv)
 	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
 	enhgraph->endTimer(start, eTimer::MAIN);
 
-	
-
 	/*
-	for (int j = 0; j < 1; j++) {
+	try {
 		//pivot::findPivot(enhgraph, -1, PivotMethod);
 		TimePoint start = enhgraph->startTimer();
 		//trim::doTrim(Trimlevels, enhgraph, 0);
 		if (FwBwMethod == 0) {
 			bfs::colorbfs(enhgraph, 0, 13130);
 			//trim::doTrim(Trimlevels, enhgraph, 0);
-		} else if (FwBwMethod == 1)
-		{
+		} else if (FwBwMethod == 1) {
 			bfs::parbfs(enhgraph, 0, 13130);
 			//trim::doParTrim(Trimlevels, enhgraph, 0);
-		}
-		else if (FwBwMethod == 2)
-		{
+		} else if (FwBwMethod == 2) {
 			bfs::randomRelaxedSearch(enhgraph, 0, 13130);
+			//trim::doParTrim(Trimlevels, enhgraph, 0);
+		} else if (FwBwMethod == 3) {
+			bfs::relaxedSearch(enhgraph, 0, 13130);
 			//trim::doParTrim(Trimlevels, enhgraph, 0);
 		}
 		
 		
 		enhgraph->endTimer(start, eTimer::MAIN);
-	}*/
-	
+	} catch(const char* msg) {
+		std::cout << msg << "\n";
+	}
+	*/
 	/*
 	for (int j = 0; j < 10; j++) {
 		//pivot::findPivot(enhgraph, -1, PivotMethod);

@@ -65,7 +65,7 @@ int pivot::findParPivot(enhancedgraph *g, int color, int method) {
 //Returns the first node matching the search color or -1 if no such node exist
 int pivot::getPivot(enhancedgraph *g, int color)
 {
-    TIntH *colorMap = g->colors;
+    ColorMap *colorMap = g->colors;
 	TIntV *Ids = g->NIds;
 	for (int i = 0; i < Ids->Len(); i++) {
 		if (colorMap->GetDat(Ids->GetVal(i)) == color) {
@@ -89,7 +89,7 @@ int pivot::getPivotMaxDegree(enhancedgraph *g, int color)
 {
     int bestNode = -1;
     int bestDegree = -1;
-    TIntH *colors = g->colors;
+    ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
     for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
@@ -112,7 +112,7 @@ int pivot::getPivotMaxDegreeColor(enhancedgraph *g, int color)
 {
     int bestNode = -1;
     int bestDegree = -1;
-    TIntH *colors = g->colors;
+    ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
     for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
     {
@@ -178,7 +178,7 @@ int pivot::getPivotRand(enhancedgraph *g, int color)
 //Parallel version of getPivot()
 int pivot::getParPivot(enhancedgraph *g, int color, bool parallel)
 {
-    TIntH *colorMap = g->colors;
+    ColorMap *colorMap = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 
@@ -203,7 +203,7 @@ int pivot::getParPivot(enhancedgraph *g, int color, bool parallel)
 //Parallel version of getPivotMaxDegree()
 int pivot::getParPivotMaxDegree(enhancedgraph *g, int color, bool parallel)
 {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 
@@ -231,7 +231,7 @@ int pivot::getParPivotMaxDegree(enhancedgraph *g, int color, bool parallel)
 //Parallel version of getPivotMaxDegreeColor()
 int pivot::getParPivotMaxDegreeColor(enhancedgraph *g, int color, bool parallel)
 {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 

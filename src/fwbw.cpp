@@ -17,7 +17,7 @@ int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor,
 	}
 
 	TimePoint start = g->startTimer();
-	std::pair<int, int> newColors = bfs::parbfs(g, startColor, startNode);
+	std::pair<int, int> newColors = bfs::relaxedSearch(g, startColor, startNode);
 	g->endTimer(start, eTimer::FirstFWBW);
 
 	g->reportFWBW(1);
@@ -97,7 +97,7 @@ int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 	trim::doParTrim(trimlevel, g, startColor);
 	//First: fwColor, Second: bwColor
 	TimePoint start = g->startTimer();
-	std::pair<int, int> newColors = bfs::parbfs(g, startColor, startNode);
+	std::pair<int, int> newColors = bfs::relaxedSearch(g, startColor, startNode);
 	g->endTimer(start, eTimer::FWBWs);
 
 	depth++;

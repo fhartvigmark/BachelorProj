@@ -57,7 +57,7 @@ void printFile(enhancedgraph *enhgraph, TStr path, bool operation) {
 	ofstream file;
 	file.open(fileName.GetCStr());
 
-	TIntH *colors = enhgraph->colors;
+	ColorMap *colors = enhgraph->colors;
 	PNGraph graph = enhgraph->graph;
 
 	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
@@ -206,7 +206,7 @@ int main(int argc, char **argv)
     const int Trimlevels =
         Env.GetIfArgPrefixInt("-t=", 0, "Input number of trim levels\t");
     const int PivotMethod =
-        Env.GetIfArgPrefixInt("-p=", 0, "Pivot selection (0 for random)\t");
+        Env.GetIfArgPrefixInt("-p=", 0, "Pivot selection\t\t\t");
     const int FwBwMethod =
         Env.GetIfArgPrefixInt("-m=", 0, "Specify FW-BW variant\t\t");
 	const int MaxThreads =

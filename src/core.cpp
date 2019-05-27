@@ -1,6 +1,29 @@
 #include "core.h"
 #include "iostream"
 
+void ColorMap::AddDat(int i, int data) {
+	array[i] = data;
+}
+int ColorMap::GetDat(int i) {
+	return array[i];
+}
+
+int ColorMap::Len() {
+	return length;
+}
+
+int ColorMap::BegI() {
+	return 1;
+}
+
+ColorMap::ColorMap(int size) {
+	length = size+1;
+	array = new int[size+1];
+}
+ColorMap::~ColorMap() {
+	delete[] array;
+}
+
 ColorGenerator::ColorGenerator() {
 	lastColor = 0;
 }
@@ -199,8 +222,9 @@ std::list<int>* enhancedgraph::getReports(eDebug data) {
 enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations){
 	graph = g;
 	colorGen = new ColorGenerator();
-	colors = new TIntH();
-	colors->Gen(g->GetNodes());
+	//colors = new TIntH();
+	//colors->Gen(g->GetNodes());
+	colors = new ColorMap(g->GetNodes());
 	NIds = new TIntV(g->GetNodes());
 
 	//Add all colors and node ids to colormap and node vector
@@ -344,7 +368,7 @@ int Random::myRand(unsigned int seed, int limit) {
 }
 
 int Random::randstep(enhancedgraph *g, int color, int node, unsigned int seed) {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
 	//Find number of edges of same color
@@ -412,7 +436,7 @@ int Random::randstep(enhancedgraph *g, int color, int node, unsigned int seed) {
 }
 
 int Random::randstepIn(enhancedgraph *g, int color, const int node, unsigned int seed) {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
 	//Find number of edges of same color
@@ -455,7 +479,7 @@ int Random::randstepIn(enhancedgraph *g, int color, const int node, unsigned int
 }
 
 int Random::randstepOut(enhancedgraph *g, int color, const int node, unsigned int seed) {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
 	//Find number of edges of same color

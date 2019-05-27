@@ -78,7 +78,7 @@ int trim::doParTrim(int trimlevel, enhancedgraph *g, int color) {
 int trim::trim1(enhancedgraph *g, int color)
 {
 	TSnapQueue<int> Queue;
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	int count = 0;
 
@@ -247,7 +247,7 @@ int trim::trim1(enhancedgraph *g, int color)
 int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 {
 	TSnapQueue<int> Queue;
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 	int count = 0;
@@ -468,7 +468,7 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 
 int trim::trim2(enhancedgraph *g, int color)
 {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 	int count = 0;
@@ -568,7 +568,7 @@ int trim::trim2(enhancedgraph *g, int color)
 
 int trim::partrim2(enhancedgraph *g, int color, bool parallel)
 {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 	int count = 0;
@@ -666,7 +666,7 @@ int trim::partrim2(enhancedgraph *g, int color, bool parallel)
 };
 
 int trim::trim3(enhancedgraph *g, int color){
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 	int count = 0;
@@ -928,7 +928,7 @@ int trim::trim3(enhancedgraph *g, int color){
 
 int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	TIntV *Ids = g->NIds;
 	int count = 0;

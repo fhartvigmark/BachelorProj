@@ -15,6 +15,21 @@ typedef std::chrono::high_resolution_clock::time_point TimePoint;
 typedef std::chrono::high_resolution_clock::duration Duration;
 typedef std::chrono::milliseconds Ms;
 
+class ColorMap
+{
+	public:
+		void AddDat(int i, int data);
+		int GetDat(int i);
+		int Len();
+		int BegI();
+
+		ColorMap(int size);
+		~ColorMap();
+	private:
+		int *array;
+		int length;
+};
+
 class ColorGenerator
 {
     public:
@@ -32,7 +47,7 @@ class enhancedgraph
 		const bool ANALYSE_ENABLED;
 
     	PNGraph graph;
-		TIntH *colors;
+		ColorMap *colors;
 		TIntV *NIds;
     	ColorGenerator *colorGen;
 

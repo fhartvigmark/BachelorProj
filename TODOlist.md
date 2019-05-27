@@ -50,15 +50,19 @@
 * Graph folder
 * Testing plan
 * Make code consistent
-  * ~Trim~ (investigate trim-1)
+  * ~Trim~
   * ~Pivot~
-  * ~BFS~
+  * ~BFS~ (investigate parBFS)
   * FWBW
+* BFS
+  * parBFS slow
+  * RelaxedSearch BFS-variant (in progress)
+  * RandomRelaxedSearch BFS-variant (in progress)
 * Optimization
   * Max degree pivot preprocess.
   * Trim/Pivot order
   * Hashtable pack
-  * Hastable internal KeyDat vector
+  * Hastable internal KeyDat vector (probably not possible)
   * Static vs dynamic
   * BFS FW/BW emptiness check
   * Emptiness check of remaining when using maxdegree pivot?

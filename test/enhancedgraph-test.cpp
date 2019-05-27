@@ -13,7 +13,7 @@ struct SimpleSetupTest : testing::Test {
         graph->AddEdge(2, 3);
 
         enhgraph->graph = graph;
-        ColorMap *colors = new ColorMap(-1);
+        ColorMap *colors = new ColorMap(0, 1);
         enhgraph->colors = colors;
 		enhgraph->NIds = new TIntV();
         enhgraph->colorGen = new ColorGenerator();
@@ -106,7 +106,7 @@ TEST_F(MapSetupTest, VectorStartsWithCorrectValues) {
 
 TEST_F(MapSetupTest, MapStartsWithAllNodes) {
 	ColorMap *colorMap = enhgraph->colors;
-	EXPECT_EQ(4, colorMap->Len());
+	EXPECT_EQ(3, colorMap->Len());
 }
 
 TEST_F(MapSetupTest, MapStartsWithZeroValues) {

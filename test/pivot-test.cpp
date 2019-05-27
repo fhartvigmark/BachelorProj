@@ -122,7 +122,7 @@ TEST_P(SimpleGraphTest, CanFindStartnode) {
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
-		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->Len(); i++)
+		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
 			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}
@@ -153,7 +153,7 @@ TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) {
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
-		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->Len(); i++)
+		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
 			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}
@@ -176,7 +176,7 @@ TEST_P(AdvancedColorGraphTest, FindsMaxDegree) {
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
-		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->Len(); i++)
+		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
 			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}

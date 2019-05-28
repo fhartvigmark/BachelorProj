@@ -64,10 +64,11 @@ void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) 
 	ColorMap *colors = enhgraph->colors;
 	PNGraph graph = enhgraph->graph;
 
-	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
+	//std::cout << "first " << enhgraph->colors->BegI() << "\n";
+
+	for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
     {
-		int node = NI.GetId();
-		file << node << " " << colors->GetDat(node) << "\n";
+		file << i << " " << colors->GetDat(i) << "\n";
 	}
 
 	file.close();
@@ -345,22 +346,23 @@ int main(int argc, char **argv)
 	/*
 	for (int j = 0; j < 100; j++) {
 		TimePoint start = enhgraph->startTimer();
-		pivot::findPivot(enhgraph, -1, 0);
+		pivot::findPivot(enhgraph, -1, 0, 0, 5000);
 		enhgraph->endTimer(start, eTimer::MAIN);
 	}
 
 	for (int j = 0; j < 100; j++) {
 		TimePoint start = enhgraph->startTimer();
-		pivot::findPivot(enhgraph, 0, 1);
+		pivot::findPivot(enhgraph, 0, 1, 0, 5000);
 		enhgraph->endTimer(start, eTimer::FirstFWBW);
 	}
 
 	for (int j = 0; j < 100; j++) {
 		TimePoint start = enhgraph->startTimer();
-		pivot::findPivot(enhgraph, 0, 4);
+		pivot::findPivot(enhgraph, 0, 4, 0, 5000);
 		enhgraph->endTimer(start, eTimer::FWBWs);
 	}
 	*/
+	
 
 	printTime(enhgraph, InEdges, Suffix, Timer);
 	printFile(enhgraph, InEdges, Suffix, Output);

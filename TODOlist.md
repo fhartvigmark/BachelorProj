@@ -35,8 +35,10 @@
 * **Code cleanup**
 * ~Refactor pivot to have sequential and parallel public method like trim~
 * ~Fix trim-3 not handling loops correctly~
-* Random walk iterations command argument
-* Timers printing change indentation
+* ~Random walk iterations command argument~
+* ~Timers printing change indentation~
+* ~Output suffix argument~
+* ~Fix SCC count in debug info also counting empty fw-bw calls also fix missing bfs debug when saving to file~
 * tools
   * Synthetic graph generation tool
   * Graph analysis tool
@@ -56,7 +58,7 @@
   * ~Trim~
   * ~Pivot~
   * ~BFS~ (investigate parBFS)
-  * FWBW
+  * ~FWBW~
 * BFS
   * **parBFS slow**
   * ~RelaxedSearch BFS-variant~ (needs testing on bigger graphs, also bigger graphs in unit testing)

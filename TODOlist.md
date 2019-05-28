@@ -1,3 +1,15 @@
+# Experiment design
+* Trim
+ * Which level of Trim is worth using?
+ * Is it worth is to run trim at every iteration?
+* Pivot
+ * Is max-degree better than random?
+ * Is it worth it to consider changes to the graph when computing max-degree?
+ * Is random walk better than strictly random?
+* Perfomance overall
+ * Is parellization worth it on the graph selection?
+ * Is recursive FWBW parellization better than BFS based parellization?
+
 # Report tasks
 * ~Redo intro~
 * Split theory into two sections (related work, prelimenaries)
@@ -35,8 +47,10 @@
 * **Code cleanup**
 * ~Refactor pivot to have sequential and parallel public method like trim~
 * ~Fix trim-3 not handling loops correctly~
-* Random walk iterations command argument
-* Timers printing change indentation
+* ~Random walk iterations command argument~
+* ~Timers printing change indentation~
+* ~Output suffix argument~
+* ~Fix SCC count in debug info also counting empty fw-bw calls also fix missing bfs debug when saving to file~
 * tools
   * Synthetic graph generation tool
   * Graph analysis tool
@@ -56,7 +70,7 @@
   * ~Trim~
   * ~Pivot~
   * ~BFS~ (investigate parBFS)
-  * FWBW
+  * ~FWBW~
 * BFS
   * **parBFS slow**
   * ~RelaxedSearch BFS-variant~ (needs testing on bigger graphs, also bigger graphs in unit testing)

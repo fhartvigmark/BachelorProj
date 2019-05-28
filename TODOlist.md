@@ -72,7 +72,7 @@
   * Synthetic graph generation tool
   * Graph analysis tool
   * OpenMP settings tool
-  * Graph convert tool
+  * ~Graph convert tool~
   * ~Testing tool~
 * Test on big graphs
 * Debug information

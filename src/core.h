@@ -24,7 +24,7 @@ class ColorMap
 		int BegI();
 		int EndI();
 
-		ColorMap(int size, int start);
+		ColorMap(int size, bool hasZero);
 		~ColorMap();
 	private:
 		int *array;

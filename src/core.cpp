@@ -20,13 +20,13 @@ int ColorMap::EndI() {
 	return end;
 }
 
-ColorMap::ColorMap(int size, int start) {
+ColorMap::ColorMap(int size, bool hasZero) {
 	length = size;
 	array = new int[size+1];
 
-	//std::cout << "Start is " << start << "\n";
+	//std::cout << "Start is " << hasZero << "\n";
 
-	if (start == 0) {
+	if (hasZero) {
 		beg = 0;
 		end = length;
 	} else {
@@ -238,9 +238,12 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 	colorGen = new ColorGenerator();
 	//colors = new TIntH();
 	//colors->Gen(g->GetNodes());
-	int first = g->BegNI().GetId();
+	bool zero = g->IsNode(0);
+	//std::cout << "Is 12 a node: " << g->IsNode(12) << "\n";
+	//const TNGraph::TNodeI NodeI = g->GetNI(12);
+	//std::cout << "In degree of node 12 is: " << NodeI.GetInDeg() << "\n";
 
-	colors = new ColorMap(g->GetNodes(), first);
+	colors = new ColorMap(g->GetNodes(), zero);
 
 
 	//Add all colors and node ids to colormap and node vector

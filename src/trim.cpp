@@ -75,10 +75,9 @@ int trim::doParTrim(int trimlevel, enhancedgraph *g, int color) {
 	return retVal;
 }
 
-int trim::trim1(enhancedgraph *g, int color)
-{
+int trim::trim1(enhancedgraph *g, int color) {
 	TSnapQueue<int> Queue;
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	int count = 0;
 
@@ -242,29 +241,26 @@ int trim::trim1(enhancedgraph *g, int color)
 
 	g->reportTrim(color, count, 1);
     return -1;
-};
+}
 
-int trim::partrim1(enhancedgraph *g, int color, bool parallel)
-{
+int trim::partrim1(enhancedgraph *g, int color, bool parallel) {
 	TSnapQueue<int> Queue;
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
-	TIntV *Ids = g->NIds;
 	int count = 0;
 	int count2 = 0;
 
 	#pragma omp parallel for schedule(static) reduction(+:count) if(parallel)
-	for (int i = 0; i < Ids->Len(); i++)
+	for (int i = colors->BegI(); i < colors->EndI(); i++)
 	{
-		int node = Ids->GetVal(i);
 		int nodeColor;
 		//std::cout << "Error on node " << node << "\n";
-		nodeColor = colors->GetDat(node);
+		nodeColor = colors->GetDat(i);
 
 		if (nodeColor == color)
 		{
 			int inDegree = 0;
-			TNGraph::TNodeI NodeI = graph->GetNI(node);
+			TNGraph::TNodeI NodeI = graph->GetNI(i);
 
 			for (int v = 0; v < NodeI.GetInDeg(); v++)
 			{
@@ -274,7 +270,7 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 				outColor = colors->GetDat(outNode);
 
 
-				if (outColor == color && outNode != node)
+				if (outColor == color && outNode != i)
 				{
 					inDegree = 1;
 					break;
@@ -285,21 +281,21 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 			{
 				#pragma omp critical
 				{
-					colors->AddDat(node, g->colorGen->getNext());
+					colors->AddDat(i, g->colorGen->getNext());
 					count++;
-					Queue.Push(node);
+					Queue.Push(i);
 				}
 				continue;
 			}
 
 			int outDegree = 0;
-			NodeI = graph->GetNI(node);
+			NodeI = graph->GetNI(i);
 
 			for (int v = 0; v < NodeI.GetOutDeg(); v++)
 			{
 				int outNode = NodeI.GetOutNId(v);
 
-				if (colors->GetDat(outNode) == color && outNode != node)
+				if (colors->GetDat(outNode) == color && outNode != i)
 				{
 					outDegree = 1;
 					break;
@@ -310,9 +306,9 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 			{
 				#pragma omp critical
 				{
-					colors->AddDat(node, g->colorGen->getNext());
+					colors->AddDat(i, g->colorGen->getNext());
 					count++;
-					Queue.Push(node);
+					Queue.Push(i);
 				}
 				continue;
 			}
@@ -464,18 +460,16 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel)
 
 	g->reportTrim(color, count, 1);
 	return -1;
-};
+}
 
-int trim::trim2(enhancedgraph *g, int color)
-{
-	TIntH *colors = g->colors;
+int trim::trim2(enhancedgraph *g, int color) {
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
-	TIntV *Ids = g->NIds;
 	int count = 0;
 
-	for (int i = 0; i < Ids->Len(); i++)
+	for (int i = colors->BegI(); i < colors->EndI(); i++)
 	{	
-		int node = Ids->GetVal(i);
+		int node = i;
 		//std::cout << "looking at node " << node << "\n"; 
 		if (colors->GetDat(node) == color)
 		{
@@ -564,30 +558,27 @@ int trim::trim2(enhancedgraph *g, int color)
 
 	g->reportTrim(color, count, 2);
 	return -1;
-};
+}
 
-int trim::partrim2(enhancedgraph *g, int color, bool parallel)
-{
-	TIntH *colors = g->colors;
+int trim::partrim2(enhancedgraph *g, int color, bool parallel) {
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
-	TIntV *Ids = g->NIds;
 	int count = 0;
 
 	#pragma omp parallel for schedule(static) reduction(+:count) if(parallel)
-	for (int i = 0; i < Ids->Len(); i++)
+	for (int i = colors->BegI(); i < colors->EndI(); i++)
 	{
-		int node = Ids->GetVal(i);
-		if (colors->GetDat(node) == color)
+		if (colors->GetDat(i) == color)
 		{
 			int inDegree = 0;
 			int lastNode;
-			TNGraph::TNodeI NodeI = graph->GetNI(node);
+			TNGraph::TNodeI NodeI = graph->GetNI(i);
 
 			for (int v = 0; v < NodeI.GetInDeg(); v++)
 			{
 				int inNode = NodeI.GetInNId(v);
 
-				if (colors->GetDat(inNode) == color && inNode != node)
+				if (colors->GetDat(inNode) == color && inNode != i)
 				{
 					inDegree++;
 					lastNode = inNode;
@@ -607,12 +598,12 @@ int trim::partrim2(enhancedgraph *g, int color, bool parallel)
 						newInDegree++;
 					}
 				}
-				if (newInDegree == 1 && LastNodeI.IsInNId(node))
+				if (newInDegree == 1 && LastNodeI.IsInNId(i))
 				{
 					#pragma omp critical
 					{
 						int newSCC = g->colorGen->getNext();
-						colors->AddDat(node, newSCC);
+						colors->AddDat(i, newSCC);
 						colors->AddDat(lastNode, newSCC);
 						count++;
 					}
@@ -621,13 +612,13 @@ int trim::partrim2(enhancedgraph *g, int color, bool parallel)
 			}
 
 			int outDegree = 0;
-			NodeI = graph->GetNI(node);
+			NodeI = graph->GetNI(i);
 
 			for (int v = 0; v < NodeI.GetOutDeg(); v++)
 			{
 				int outNode = NodeI.GetOutNId(v);
 
-				if (colors->GetDat(outNode) == color && outNode != node)
+				if (colors->GetDat(outNode) == color && outNode != i)
 				{
 					outDegree++;
 					lastNode = outNode;
@@ -647,11 +638,11 @@ int trim::partrim2(enhancedgraph *g, int color, bool parallel)
 						newOutDegree++;
 					}
 				}
-				if (newOutDegree == 1 && LastNodeI.IsOutNId(node)){
+				if (newOutDegree == 1 && LastNodeI.IsOutNId(i)){
 					#pragma omp critical 
 					{
 						int newSCC = g->colorGen->getNext();
-						colors->AddDat(node, newSCC);
+						colors->AddDat(i, newSCC);
 						colors->AddDat(lastNode, newSCC);
 						count++;
 					}
@@ -663,17 +654,16 @@ int trim::partrim2(enhancedgraph *g, int color, bool parallel)
 
 	g->reportTrim(color, count, 2);
 	return -1;
-};
+}
 
-int trim::trim3(enhancedgraph *g, int color){
-	TIntH *colors = g->colors;
+int trim::trim3(enhancedgraph *g, int color) {
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
-	TIntV *Ids = g->NIds;
 	int count = 0;
 
-	for (int i = 0; i < Ids->Len(); i++)
+	for (int i = colors->BegI(); i < colors->EndI(); i++)
 	{
-		int node = Ids->GetVal(i);
+		int node = i;
 		if (colors->GetDat(node) == color)
 		{
 			int inDegree = 0;
@@ -924,31 +914,36 @@ int trim::trim3(enhancedgraph *g, int color){
 
 	g->reportTrim(color, count, 3);
 	return -1;
-};
+}
 
-int trim::partrim3(enhancedgraph *g, int color, bool parallel)
-{
-	TIntH *colors = g->colors;
+int trim::partrim3(enhancedgraph *g, int color, bool parallel) {
+	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
-	TIntV *Ids = g->NIds;
 	int count = 0;
+	//std::cout << colors->BegI() << "\n";
+	//std::cout << colors->EndI() << "\n";
 
 	#pragma omp parallel for schedule(static) reduction(+:count) if(parallel)
-	for (int i = 0; i < Ids->Len(); i++)
+	for (int i = colors->BegI(); i < colors->EndI(); i++)
 	{
-		int node = Ids->GetVal(i);
-		if (colors->GetDat(node) == color)
+		//if (i > colors->EndI()-100) {
+		//	#pragma omp critical
+		//	std::cout << i << "\n";
+		//}
+		
+
+		if (colors->GetDat(i) == color)
 		{
 			int inDegree = 0;
 			int nodeB = -1;
 			int nodeC = -2;
-			TNGraph::TNodeI NodeI = graph->GetNI(node);
+			TNGraph::TNodeI NodeI = graph->GetNI(i);
 
 			for (int v = 0; v < NodeI.GetInDeg(); v++)
 			{
 				int inNode = NodeI.GetInNId(v);
 
-				if (colors->GetDat(inNode) == color && inNode != node)
+				if (colors->GetDat(inNode) == color && inNode != i)
 				{
 					if (inDegree == 0)
 					{
@@ -1014,14 +1009,14 @@ int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 							}
 						}
 					}
-					if (inDegree_C == 1 && NodeCI.IsInNId(node) && colors->GetDat(nodeC) == color)
+					if (inDegree_C == 1 && NodeCI.IsInNId(i) && colors->GetDat(nodeC) == color)
 					{
 						#pragma omp critical
 						{
-							if (colors->GetDat(node) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
+							if (colors->GetDat(i) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
 							{
 								int newSCC = g->colorGen->getNext();
-								colors->AddDat(node, newSCC);
+								colors->AddDat(i, newSCC);
 								colors->AddDat(nodeB, newSCC);
 								colors->AddDat(nodeC, newSCC);
 								count++;
@@ -1051,7 +1046,7 @@ int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 						}
 					}
 				}
-				if (inDegree_B == 1 && NodeBI.IsInNId(node) && colors->GetDat(nodeB) == color)
+				if (inDegree_B == 1 && NodeBI.IsInNId(i) && colors->GetDat(nodeB) == color)
 				{
 					//std::cout << "B's in-degree is 1, proceeding \n";
 					int inDegree_C = 0;
@@ -1069,15 +1064,15 @@ int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 							}
 						}
 					}
-					if (inDegree_C == 1 && NodeCI.IsInNId(node) && colors->GetDat(nodeC) == color)
+					if (inDegree_C == 1 && NodeCI.IsInNId(i) && colors->GetDat(nodeC) == color)
 					{
 						//std::cout << "Found pattern 2 SCC \n";
 						#pragma omp critical
 						{
-							if (colors->GetDat(node) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
+							if (colors->GetDat(i) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
 							{
 								int newSCC = g->colorGen->getNext();
-								colors->AddDat(node, newSCC);
+								colors->AddDat(i, newSCC);
 								colors->AddDat(nodeB, newSCC);
 								colors->AddDat(nodeC, newSCC);
 								count++;
@@ -1089,13 +1084,13 @@ int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 			}
 
 			int outDegree = 0;
-			NodeI = graph->GetNI(node);
+			NodeI = graph->GetNI(i);
 
 			for (int v = 0; v < NodeI.GetOutDeg(); v++)
 			{
 				int outNode = NodeI.GetOutNId(v);
 
-				if (colors->GetDat(outNode) == color && outNode != node)
+				if (colors->GetDat(outNode) == color && outNode != i)
 				{
 					if (outDegree == 0)
 					{
@@ -1161,14 +1156,14 @@ int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 							}
 						}
 					}
-					if (outDegree_C == 1 && NodeCI.IsOutNId(node) && colors->GetDat(nodeC) == color)
+					if (outDegree_C == 1 && NodeCI.IsOutNId(i) && colors->GetDat(nodeC) == color)
 					{
 						#pragma omp critical
 						{
-							if (colors->GetDat(node) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
+							if (colors->GetDat(i) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
 							{
 								int newSCC = g->colorGen->getNext();
-								colors->AddDat(node, newSCC);
+								colors->AddDat(i, newSCC);
 								colors->AddDat(nodeB, newSCC);
 								colors->AddDat(nodeC, newSCC);
 								count++;
@@ -1198,7 +1193,7 @@ int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 						}
 					}
 				}
-				if (outDegree_B == 1 && NodeBI.IsOutNId(node) && colors->GetDat(nodeB) == color)
+				if (outDegree_B == 1 && NodeBI.IsOutNId(i) && colors->GetDat(nodeB) == color)
 				{
 					//std::cout << "B's out-degree is 1, proceeding \n";
 					int outDegree_C = 0;
@@ -1216,15 +1211,15 @@ int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 							}
 						}
 					}
-					if (outDegree_C == 1 && NodeCI.IsOutNId(node) && colors->GetDat(nodeC) == color)
+					if (outDegree_C == 1 && NodeCI.IsOutNId(i) && colors->GetDat(nodeC) == color)
 					{
 						//std::cout << "Found pattern 2 SCC \n";
 						#pragma omp critical
 						{
-							if (colors->GetDat(node) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
+							if (colors->GetDat(i) == color && colors->GetDat(nodeB) == color && colors->GetDat(nodeC) == color)
 							{
 								int newSCC = g->colorGen->getNext();
-								colors->AddDat(node, newSCC);
+								colors->AddDat(i, newSCC);
 								colors->AddDat(nodeB, newSCC);
 								colors->AddDat(nodeC, newSCC);
 								count++;
@@ -1239,4 +1234,4 @@ int trim::partrim3(enhancedgraph *g, int color, bool parallel)
 
 	g->reportTrim(color, count, 3);
 	return -1;
-};
+}

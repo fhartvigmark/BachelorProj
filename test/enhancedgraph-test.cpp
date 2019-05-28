@@ -13,9 +13,8 @@ struct SimpleSetupTest : testing::Test {
         graph->AddEdge(2, 3);
 
         enhgraph->graph = graph;
-        TIntH *colors = new TIntH();
+        ColorMap *colors = new ColorMap(0, false);
         enhgraph->colors = colors;
-		enhgraph->NIds = new TIntV();
         enhgraph->colorGen = new ColorGenerator();
     }
 
@@ -52,12 +51,12 @@ TEST_F(SimpleSetupTest, ColorIncrementEachTime) {
 }
 
 TEST_F(SimpleSetupTest, HashMapStartsEmpty) {
-	TIntH *colorMap = enhgraph->colors;
+	ColorMap *colorMap = enhgraph->colors;
     EXPECT_EQ(0, colorMap->Len());
 }
 
 TEST_F(SimpleSetupTest, NodeVectorStartsEmpty) {
-	TIntH *colorMap = enhgraph->colors;
+	ColorMap *colorMap = enhgraph->colors;
     EXPECT_EQ(0, colorMap->Len());
 }
 
@@ -92,29 +91,17 @@ TEST_F(SimpleSetupTest, TimerNotEnabledEnd) {
 	EXPECT_EQ(-1, enhgraph->getTime(eTimer::MAIN));
 }
 
-TEST_F(MapSetupTest, VectorStartsWithAllNodes) {
-	TIntV *nodes = enhgraph->NIds;
-	EXPECT_EQ(3, nodes->Len());
-}
-
-TEST_F(MapSetupTest, VectorStartsWithCorrectValues) {
-	TIntV *nodes = enhgraph->NIds;
-	EXPECT_EQ(1, nodes->GetVal(0));
-	EXPECT_EQ(2, nodes->GetVal(1));
-	EXPECT_EQ(3, nodes->GetVal(2));
-}
-
 TEST_F(MapSetupTest, MapStartsWithAllNodes) {
-	TIntH *colorMap = enhgraph->colors;
+	ColorMap *colorMap = enhgraph->colors;
 	EXPECT_EQ(3, colorMap->Len());
 }
 
 TEST_F(MapSetupTest, MapStartsWithZeroValues) {
-	TIntH *colorMap = enhgraph->colors;
+	ColorMap *colorMap = enhgraph->colors;
 
-	for (THashKeyDatI<TInt, TInt> i = colorMap->BegI(); i < colorMap->EndI(); i++)
+	for (int i = colorMap->BegI(); i < colorMap->Len(); i++)
     {
-		EXPECT_EQ(0, i.GetDat());
+		EXPECT_EQ(0, colorMap->GetDat(i));
     }
 }
 
@@ -134,4 +121,9 @@ TEST_F(MapSetupTest, TimerUpdatesCorrectly) {
 	enhgraph->endTimer(start, eTimer::MAIN);
 	EXPECT_NE(0, enhgraph->getTime(eTimer::MAIN));
 	EXPECT_EQ(100, enhgraph->getTime(eTimer::MAIN));
+}
+
+TEST_F(MapSetupTest, CanWriteToColorMap) {
+	enhgraph->colors->AddDat(2, 3);
+	EXPECT_EQ(3, enhgraph->colors->GetDat(2));
 }

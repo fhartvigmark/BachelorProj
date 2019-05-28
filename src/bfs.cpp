@@ -4,7 +4,7 @@
 //Maybe include mark
 std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
     TSnapQueue<int> Queue;
-    TIntH *colors = g->colors;
+    ColorMap *colors = g->colors;
     PNGraph pgraph = g->graph;
 	int count = 0;
 
@@ -92,7 +92,7 @@ std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
 
 std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 	TSnapQueue<int> Queue;
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph pgraph = g->graph;
 	int totalCount = 0;
 
@@ -211,7 +211,7 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 }
 
 std::pair<int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNode) {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph pgraph = g->graph;
 	int totalCount = 0;
 	int count = 0;
@@ -460,7 +460,7 @@ std::pair<int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNod
 }
 
 std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int startNode) {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph pgraph = g->graph;
 	int totalCount = 0;
 
@@ -606,7 +606,7 @@ std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int st
 //TODO: test fwbfs and parfwbfs
 int bfs::fwbfs(enhancedgraph *g, int color, int startNode) {
     TSnapQueue<int> Queue;
-    TIntH *colors = g->colors;
+    ColorMap *colors = g->colors;
     PNGraph pgraph = g->graph;
 	int count = 0;
 
@@ -674,7 +674,7 @@ int bfs::fwbfs(enhancedgraph *g, int color, int startNode) {
 
 int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) {
 	TSnapQueue<int> Queue;
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
 	PNGraph pgraph = g->graph;
 	int totalCount = 0;
 

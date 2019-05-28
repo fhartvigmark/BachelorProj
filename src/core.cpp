@@ -1,9 +1,58 @@
 #include "core.h"
 #include "iostream"
 
+void ColorMap::AddDat(int i, int data) {
+	array[i] = data;
+}
+int ColorMap::GetDat(int i) {
+	return array[i];
+}
+
+int ColorMap::Len() {
+	return length;
+}
+
+int ColorMap::BegI() {
+	return beg;
+}
+
+int ColorMap::EndI() {
+	return end;
+}
+
+ColorMap::ColorMap(int size, bool hasZero) {
+	length = size;
+	array = new int[size+1];
+
+	//std::cout << "Start is " << hasZero << "\n";
+
+	if (hasZero) {
+		beg = 0;
+		end = length;
+	} else {
+		beg = 1;
+		end = length + 1;
+	}
+}
+ColorMap::~ColorMap() {
+	delete[] array;
+}
+
 ColorGenerator::ColorGenerator() {
 	lastColor = 0;
 }
+
+void enhancedgraph::calculateDegree() {
+	bool zero = graph->IsNode(0);
+
+	degree = new ColorMap(graph->GetNodes(), zero);
+
+	for (PNGraph::TObj::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
+	{
+		degree->AddDat(NI.GetId(), NI.GetInDeg() * NI.GetOutDeg());
+	}
+}
+
 
 //Get current time
 TimePoint enhancedgraph::startTimer() {
@@ -71,6 +120,11 @@ void enhancedgraph::endTimer(TimePoint start, eTimer timer) {
 				tSetup += dur;
 				omp_unset_lock(&lSetup);
 				break;
+			case eTimer::PREP:
+				omp_set_lock(&lSetup);
+				tPrep += dur;
+				omp_unset_lock(&lSetup);
+				break;
 			default:
 				break;
 		}
@@ -105,6 +159,8 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 			return std::chrono::duration_cast<Ms>(tPivot).count();
 		case eTimer::SETUP:
 			return std::chrono::duration_cast<Ms>(tSetup).count();
+		case eTimer::PREP:
+			return std::chrono::duration_cast<Us>(tPrep).count();
 		default:
 			return -1;
 	}
@@ -199,19 +255,20 @@ std::list<int>* enhancedgraph::getReports(eDebug data) {
 enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations){
 	graph = g;
 	colorGen = new ColorGenerator();
-	colors = new TIntH();
-	colors->Gen(g->GetNodes());
-	NIds = new TIntV(g->GetNodes());
+	//colors = new TIntH();
+	//colors->Gen(g->GetNodes());
+	bool zero = g->IsNode(0);
+	//std::cout << "Is 12 a node: " << g->IsNode(12) << "\n";
+	//const TNGraph::TNodeI NodeI = g->GetNI(12);
+	//std::cout << "In degree of node 12 is: " << NodeI.GetInDeg() << "\n";
+
+	colors = new ColorMap(g->GetNodes(), zero);
+
 
 	//Add all colors and node ids to colormap and node vector
-	int i = 0;
-
 	for (PNGraph::TObj::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
 	{
 		colors->AddDat(NI.GetId(), 0);
-		NIds->SetVal(i, NI.GetId());
-
-		i++;
 	}
 
 	//Initialize durations and duration locks
@@ -226,6 +283,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 		tFirstTrim = Duration::zero();
 		tPivot = Duration::zero();
 		tSetup = Duration::zero();
+		tPrep = Duration::zero();
 
 		omp_init_lock(&lMain);
 		omp_init_lock(&lFirstFWBW);
@@ -272,6 +330,7 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 		tFirstTrim = Duration::zero();
 		tPivot = Duration::zero();
 		tSetup = Duration::zero();
+		tPrep = Duration::zero();
 
 		omp_init_lock(&lMain);
 		omp_init_lock(&lFirstFWBW);
@@ -307,8 +366,8 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 enhancedgraph::~enhancedgraph() {
 	//Delete graph elements
 	//delete *graph; TODO: clean up graph?
+	//TODO: clean up degree array
 	delete colors;
-	delete NIds;
     delete colorGen;
 
 	//Delete analysis elements
@@ -344,7 +403,7 @@ int Random::myRand(unsigned int seed, int limit) {
 }
 
 int Random::randstep(enhancedgraph *g, int color, int node, unsigned int seed) {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
 	//Find number of edges of same color
@@ -412,7 +471,7 @@ int Random::randstep(enhancedgraph *g, int color, int node, unsigned int seed) {
 }
 
 int Random::randstepIn(enhancedgraph *g, int color, const int node, unsigned int seed) {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
 	//Find number of edges of same color
@@ -455,7 +514,7 @@ int Random::randstepIn(enhancedgraph *g, int color, const int node, unsigned int
 }
 
 int Random::randstepOut(enhancedgraph *g, int color, const int node, unsigned int seed) {
-	TIntH *colors = g->colors;
+	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
 	//Find number of edges of same color

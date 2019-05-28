@@ -1,3 +1,32 @@
+# Experiment design
+* Trim
+  * Which level of Trim is worth using?
+    * What is the overhead on trim levels
+  * Is it worth is to run trim at every iteration?
+* Pivot
+  * Is max-degree better than random?
+  * Is it worth it to consider changes to the graph when computing max-degree?
+  * Is random walk better than strictly random?
+* Perfomance overall
+  * Is parellization worth it on the graph selection?
+  * Is recursive FWBW parellization better than BFS based parellization?
+* Graphs
+  * Slashdot
+  * Standford
+  * Google
+  * LiveJournal
+  * Pattern (Needs to be converted)
+
+## Experiments
+* Trim
+  * Check parallel scaling?
+* Pivot
+  * Check parallel scaling?
+  * Run all pivot types on all graphs (without trim??) check which SCCs each pivot selects if it selects the largest first.
+* Performance overall
+  * Check scaling with different amount of threads
+  * Run all 3 methods with best pivot and trim 3
+
 # Report tasks
 * ~Redo intro~
 * Split theory into two sections (related work, prelimenaries)
@@ -35,10 +64,15 @@
 * **Code cleanup**
 * ~Refactor pivot to have sequential and parallel public method like trim~
 * ~Fix trim-3 not handling loops correctly~
+* ~Random walk iterations command argument~
+* ~Timers printing change indentation~
+* ~Output suffix argument~
+* ~Fix SCC count in debug info also counting empty fw-bw calls also fix missing bfs debug when saving to file~
 * tools
   * Synthetic graph generation tool
   * Graph analysis tool
   * OpenMP settings tool
+  * Graph convert tool
   * ~Testing tool~
 * Test on big graphs
 * Debug information
@@ -54,28 +88,27 @@
   * ~Trim~
   * ~Pivot~
   * ~BFS~ (investigate parBFS)
-  * FWBW
+  * ~FWBW~
 * BFS
   * **parBFS slow**
   * ~RelaxedSearch BFS-variant~ (needs testing on bigger graphs, also bigger graphs in unit testing)
   * RandomRelaxedSearch BFS-variant (in progress)
 * **Optimization**
   * Unsigned integers
-  * Max degree pivot preprocess.
-    * Timer
+  * ~Max degree pivot preprocess.~
+    * ~Timer~
   * Trim/Pivot order
-  * Hashtable pack
   * Hastable internal KeyDat vector (probably not possible)
   * Static vs dynamic
   * BFS FW/BW emptiness check
-  * Emptiness check of remaining when using maxdegree pivot?
+  * Emptiness check of bfs-remaining when using maxdegree pivot?
   * ~Remove color HashMap~
     * Direct access
   * Replace Snap graph
     * Double CSR structure
     * Convert tool?
   * Replace Snap Queue
-  * Pivot min and max index
+  * Pivot min and max index (in progress)
   * Trim min and max index
   * Run Trim based on previous iterations
 

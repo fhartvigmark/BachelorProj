@@ -18,6 +18,7 @@ class pivot
 	static int getPivotRand(enhancedgraph *g, int color);
 	static int getParPivot(enhancedgraph *g, int color, bool parallel);
     static int getParPivotMaxDegree(enhancedgraph *g, int color, bool parallel);
+    static int getParPivotMaxDegreeCalc(enhancedgraph *g, int color, bool parallel);
     static int getParPivotMaxDegreeColor(enhancedgraph *g, int color, bool parallel);
 	static int getParPivotRand(enhancedgraph *g, int color, bool parallel);
 };

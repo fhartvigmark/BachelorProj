@@ -97,10 +97,13 @@ struct AdvancedColorGraphTest : testing::Test, testing::WithParamInterface<pivot
 		enhgraph->colors->AddDat(4, 2);
 		enhgraph->colors->AddDat(5, 2);
 		enhgraph->colors->AddDat(6, 2);
+
+		enhgraph->calculateDegree();
 	}
 
 	virtual ~AdvancedColorGraphTest()
 	{
+		delete enhgraph->degree;
 		delete enhgraph;
 	}
 };
@@ -122,9 +125,9 @@ TEST_P(SimpleGraphTest, CanFindStartnode) {
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
-		for (THashKeyDatI<TInt, TInt> i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
+		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
-			EXPECT_NE(gs.color, i.GetDat());
+			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}
 	} else if (gs.method == 0 && gs.parallel) {
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
@@ -153,9 +156,9 @@ TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) {
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
-		for (THashKeyDatI<TInt, TInt> i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
+		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
-			EXPECT_NE(gs.color, i.GetDat());
+			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}
 	} else {
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
@@ -176,9 +179,9 @@ TEST_P(AdvancedColorGraphTest, FindsMaxDegree) {
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
-		for (THashKeyDatI<TInt, TInt> i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
+		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
-			EXPECT_NE(gs.color, i.GetDat());
+			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}
 	} else if (gs.color == 2) {
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
@@ -195,16 +198,22 @@ TEST_P(AdvancedColorGraphTest, FindsMaxDegree) {
 INSTANTIATE_TEST_CASE_P(Default, AdvancedColorGraphTest,
 						testing::Values(
 							pivot_state{3, 1, 1, false},
+							pivot_state{3, 1, 4, false},
 							pivot_state{2, 1, 2, false},
 							pivot_state{3, 1, 1, true},
+							pivot_state{3, 1, 4, true},
 							pivot_state{2, 1, 2, true},
 							pivot_state{-1, 0, 1, false},
+							pivot_state{-1, 0, 4, false},
 							pivot_state{-1, 0, 2, false},
 							pivot_state{-1, 0, 1, true},
+							pivot_state{-1, 0, 4, true},
 							pivot_state{-1, 0, 2, true},
 							pivot_state{4, 2, 1, false},
+							pivot_state{4, 2, 4, false},
 							pivot_state{4, 2, 2, false},
 							pivot_state{4, 2, 1, true},
+							pivot_state{4, 2, 4, true},
 							pivot_state{4, 2, 2, true}));
 
 INSTANTIATE_TEST_CASE_P(Default, SimpleGraphTest,

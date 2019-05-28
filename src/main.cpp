@@ -4,23 +4,25 @@ TStr getFileName(TStr path) {
 	return path.GetFMid();
 }
 
-void printTime(enhancedgraph *enhgraph, TStr path, int operation) {
+void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	if (operation == 1) {
 		cout << "\nTime used: \n";
 		cout << "  " << "Setup\t\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
+		cout << "  " << "Prep\t\t\t" << enhgraph->getTime(eTimer::PREP) << "μs\n";
 		cout << "  " << "SCC\t\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
-		cout << "  " << "First FWBW\t\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
-		cout << "  " << "FWBW\t\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
-		cout << "  " << "Trim\t\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
-		cout << "    " << "Trim 1\t\t" << enhgraph->getTime(eTimer::TRIM1) << "ms\n";
-		cout << "      " << "First Trim\t" << enhgraph->getTime(eTimer::FirstTRIM) << "ms\n";
-		cout << "    " << "Trim 2\t\t" << enhgraph->getTime(eTimer::TRIM2) << "ms\n";
-		cout << "    " << "Trim 3\t\t" << enhgraph->getTime(eTimer::TRIM3) << "ms\n";
-		cout << "  " << "Pivot\t\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
+		cout << "    " << "First FWBW\t\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
+		cout << "    " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
+		cout << "    " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		cout << "      " << "Trim 1\t\t" << enhgraph->getTime(eTimer::TRIM1) << "ms\n";
+		cout << "        " << "First Trim\t" << enhgraph->getTime(eTimer::FirstTRIM) << "ms\n";
+		cout << "      " << "Trim 2\t\t" << enhgraph->getTime(eTimer::TRIM2) << "ms\n";
+		cout << "      " << "Trim 3\t\t" << enhgraph->getTime(eTimer::TRIM3) << "ms\n";
+		cout << "    " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
 	} else if (operation == 2) {
 		cout << "\nWriting timer output\n";
 
 		TStr fileName = getFileName(path);
+		fileName += suffix;
 		fileName += ".time";
 
 		ofstream file;
@@ -28,15 +30,16 @@ void printTime(enhancedgraph *enhgraph, TStr path, int operation) {
 
 		file << "\nTime used: \n";
 		file << "  " << "Setup\t\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
+		file << "  " << "Prep\t\t\t" << enhgraph->getTime(eTimer::PREP) << "μs\n";
 		file << "  " << "SCC\t\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
-		file << "  " << "First FWBW\t\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
-		file << "  " << "FWBW\t\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
-		file << "  " << "Trim\t\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
-		file << "    " << "Trim 1\t\t" << enhgraph->getTime(eTimer::TRIM1) << "ms\n";
-		file << "      " << "First Trim\t" << enhgraph->getTime(eTimer::FirstTRIM) << "ms\n";
-		file << "    " << "Trim 2\t\t" << enhgraph->getTime(eTimer::TRIM2) << "ms\n";
-		file << "    " << "Trim 3\t\t" << enhgraph->getTime(eTimer::TRIM3) << "ms\n";
-		file << "  " << "Pivot\t\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
+		file << "    " << "First FWBW\t\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
+		file << "    " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
+		file << "    " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		file << "      " << "Trim 1\t\t" << enhgraph->getTime(eTimer::TRIM1) << "ms\n";
+		file << "        " << "First Trim\t" << enhgraph->getTime(eTimer::FirstTRIM) << "ms\n";
+		file << "      " << "Trim 2\t\t" << enhgraph->getTime(eTimer::TRIM2) << "ms\n";
+		file << "      " << "Trim 3\t\t" << enhgraph->getTime(eTimer::TRIM3) << "ms\n";
+		file << "    " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
 
 		file.close();
 
@@ -44,7 +47,7 @@ void printTime(enhancedgraph *enhgraph, TStr path, int operation) {
 	}
 }
 
-void printFile(enhancedgraph *enhgraph, TStr path, bool operation) {
+void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) {
 	if (!operation) {
 		return;
 	}
@@ -52,12 +55,13 @@ void printFile(enhancedgraph *enhgraph, TStr path, bool operation) {
 	cout << "\nWriting SCC output\n";
 
 	TStr fileName = getFileName(path);
+	fileName += suffix;
 	fileName += ".scc";
 
 	ofstream file;
 	file.open(fileName.GetCStr());
 
-	TIntH *colors = enhgraph->colors;
+	ColorMap *colors = enhgraph->colors;
 	PNGraph graph = enhgraph->graph;
 
 	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
@@ -71,13 +75,13 @@ void printFile(enhancedgraph *enhgraph, TStr path, bool operation) {
 	cout << "Done\n";
 }
 
-void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
+void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	if (operation == 0) {
 		return;
 	}
 	int fwbwCalls = enhgraph->getCallsFWBW();
 	int fwbwDepth = enhgraph->getDepth();
-	int sccs = fwbwCalls;
+	int sccs = 0;
 	int gsize = enhgraph->graph->GetNodes();
 
 	std::list<int> *trimAmount = enhgraph->getReports(eDebug::tAmount);
@@ -90,6 +94,12 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 
 	for (auto it = trimAmount->cbegin(); it != trimAmount->cend(); it++) {
 		sccs += *it;
+	}
+
+	for (auto it = bfsAmount->cbegin(); it != bfsAmount->cend(); it++) {
+		if (*it > 0) {
+			sccs++;
+		}
 	}
 
 	if (operation == 1) {
@@ -139,6 +149,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 		cout << "\nWriting debug output\n";
 
 		TStr fileName = getFileName(path);
+		fileName += suffix;
 		fileName += ".debug";
 
 		ofstream file;
@@ -146,9 +157,12 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 
 		file << "\nDebug information: \n";
 		file << "  " << "#SCCs: " << sccs << "\n";
+		file << "  " << "Graph size: " << gsize << "\n";
 		file << "  " << "#FWBW calls: " << fwbwCalls << "\n";
-		file << "  " << "FWBW depth: " << fwbwDepth << "\n";
+		file << "  " << "#FWBW depth: " << fwbwDepth << "\n";
 		
+		file << "  " << "pivots calls: " << enhgraph->getCallsPivot() << "\n";
+		file << "  " << "successful pivot calls: " << pivotColor->size() << "\n";
 		file << "  " << "pivots: " << "\n";
 		while (!pivotNode->empty()) {
 			int node = pivotNode->front();
@@ -159,6 +173,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 			file << "    " << "Chosen node " << node << " for color " << color << "\n";
 		}
 
+		file << "  " << "trim calls: " << enhgraph->getCallsTrim() << "\n";
 		file << "  " << "trims: " << "\n";
 		while (!trimAmount->empty()) {
 			int amount = trimAmount->front();
@@ -169,6 +184,17 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 			trimType->pop_front();
 
 			file << "    " << "Trim " << type << " trimmed " << amount << " for color " << color << "\n";
+		}
+
+		file << "  " << "BFS calls: " << bfsColor->size() << "\n";
+		file << "  " << "BFS SCCs: " << "\n";
+		while (!bfsAmount->empty()) {
+			int amount = bfsAmount->front();
+			bfsAmount->pop_front();
+			int color = bfsColor->front();
+			bfsColor->pop_front();
+
+			file << "    " << "BFS found SCC of size " << amount << " for color " << color << "\n";
 		}
 
 		file.close();
@@ -206,15 +232,19 @@ int main(int argc, char **argv)
     const int Trimlevels =
         Env.GetIfArgPrefixInt("-t=", 0, "Input number of trim levels\t");
     const int PivotMethod =
-        Env.GetIfArgPrefixInt("-p=", 0, "Pivot selection (0 for random)\t");
+        Env.GetIfArgPrefixInt("-p=", 0, "Pivot selection\t\t\t");
     const int FwBwMethod =
         Env.GetIfArgPrefixInt("-m=", 0, "Specify FW-BW variant\t\t");
 	const int MaxThreads =
         Env.GetIfArgPrefixInt("-w=", omp_get_max_threads(), "Specify maximum workers\t\t");
+	const int RandIterations =
+        Env.GetIfArgPrefixInt("-rand=", 10, "Specify randwalk iterations\t");
 	const bool Help =
         Env.GetIfArgPrefixBool("-h=", false, "Print help section\t\t");
 	const bool Output =
         Env.GetIfArgPrefixBool("-out=", false, "Print SCC output to file\t");
+	const TStr Suffix =
+        Env.GetIfArgPrefixStr("-suffix=", "", "Name to append output file\t");
 	const int Timer =
         Env.GetIfArgPrefixInt("-time=", 0, "Print timers\t\t\t");
 	const int Analyse =
@@ -270,10 +300,16 @@ int main(int argc, char **argv)
 	
 
 	enhancedgraph *enhgraph;
-    enhgraph = new enhancedgraph(Graph, Timer, Analyse, 10);
+    enhgraph = new enhancedgraph(Graph, Timer, Analyse, RandIterations);
 	
 	enhgraph->endTimer(start, eTimer::SETUP);
 	cout << "Graph loaded\n";
+
+	start = enhgraph->startTimer();
+	if (PivotMethod == 4) {
+		enhgraph->calculateDegree();
+	}
+	enhgraph->endTimer(start, eTimer::PREP);
 
 	
 	start = enhgraph->startTimer();
@@ -305,19 +341,30 @@ int main(int argc, char **argv)
 		std::cout << msg << "\n";
 	}
 	*/
+
 	/*
-	for (int j = 0; j < 10; j++) {
-		//pivot::findPivot(enhgraph, -1, PivotMethod);
+	for (int j = 0; j < 100; j++) {
 		TimePoint start = enhgraph->startTimer();
-		//trim::doTrim(Trimlevels, enhgraph, 0);
-		bfs::parbfs(enhgraph, 0, 13130);
+		pivot::findPivot(enhgraph, -1, 0);
+		enhgraph->endTimer(start, eTimer::MAIN);
+	}
+
+	for (int j = 0; j < 100; j++) {
+		TimePoint start = enhgraph->startTimer();
+		pivot::findPivot(enhgraph, 0, 1);
 		enhgraph->endTimer(start, eTimer::FirstFWBW);
-	}*/
+	}
 
+	for (int j = 0; j < 100; j++) {
+		TimePoint start = enhgraph->startTimer();
+		pivot::findPivot(enhgraph, 0, 4);
+		enhgraph->endTimer(start, eTimer::FWBWs);
+	}
+	*/
 
-	printTime(enhgraph, InEdges, Timer);
-	printFile(enhgraph, InEdges, Output);
-	printInfo(enhgraph, InEdges, Analyse);
+	printTime(enhgraph, InEdges, Suffix, Timer);
+	printFile(enhgraph, InEdges, Suffix, Output);
+	printInfo(enhgraph, InEdges, Suffix, Analyse);
 
     return 0;
 }

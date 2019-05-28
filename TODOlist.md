@@ -1,3 +1,15 @@
+# Experiment design
+* Trim
+ * Which level of Trim is worth using?
+ * Is it worth is to run trim at every iteration?
+* Pivot
+ * Is max-degree better than random?
+ * Is it worth it to consider changes to the graph when computing max-degree?
+ * Is random walk better than strictly random?
+* Perfomance overall
+ * Is parellization worth it on the graph selection?
+ * Is recursive FWBW parellization better than BFS based parellization?
+
 # Report tasks
 * ~Redo intro~
 * Split theory into two sections (related work, prelimenaries)

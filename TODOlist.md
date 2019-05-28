@@ -15,7 +15,17 @@
   * Standford
   * Google
   * LiveJournal
-  * Pattern
+  * Pattern (Needs to be converted)
+
+## Experiments
+* Trim
+  * Check parallel scaling?
+* Pivot
+  * Check parallel scaling?
+  * Run all pivot types on all graphs (without trim??) check which SCCs each pivot selects if it selects the largest first.
+* Performance overall
+  * Check scaling with different amount of threads
+  * Run all 3 methods with best pivot and trim 3
 
 # Report tasks
 * ~Redo intro~

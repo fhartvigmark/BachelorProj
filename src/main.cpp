@@ -211,6 +211,8 @@ int main(int argc, char **argv)
         Env.GetIfArgPrefixInt("-m=", 0, "Specify FW-BW variant\t\t");
 	const int MaxThreads =
         Env.GetIfArgPrefixInt("-w=", omp_get_max_threads(), "Specify maximum workers\t\t");
+	const int RandIterations =
+        Env.GetIfArgPrefixInt("-rand=", 10, "Specify randwalk iterations\t");
 	const bool Help =
         Env.GetIfArgPrefixBool("-h=", false, "Print help section\t\t");
 	const bool Output =
@@ -270,7 +272,7 @@ int main(int argc, char **argv)
 	
 
 	enhancedgraph *enhgraph;
-    enhgraph = new enhancedgraph(Graph, Timer, Analyse, 10);
+    enhgraph = new enhancedgraph(Graph, Timer, Analyse, RandIterations);
 	
 	enhgraph->endTimer(start, eTimer::SETUP);
 	cout << "Graph loaded\n";

@@ -111,7 +111,7 @@ std::tuple<int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, int col
     return std::make_tuple(fwColor, bwColor, min_fw, max_fw, min_bw, max_bw);
 }
 
-std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
+std::tuple<int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 	TSnapQueue<int> Queue;
 	ColorMap *colors = g->colors;
 	PNGraph pgraph = g->graph;
@@ -228,7 +228,7 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 	}
 
 	g->reportBFS(color, totalCount);
-	return std::make_pair(fwColor, bwColor);
+	return std::make_tuple(fwColor, bwColor, 0, pgraph->GetNodes()-1, 0, pgraph->GetNodes()-1);
 }
 
 std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNode) {

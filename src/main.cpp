@@ -4,7 +4,7 @@ TStr getFileName(TStr path) {
 	return path.GetFMid();
 }
 
-void printTime(enhancedgraph *enhgraph, TStr path, int operation) {
+void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	if (operation == 1) {
 		cout << "\nTime used: \n";
 		cout << "  " << "Setup\t\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
@@ -21,6 +21,7 @@ void printTime(enhancedgraph *enhgraph, TStr path, int operation) {
 		cout << "\nWriting timer output\n";
 
 		TStr fileName = getFileName(path);
+		fileName += suffix;
 		fileName += ".time";
 
 		ofstream file;
@@ -44,7 +45,7 @@ void printTime(enhancedgraph *enhgraph, TStr path, int operation) {
 	}
 }
 
-void printFile(enhancedgraph *enhgraph, TStr path, bool operation) {
+void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) {
 	if (!operation) {
 		return;
 	}
@@ -52,6 +53,7 @@ void printFile(enhancedgraph *enhgraph, TStr path, bool operation) {
 	cout << "\nWriting SCC output\n";
 
 	TStr fileName = getFileName(path);
+	fileName += suffix;
 	fileName += ".scc";
 
 	ofstream file;
@@ -71,7 +73,7 @@ void printFile(enhancedgraph *enhgraph, TStr path, bool operation) {
 	cout << "Done\n";
 }
 
-void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
+void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	if (operation == 0) {
 		return;
 	}
@@ -139,6 +141,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, int operation) {
 		cout << "\nWriting debug output\n";
 
 		TStr fileName = getFileName(path);
+		fileName += suffix;
 		fileName += ".debug";
 
 		ofstream file;
@@ -217,6 +220,8 @@ int main(int argc, char **argv)
         Env.GetIfArgPrefixBool("-h=", false, "Print help section\t\t");
 	const bool Output =
         Env.GetIfArgPrefixBool("-out=", false, "Print SCC output to file\t");
+	const TStr Suffix =
+        Env.GetIfArgPrefixStr("-suffix=", "", "Name to append output file\t");
 	const int Timer =
         Env.GetIfArgPrefixInt("-time=", 0, "Print timers\t\t\t");
 	const int Analyse =
@@ -317,9 +322,9 @@ int main(int argc, char **argv)
 	}*/
 
 
-	printTime(enhgraph, InEdges, Timer);
-	printFile(enhgraph, InEdges, Output);
-	printInfo(enhgraph, InEdges, Analyse);
+	printTime(enhgraph, InEdges, Suffix, Timer);
+	printFile(enhgraph, InEdges, Suffix, Output);
+	printInfo(enhgraph, InEdges, Suffix, Analyse);
 
     return 0;
 }

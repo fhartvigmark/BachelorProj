@@ -72,6 +72,7 @@
   * Synthetic graph generation tool
   * Graph analysis tool
   * OpenMP settings tool
+  * Graph convert tool
   * ~Testing tool~
 * Test on big graphs
 * Debug information
@@ -94,21 +95,20 @@
   * RandomRelaxedSearch BFS-variant (in progress)
 * **Optimization**
   * Unsigned integers
-  * Max degree pivot preprocess.
-    * Timer
+  * ~Max degree pivot preprocess.~
+    * ~Timer~
   * Trim/Pivot order
-  * Hashtable pack
   * Hastable internal KeyDat vector (probably not possible)
   * Static vs dynamic
   * BFS FW/BW emptiness check
-  * Emptiness check of remaining when using maxdegree pivot?
+  * Emptiness check of bfs-remaining when using maxdegree pivot?
   * ~Remove color HashMap~
     * Direct access
   * Replace Snap graph
     * Double CSR structure
     * Convert tool?
   * Replace Snap Queue
-  * Pivot min and max index
+  * Pivot min and max index (in progress)
   * Trim min and max index
   * Run Trim based on previous iterations
 

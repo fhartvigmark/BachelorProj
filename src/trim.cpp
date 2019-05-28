@@ -464,7 +464,7 @@ std::pair<int, float> trim::partrim1(enhancedgraph *g, int color, bool parallel,
 				}
 			}
 		}
-		
+
 		count += count2;
 	}
 

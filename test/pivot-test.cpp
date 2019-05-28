@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <pivot.h>
+#include <tuple>
 
 struct pivot_state {
     int expectedOutput;
@@ -114,12 +115,15 @@ TEST(Default, OmpCancelEnabled) {
 
 TEST_P(SimpleGraphTest, CanFindStartnode) {
     auto gs = GetParam();
-    int startnode = 0;
+	std::tuple<int, int, int> out;
+    
 	if (gs.parallel) {
-		startnode = pivot::findParPivot(enhgraph, gs.color, gs.method);
+		out = pivot::findParPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 	} else {
-		startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
+		out = pivot::findPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 	}
+
+	int startnode = std::get<0>(out);
 	
 
 	if (gs.expectedOutput == -1) {
@@ -146,12 +150,15 @@ TEST_P(SimpleGraphTest, CanFindStartnode) {
 
 TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) {
     auto gs = GetParam();
-    int startnode = 0;
+    std::tuple<int, int, int> out;
+    
 	if (gs.parallel) {
-		startnode = pivot::findParPivot(enhgraph, gs.color, gs.method);
+		out = pivot::findParPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 	} else {
-		startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
+		out = pivot::findPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 	}
+
+	int startnode = std::get<0>(out);
 
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
@@ -169,12 +176,15 @@ TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) {
 
 TEST_P(AdvancedColorGraphTest, FindsMaxDegree) {
     auto gs = GetParam();
-	int startnode = 0;
+	std::tuple<int, int, int> out;
+    
 	if (gs.parallel) {
-		startnode = pivot::findParPivot(enhgraph, gs.color, gs.method);
+		out = pivot::findParPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 	} else {
-		startnode = pivot::findPivot(enhgraph, gs.color, gs.method);
+		out = pivot::findPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 	}
+
+	int startnode = std::get<0>(out);
 
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));

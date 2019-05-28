@@ -79,7 +79,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	}
 	int fwbwCalls = enhgraph->getCallsFWBW();
 	int fwbwDepth = enhgraph->getDepth();
-	int sccs = fwbwCalls;
+	int sccs = 0;
 	int gsize = enhgraph->graph->GetNodes();
 
 	std::list<int> *trimAmount = enhgraph->getReports(eDebug::tAmount);
@@ -92,6 +92,12 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 
 	for (auto it = trimAmount->cbegin(); it != trimAmount->cend(); it++) {
 		sccs += *it;
+	}
+
+	for (auto it = bfsAmount->cbegin(); it != bfsAmount->cend(); it++) {
+		if (*it > 0) {
+			sccs++;
+		}
 	}
 
 	if (operation == 1) {
@@ -149,9 +155,12 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 
 		file << "\nDebug information: \n";
 		file << "  " << "#SCCs: " << sccs << "\n";
+		file << "  " << "Graph size: " << gsize << "\n";
 		file << "  " << "#FWBW calls: " << fwbwCalls << "\n";
-		file << "  " << "FWBW depth: " << fwbwDepth << "\n";
+		file << "  " << "#FWBW depth: " << fwbwDepth << "\n";
 		
+		file << "  " << "pivots calls: " << enhgraph->getCallsPivot() << "\n";
+		file << "  " << "successful pivot calls: " << pivotColor->size() << "\n";
 		file << "  " << "pivots: " << "\n";
 		while (!pivotNode->empty()) {
 			int node = pivotNode->front();
@@ -162,6 +171,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 			file << "    " << "Chosen node " << node << " for color " << color << "\n";
 		}
 
+		file << "  " << "trim calls: " << enhgraph->getCallsTrim() << "\n";
 		file << "  " << "trims: " << "\n";
 		while (!trimAmount->empty()) {
 			int amount = trimAmount->front();
@@ -172,6 +182,17 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 			trimType->pop_front();
 
 			file << "    " << "Trim " << type << " trimmed " << amount << " for color " << color << "\n";
+		}
+
+		file << "  " << "BFS calls: " << bfsColor->size() << "\n";
+		file << "  " << "BFS SCCs: " << "\n";
+		while (!bfsAmount->empty()) {
+			int amount = bfsAmount->front();
+			bfsAmount->pop_front();
+			int color = bfsColor->front();
+			bfsColor->pop_front();
+
+			file << "    " << "BFS found SCC of size " << amount << " for color " << color << "\n";
 		}
 
 		file.close();

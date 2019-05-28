@@ -3,15 +3,15 @@
 
 int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int method, int low, int high)
 {
-
+	std::pair<int, int> trimOut = std::make_pair(low, high);
 	if (trimlevel > 0)
 	{
 		TimePoint start = g->startTimer();
-		trim::doParTrim(1, g, startColor);
+		trimOut = trim::doParTrim(1, g, startColor, low, high);
 		g->endTimer(start, eTimer::FirstTRIM);
 	}
 
-	std::tuple<int, int, int> startNode = pivot::findParPivot(g, startColor, pivotmethod, low, high);
+	std::tuple<int, int, int> startNode = pivot::findParPivot(g, startColor, pivotmethod, trimOut.first, trimOut.second);
 	if (std::get<0>(startNode) == -1)
 	{
 		return -1;
@@ -72,7 +72,8 @@ int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startC
         return -1;
     }
 
-	trim::doTrim(trimlevel, g, startColor);
+	std::pair<int, int> trimOut = trim::doTrim(trimlevel, g, startColor, std::get<1>(startNode), std::get<2>(startNode));
+
 	//First: fwColor, Second: bwColor
 	TimePoint start = g->startTimer();
     std::pair<int,int> newColors = bfs::colorbfs(g, startColor, std::get<0>(startNode));
@@ -81,9 +82,9 @@ int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startC
 	depth++;
 	g->reportFWBW(depth);
 
-    basicFWBW(g, trimlevel, pivotmethod, startColor, depth, std::get<1>(startNode), std::get<2>(startNode));
-    basicFWBW(g, trimlevel, pivotmethod, newColors.first, depth, std::get<1>(startNode), std::get<2>(startNode));
-    basicFWBW(g, trimlevel, pivotmethod, newColors.second, depth, std::get<1>(startNode), std::get<2>(startNode));
+    basicFWBW(g, trimlevel, pivotmethod, startColor, depth, trimOut.first, trimOut.second);
+    basicFWBW(g, trimlevel, pivotmethod, newColors.first, depth, trimOut.first, trimOut.second);
+    basicFWBW(g, trimlevel, pivotmethod, newColors.second, depth, trimOut.first, trimOut.second);
     return 0;
 };
 
@@ -99,7 +100,8 @@ int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 
 	//std::cout << std::get<1>(startNode) << ", " << std::get<2>(startNode) << "\n";
 
-	trim::doParTrim(trimlevel, g, startColor);
+	std::pair<int, int> trimOut = trim::doParTrim(trimlevel, g, startColor, std::get<1>(startNode), std::get<2>(startNode));
+
 	//First: fwColor, Second: bwColor
 	TimePoint start = g->startTimer();
 	std::pair<int, int> newColors = bfs::relaxedSearch(g, startColor, std::get<0>(startNode));
@@ -108,9 +110,9 @@ int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 	depth++;
 	g->reportFWBW(depth);
 
-	parFWBW(g, trimlevel, pivotmethod, startColor, depth, std::get<1>(startNode), std::get<2>(startNode));
-	parFWBW(g, trimlevel, pivotmethod, newColors.first, depth, std::get<1>(startNode), std::get<2>(startNode));
-	parFWBW(g, trimlevel, pivotmethod, newColors.second, depth, std::get<1>(startNode), std::get<2>(startNode));
+	parFWBW(g, trimlevel, pivotmethod, startColor, depth, trimOut.first, trimOut.second);
+	parFWBW(g, trimlevel, pivotmethod, newColors.first, depth, trimOut.first, trimOut.second);
+	parFWBW(g, trimlevel, pivotmethod, newColors.second, depth, trimOut.first, trimOut.second);
 	return 0;
 };
 
@@ -124,7 +126,8 @@ int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 		return -1;
 	}
 
-	trim::doTrim(trimlevel, g, startColor);
+	std::pair<int, int> trimOut = trim::doTrim(trimlevel, g, startColor, std::get<1>(startNode), std::get<2>(startNode));
+	
 	//First: fwColor, Second: bwColor
 	TimePoint start = g->startTimer();
 	std::pair<int, int> newColors = bfs::colorbfs(g, startColor, std::get<0>(startNode));
@@ -139,17 +142,17 @@ int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 		{
 			#pragma omp task shared(g)
 			{
-				recFWBW(g, trimlevel, pivotmethod, startColor, depth, std::get<1>(startNode), std::get<2>(startNode));
+				recFWBW(g, trimlevel, pivotmethod, startColor, depth, trimOut.first, trimOut.second);
 			}
 
 			#pragma omp task shared(g)
 			{
-				recFWBW(g, trimlevel, pivotmethod, newColors.first, depth, std::get<1>(startNode), std::get<2>(startNode));
+				recFWBW(g, trimlevel, pivotmethod, newColors.first, depth, trimOut.first, trimOut.second);
 			}
 
 			#pragma omp task shared(g)
 			{
-				recFWBW(g, trimlevel, pivotmethod, newColors.second, depth, std::get<1>(startNode), std::get<2>(startNode));
+				recFWBW(g, trimlevel, pivotmethod, newColors.second, depth, trimOut.first, trimOut.second);
 			}
 		}
 		#pragma omp taskwait

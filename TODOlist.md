@@ -107,9 +107,9 @@
   * Replace Snap graph
     * Double CSR structure
     * Convert tool?
-  * Replace Snap Queue
+  * Replace Snap Queue (in progress)
   * ~Pivot min and max index~
   * ~Trim min and max index~
-  * BFS FW and BW min and max index
+  * ~BFS FW and BW min and max index~
   * Run Trim based on previous iterations
 

@@ -651,7 +651,7 @@ TEST_F(Trim3MixedPatternTest, ParTrim3FindsMultipleSCCs)
 
 TEST_F(Trim3SelfEdgesTest, Trim3EdgeCase)
 {
-	TIntH *colors = enhgraph->colors;
+	ColorMap *colors = enhgraph->colors;
 	trim::doTrim(3, enhgraph, 0);
 	int scc1 = colors->GetDat(1);
 	int scc2 = colors->GetDat(4);
@@ -669,7 +669,7 @@ TEST_F(Trim3SelfEdgesTest, Trim3EdgeCase)
 
 TEST_F(Trim3SelfEdgesTest, ParTrim3EdgeCase)
 {
-	TIntH *colors = enhgraph->colors;
+	ColorMap *colors = enhgraph->colors;
 	trim::doParTrim(3, enhgraph, 0);
 	int scc1 = colors->GetDat(1);
 	int scc2 = colors->GetDat(4);

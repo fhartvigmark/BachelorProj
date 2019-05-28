@@ -35,6 +35,8 @@
 * **Code cleanup**
 * ~Refactor pivot to have sequential and parallel public method like trim~
 * ~Fix trim-3 not handling loops correctly~
+* Random walk iterations command argument
+* Timers printing change indentation
 * tools
   * Synthetic graph generation tool
   * Graph analysis tool

@@ -366,6 +366,7 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 enhancedgraph::~enhancedgraph() {
 	//Delete graph elements
 	//delete *graph; TODO: clean up graph?
+	//TODO: clean up degree array
 	delete colors;
     delete colorGen;
 

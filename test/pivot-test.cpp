@@ -97,10 +97,13 @@ struct AdvancedColorGraphTest : testing::Test, testing::WithParamInterface<pivot
 		enhgraph->colors->AddDat(4, 2);
 		enhgraph->colors->AddDat(5, 2);
 		enhgraph->colors->AddDat(6, 2);
+
+		enhgraph->calculateDegree();
 	}
 
 	virtual ~AdvancedColorGraphTest()
 	{
+		delete enhgraph->degree;
 		delete enhgraph;
 	}
 };
@@ -195,16 +198,22 @@ TEST_P(AdvancedColorGraphTest, FindsMaxDegree) {
 INSTANTIATE_TEST_CASE_P(Default, AdvancedColorGraphTest,
 						testing::Values(
 							pivot_state{3, 1, 1, false},
+							pivot_state{3, 1, 4, false},
 							pivot_state{2, 1, 2, false},
 							pivot_state{3, 1, 1, true},
+							pivot_state{3, 1, 4, true},
 							pivot_state{2, 1, 2, true},
 							pivot_state{-1, 0, 1, false},
+							pivot_state{-1, 0, 4, false},
 							pivot_state{-1, 0, 2, false},
 							pivot_state{-1, 0, 1, true},
+							pivot_state{-1, 0, 4, true},
 							pivot_state{-1, 0, 2, true},
 							pivot_state{4, 2, 1, false},
+							pivot_state{4, 2, 4, false},
 							pivot_state{4, 2, 2, false},
 							pivot_state{4, 2, 1, true},
+							pivot_state{4, 2, 4, true},
 							pivot_state{4, 2, 2, true}));
 
 INSTANTIATE_TEST_CASE_P(Default, SimpleGraphTest,

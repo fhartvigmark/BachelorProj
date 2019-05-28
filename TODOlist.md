@@ -71,7 +71,7 @@
 * tools
   * Synthetic graph generation tool
   * Graph analysis tool
-  * OpenMP settings tool
+  * ~OpenMP settings tool~
   * ~Graph convert tool~
   * ~Testing tool~
 * Test on big graphs
@@ -107,8 +107,9 @@
   * Replace Snap graph
     * Double CSR structure
     * Convert tool?
-  * Replace Snap Queue (in progress)
+  * Replace Snap Queue
   * ~Pivot min and max index~
   * ~Trim min and max index~
-  * Run Trim based on previous iterations (in progress)
+  * BFS FW and BW min and max index
+  * Run Trim based on previous iterations
 

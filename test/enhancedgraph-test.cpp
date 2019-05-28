@@ -13,7 +13,7 @@ struct SimpleSetupTest : testing::Test {
         graph->AddEdge(2, 3);
 
         enhgraph->graph = graph;
-        ColorMap *colors = new ColorMap(0, 1);
+        ColorMap *colors = new ColorMap(0, false);
         enhgraph->colors = colors;
         enhgraph->colorGen = new ColorGenerator();
     }

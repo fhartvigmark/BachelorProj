@@ -120,6 +120,11 @@ void enhancedgraph::endTimer(TimePoint start, eTimer timer) {
 				tSetup += dur;
 				omp_unset_lock(&lSetup);
 				break;
+			case eTimer::PREP:
+				omp_set_lock(&lSetup);
+				tPrep += dur;
+				omp_unset_lock(&lSetup);
+				break;
 			default:
 				break;
 		}
@@ -154,6 +159,8 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 			return std::chrono::duration_cast<Ms>(tPivot).count();
 		case eTimer::SETUP:
 			return std::chrono::duration_cast<Ms>(tSetup).count();
+		case eTimer::PREP:
+			return std::chrono::duration_cast<Us>(tPrep).count();
 		default:
 			return -1;
 	}
@@ -276,6 +283,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 		tFirstTrim = Duration::zero();
 		tPivot = Duration::zero();
 		tSetup = Duration::zero();
+		tPrep = Duration::zero();
 
 		omp_init_lock(&lMain);
 		omp_init_lock(&lFirstFWBW);
@@ -322,6 +330,7 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 		tFirstTrim = Duration::zero();
 		tPivot = Duration::zero();
 		tSetup = Duration::zero();
+		tPrep = Duration::zero();
 
 		omp_init_lock(&lMain);
 		omp_init_lock(&lFirstFWBW);

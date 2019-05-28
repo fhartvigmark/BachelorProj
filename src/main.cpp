@@ -8,6 +8,7 @@ void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	if (operation == 1) {
 		cout << "\nTime used: \n";
 		cout << "  " << "Setup\t\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
+		cout << "  " << "Prep\t\t\t" << enhgraph->getTime(eTimer::PREP) << "μs\n";
 		cout << "  " << "SCC\t\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
 		cout << "    " << "First FWBW\t\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
 		cout << "    " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
@@ -29,6 +30,7 @@ void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 
 		file << "\nTime used: \n";
 		file << "  " << "Setup\t\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
+		file << "  " << "Prep\t\t\t" << enhgraph->getTime(eTimer::PREP) << "μs\n";
 		file << "  " << "SCC\t\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
 		file << "    " << "First FWBW\t\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
 		file << "    " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
@@ -303,6 +305,12 @@ int main(int argc, char **argv)
 	enhgraph->endTimer(start, eTimer::SETUP);
 	cout << "Graph loaded\n";
 
+	start = enhgraph->startTimer();
+	if (PivotMethod == 4) {
+		enhgraph->calculateDegree();
+	}
+	enhgraph->endTimer(start, eTimer::PREP);
+
 	
 	start = enhgraph->startTimer();
 	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
@@ -333,15 +341,26 @@ int main(int argc, char **argv)
 		std::cout << msg << "\n";
 	}
 	*/
-	/*
-	for (int j = 0; j < 10; j++) {
-		//pivot::findPivot(enhgraph, -1, PivotMethod);
-		TimePoint start = enhgraph->startTimer();
-		//trim::doTrim(Trimlevels, enhgraph, 0);
-		bfs::parbfs(enhgraph, 0, 13130);
-		enhgraph->endTimer(start, eTimer::FirstFWBW);
-	}*/
 
+	/*
+	for (int j = 0; j < 100; j++) {
+		TimePoint start = enhgraph->startTimer();
+		pivot::findPivot(enhgraph, -1, 0);
+		enhgraph->endTimer(start, eTimer::MAIN);
+	}
+
+	for (int j = 0; j < 100; j++) {
+		TimePoint start = enhgraph->startTimer();
+		pivot::findPivot(enhgraph, 0, 1);
+		enhgraph->endTimer(start, eTimer::FirstFWBW);
+	}
+
+	for (int j = 0; j < 100; j++) {
+		TimePoint start = enhgraph->startTimer();
+		pivot::findPivot(enhgraph, 0, 4);
+		enhgraph->endTimer(start, eTimer::FWBWs);
+	}
+	*/
 
 	printTime(enhgraph, InEdges, Suffix, Timer);
 	printFile(enhgraph, InEdges, Suffix, Output);

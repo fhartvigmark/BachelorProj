@@ -18,6 +18,9 @@ int pivot::findPivot(enhancedgraph *g, int color, int method) {
 		case 3:
 			retVal = pivot::getPivotRand(g, color);
 			break;
+		case 4:
+			retVal = pivot::getParPivotMaxDegreeCalc(g, color, false);
+			break;
 	}
 
 	g->endTimer(start, eTimer::PIVOT);
@@ -42,6 +45,9 @@ int pivot::findParPivot(enhancedgraph *g, int color, int method) {
 			break;
 		case 3:
 			retVal = pivot::getParPivotRand(g, color, true);
+			break;
+		case 4:
+			retVal = pivot::getParPivotMaxDegreeCalc(g, color, true);
 			break;
 	}
 
@@ -199,6 +205,31 @@ int pivot::getParPivotMaxDegree(enhancedgraph *g, int color, bool parallel)
 
 		if(colors->GetDat(i)==color){
             int newDeg = NI.GetInDeg() * NI.GetOutDeg();
+
+			if(newDeg > max.val) { 
+				max.val = newDeg;
+				max.node = i;
+			}
+        }
+	}
+
+    return max.node;
+};
+
+//Parallel version of getPivotMaxDegree()
+int pivot::getParPivotMaxDegreeCalc(enhancedgraph *g, int color, bool parallel)
+{
+	ColorMap *colors = g->colors;
+	ColorMap *degree = g->degree;
+    PNGraph graph = g->graph;
+
+	struct Compare max; 
+	max.val = -1; 
+	max.node = -1;
+	#pragma omp parallel for reduction(maximum:max) schedule(static) if(parallel)
+	for (int i = degree->BegI(); i < degree->EndI(); i++) {
+		if(colors->GetDat(i)==color){
+            int newDeg = degree->GetDat(i);
 
 			if(newDeg > max.val) { 
 				max.val = newDeg;

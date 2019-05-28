@@ -13,7 +13,7 @@ enum eDebug{tAmount, tColor, tType, pColor, pNode, bColor, bAmount};
 typedef std::chrono::high_resolution_clock Time;
 typedef std::chrono::high_resolution_clock::time_point TimePoint;
 typedef std::chrono::high_resolution_clock::duration Duration;
-typedef std::chrono::milliseconds Ms;
+typedef std::chrono::microseconds Ms;
 
 class ColorMap
 {
@@ -52,6 +52,9 @@ class enhancedgraph
     	PNGraph graph;
 		ColorMap *colors;
     	ColorGenerator *colorGen;
+		ColorMap *degree;
+
+		void calculateDegree();
 
 		TimePoint startTimer();
 		void endTimer(TimePoint start, eTimer timer);

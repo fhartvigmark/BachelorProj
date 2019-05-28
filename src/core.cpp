@@ -42,6 +42,18 @@ ColorGenerator::ColorGenerator() {
 	lastColor = 0;
 }
 
+void enhancedgraph::calculateDegree() {
+	bool zero = graph->IsNode(0);
+
+	degree = new ColorMap(graph->GetNodes(), zero);
+
+	for (PNGraph::TObj::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
+	{
+		degree->AddDat(NI.GetId(), NI.GetInDeg() * NI.GetOutDeg());
+	}
+}
+
+
 //Get current time
 TimePoint enhancedgraph::startTimer() {
 	if (TIMER_ENABLED) {

@@ -258,7 +258,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 	//colors = new TIntH();
 	//colors->Gen(g->GetNodes());
 	bool zero = g->IsNode(0);
-	//std::cout << "Is 12 a node: " << g->IsNode(12) << "\n";
+	//std::cout << "Is a node: " << zero << "\n";
 	//const TNGraph::TNodeI NodeI = g->GetNI(12);
 	//std::cout << "In degree of node 12 is: " << NodeI.GetInDeg() << "\n";
 

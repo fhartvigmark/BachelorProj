@@ -64,10 +64,11 @@ void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) 
 	ColorMap *colors = enhgraph->colors;
 	PNGraph graph = enhgraph->graph;
 
-	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
+	//std::cout << "first " << enhgraph->colors->BegI() << "\n";
+
+	for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
     {
-		int node = NI.GetId();
-		file << node << " " << colors->GetDat(node) << "\n";
+		file << i << " " << colors->GetDat(i) << "\n";
 	}
 
 	file.close();

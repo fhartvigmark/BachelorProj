@@ -2,11 +2,15 @@
 #include "iostream"
 
 //Maybe include mark
-std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
+std::tuple<int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
     TSnapQueue<int> Queue;
     ColorMap *colors = g->colors;
     PNGraph pgraph = g->graph;
 	int count = 0;
+	int min_fw = pgraph->GetNodes();
+	int min_bw = pgraph->GetNodes();
+	int max_fw = 0;
+	int max_bw = 0;
 
     Queue.Push(startNode);
 
@@ -23,6 +27,13 @@ std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
 
         if (colors->GetDat(node) == color) {
             colors->AddDat(node, fwColor);
+
+			if (node < min_fw) {
+				min_fw = node;
+			}
+			if (node > max_fw) {
+				max_fw = node;
+			}
 
 
             //Get node iterator for the current node
@@ -49,6 +60,13 @@ std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
         if (nodeColor == color)
         {
             colors->AddDat(node, bwColor);
+
+			if (node < min_bw) {
+				min_bw = node;
+			}
+			if (node > max_bw) {
+				max_bw = node;
+			}
 
             //Get node iterator for the current node
             const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
@@ -87,7 +105,10 @@ std::pair<int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
     }
 
 	g->reportBFS(color, count);
-    return std::make_pair(fwColor, bwColor);
+	if (count == 0) {
+		//return std::make_tuple(fwColor, bwColor, 0, 0, 0, 0);
+	}
+    return std::make_tuple(fwColor, bwColor, min_fw, max_fw, min_bw, max_bw);
 }
 
 std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
@@ -210,12 +231,21 @@ std::pair<int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 	return std::make_pair(fwColor, bwColor);
 }
 
-std::pair<int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNode) {
+std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNode) {
 	ColorMap *colors = g->colors;
 	PNGraph pgraph = g->graph;
 	int totalCount = 0;
 	int count = 0;
 	int threads = omp_get_max_threads();
+
+	int min_fw = pgraph->GetNodes();
+	int min_bw = pgraph->GetNodes();
+	int max_fw = 0;
+	int max_bw = 0;
+	int min_fw2 = pgraph->GetNodes();
+	int min_bw2 = pgraph->GetNodes();
+	int max_fw2 = 0;
+	int max_bw2 = 0;
 	//std::cout << "Threads " << threads << "\n";
 
 	const int sccColor = g->colorGen->getNext();
@@ -235,6 +265,12 @@ std::pair<int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNod
         if (colors->GetDat(node) == color) {
             colors->AddDat(node, fwColor);
 
+			if (node < min_fw) {
+				min_fw = node;
+			}
+			if (node > max_fw) {
+				max_fw = node;
+			}
 
             //Get node iterator for the current node
             const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
@@ -259,7 +295,7 @@ std::pair<int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNod
 
 	//Find FW closure
 	if (!Queue.Empty()) {
-		#pragma omp parallel
+		#pragma omp parallel reduction(min:min_fw2) reduction(max:max_fw2)
 		{
 			TSnapQueue<int> *myQueue;
 			int threadNode;
@@ -290,6 +326,12 @@ std::pair<int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNod
 
 				if (colors->GetDat(node) == color) {
 					colors->AddDat(node, fwColor);
+					if (node < min_fw2) {
+						min_fw2 = node;
+					}
+					if (node > max_fw2) {
+						max_fw2 = node;
+					}
 
 					//Get node iterator for the current node
 					const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
@@ -330,6 +372,12 @@ std::pair<int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNod
         if (nodeColor == color)
         {
             colors->AddDat(node, bwColor);
+			if (node < min_bw) {
+				min_bw = node;
+			}
+			if (node > max_bw) {
+				max_bw = node;
+			}
 
             //Get node iterator for the current node
             const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
@@ -373,7 +421,7 @@ std::pair<int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNod
 	
 	//Find BW closure
 	if (!Queue.Empty()) {
-		#pragma omp parallel reduction(+:count)
+		#pragma omp parallel reduction(+:count) reduction(min:min_bw2) reduction(max:max_bw2)
 		{
 			TSnapQueue<int> *myQueue;
 			int threadNode;
@@ -406,6 +454,12 @@ std::pair<int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNod
 				if (nodeColor == color)
 				{
 					colors->AddDat(node, bwColor);
+					if (node < min_bw2) {
+						min_bw2 = node;
+					}
+					if (node > max_bw2) {
+						max_bw2 = node;
+					}
 
 					//Get node iterator for the current node
 					const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
@@ -455,8 +509,25 @@ std::pair<int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNod
 		throw "relaxedSearch: BW queue not emptied";
 	}
 
+	if (min_bw2 < min_bw) {
+		min_bw = min_bw2;
+	}
+	if (max_bw2 > max_bw) {
+		max_bw = max_bw2;
+	}
+	if (min_fw2 < min_fw) {
+		min_fw = min_fw2;
+	}
+	if (max_fw2 > max_fw) {
+		max_fw = max_fw2;
+	}
+
+
 	g->reportBFS(color, totalCount + count);
-	return std::make_pair(fwColor, bwColor);
+	if (totalCount + count == 0) {
+		return std::make_tuple(fwColor, bwColor, 0, 0, 0, 0);
+	}
+	return std::make_tuple(fwColor, bwColor, min_fw, max_fw, min_bw, max_bw);
 }
 
 std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int startNode) {

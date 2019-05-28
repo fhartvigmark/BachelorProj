@@ -9,14 +9,14 @@ void printTime(enhancedgraph *enhgraph, TStr path, int operation) {
 		cout << "\nTime used: \n";
 		cout << "  " << "Setup\t\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
 		cout << "  " << "SCC\t\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
-		cout << "  " << "First FWBW\t\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
-		cout << "  " << "FWBW\t\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
-		cout << "  " << "Trim\t\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
-		cout << "    " << "Trim 1\t\t" << enhgraph->getTime(eTimer::TRIM1) << "ms\n";
-		cout << "      " << "First Trim\t" << enhgraph->getTime(eTimer::FirstTRIM) << "ms\n";
-		cout << "    " << "Trim 2\t\t" << enhgraph->getTime(eTimer::TRIM2) << "ms\n";
-		cout << "    " << "Trim 3\t\t" << enhgraph->getTime(eTimer::TRIM3) << "ms\n";
-		cout << "  " << "Pivot\t\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
+		cout << "    " << "First FWBW\t\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
+		cout << "    " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
+		cout << "    " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		cout << "      " << "Trim 1\t\t" << enhgraph->getTime(eTimer::TRIM1) << "ms\n";
+		cout << "        " << "First Trim\t" << enhgraph->getTime(eTimer::FirstTRIM) << "ms\n";
+		cout << "      " << "Trim 2\t\t" << enhgraph->getTime(eTimer::TRIM2) << "ms\n";
+		cout << "      " << "Trim 3\t\t" << enhgraph->getTime(eTimer::TRIM3) << "ms\n";
+		cout << "    " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
 	} else if (operation == 2) {
 		cout << "\nWriting timer output\n";
 
@@ -29,14 +29,14 @@ void printTime(enhancedgraph *enhgraph, TStr path, int operation) {
 		file << "\nTime used: \n";
 		file << "  " << "Setup\t\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
 		file << "  " << "SCC\t\t\t" << enhgraph->getTime(eTimer::MAIN) << "ms\n";
-		file << "  " << "First FWBW\t\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
-		file << "  " << "FWBW\t\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
-		file << "  " << "Trim\t\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
-		file << "    " << "Trim 1\t\t" << enhgraph->getTime(eTimer::TRIM1) << "ms\n";
-		file << "      " << "First Trim\t" << enhgraph->getTime(eTimer::FirstTRIM) << "ms\n";
-		file << "    " << "Trim 2\t\t" << enhgraph->getTime(eTimer::TRIM2) << "ms\n";
-		file << "    " << "Trim 3\t\t" << enhgraph->getTime(eTimer::TRIM3) << "ms\n";
-		file << "  " << "Pivot\t\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
+		file << "    " << "First FWBW\t\t" << enhgraph->getTime(eTimer::FirstFWBW) << "ms\n";
+		file << "    " << "FWBW\t\t" << enhgraph->getTime(eTimer::FWBWs) << "ms\n";
+		file << "    " << "Trim\t\t" << enhgraph->getTime(eTimer::TRIM) << "ms\n";
+		file << "      " << "Trim 1\t\t" << enhgraph->getTime(eTimer::TRIM1) << "ms\n";
+		file << "        " << "First Trim\t" << enhgraph->getTime(eTimer::FirstTRIM) << "ms\n";
+		file << "      " << "Trim 2\t\t" << enhgraph->getTime(eTimer::TRIM2) << "ms\n";
+		file << "      " << "Trim 3\t\t" << enhgraph->getTime(eTimer::TRIM3) << "ms\n";
+		file << "    " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
 
 		file.close();
 

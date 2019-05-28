@@ -1,5 +1,6 @@
 #include "bfs.h"
 #include "iostream"
+#include <deque>
 
 //Maybe include mark
 std::tuple<int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
@@ -252,15 +253,15 @@ std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, in
 	const int fwColor = g->colorGen->getNext();
 	const int bwColor = g->colorGen->getNext();
 
-	TSnapQueue<int> Queue;
-	Queue.Push(startNode);
+	std::deque<int> Queue;
+	Queue.push_back(startNode);
 	int v = 0;
 
 	//Find FW start nodes
-    while(!Queue.Empty())
+    while(!Queue.empty())
     {
-        const int node = Queue.Top();
-        Queue.Pop();
+        const int node = Queue.front();
+        Queue.pop_front();
 
         if (colors->GetDat(node) == color) {
             colors->AddDat(node, fwColor);
@@ -281,12 +282,12 @@ std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, in
                 const int outNode = NodeI.GetOutNId(v);
 
                 if (colors->GetDat(outNode) == color) {
-                    Queue.Push(outNode);
+                    Queue.push_back(outNode);
                 }
             }
         }
 
-		if (Queue.Len() >= threads) {
+		if (Queue.size() >= threads) {
 			break;
 		}
     }
@@ -294,35 +295,35 @@ std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, in
 	//std::cout << "Queue " << Queue.Len() << "\n";
 
 	//Find FW closure
-	if (!Queue.Empty()) {
+	if (!Queue.empty()) {
 		#pragma omp parallel reduction(min:min_fw2) reduction(max:max_fw2)
 		{
-			TSnapQueue<int> *myQueue;
+			std::deque<int> *myQueue;
 			int threadNode;
 			int id = omp_get_thread_num();
 
 			if (id == 0) {
 				myQueue = &Queue;
 			} else {
-				myQueue = new TSnapQueue<int>();
+				myQueue = new std::deque<int>();
 			}
 
 			#pragma omp critical
 			{
-				threadNode = Queue.Top();
-				Queue.Pop();
+				threadNode = Queue.front();
+				Queue.pop_front();
 			}
 			
 			
 			#pragma omp barrier
-			myQueue->Push(threadNode);
+			myQueue->push_back(threadNode);
 
 
 			int v = 0;
-			while(!myQueue->Empty())
+			while(!myQueue->empty())
 			{
-				int node = myQueue->Top();
-				myQueue->Pop();
+				int node = myQueue->front();
+				myQueue->pop_front();
 
 				if (colors->GetDat(node) == color) {
 					colors->AddDat(node, fwColor);
@@ -343,7 +344,7 @@ std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, in
 
 						if (colors->GetDat(outNode) == color)
 						{
-							myQueue->Push(outNode);
+							myQueue->push_back(outNode);
 						}
 					}
 				}
@@ -357,16 +358,16 @@ std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, in
 	
 
 	//Something wrong happened
-	if (!Queue.Empty()) {
+	if (!Queue.empty()) {
 		throw "relaxedSearch: FW queue not emptied";
 	}
 
 	//Find BW start nodes
-	Queue.Push(startNode);
-    while (!Queue.Empty())
+	Queue.push_back(startNode);
+    while (!Queue.empty())
     {
-        const int node = Queue.Top();
-        Queue.Pop();
+        const int node = Queue.front();
+        Queue.pop_front();
         const int nodeColor = colors->GetDat(node);
 
         if (nodeColor == color)
@@ -390,7 +391,7 @@ std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, in
 
                 if ((inNodeColor == color)||(inNodeColor == fwColor))
                 {
-                    Queue.Push(inNode);
+                    Queue.push_back(inNode);
                 }
             }
         }else if (nodeColor == fwColor)
@@ -409,46 +410,46 @@ std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, in
 
                 if ((inNodeColor == color) || (inNodeColor == fwColor))
                 {
-                    Queue.Push(inNode);
+                    Queue.push_back(inNode);
                 }
             }
         }
 
-		if (Queue.Len() >= threads) {
+		if (Queue.size() >= threads) {
 			break;
 		}
     }
 	
 	//Find BW closure
-	if (!Queue.Empty()) {
+	if (!Queue.empty()) {
 		#pragma omp parallel reduction(+:count) reduction(min:min_bw2) reduction(max:max_bw2)
 		{
-			TSnapQueue<int> *myQueue;
+			std::deque<int> *myQueue;
 			int threadNode;
 			int id = omp_get_thread_num();
 
 			if (id == 0) {
 				myQueue = &Queue;
 			} else {
-				myQueue = new TSnapQueue<int>();
+				myQueue = new std::deque<int>();
 			}
 
 			#pragma omp critical
 			{
-				threadNode = Queue.Top();
-				Queue.Pop();
+				threadNode = Queue.front();
+				Queue.pop_front();
 			}
 			
 			
 			#pragma omp barrier
-			myQueue->Push(threadNode);
+			myQueue->push_back(threadNode);
 
 
 			int v = 0;
-			while (!myQueue->Empty())
+			while (!myQueue->empty())
 			{
-				int node = myQueue->Top();
-				myQueue->Pop();
+				int node = myQueue->front();
+				myQueue->pop_front();
 				int nodeColor = colors->GetDat(node);
 
 				if (nodeColor == color)
@@ -472,7 +473,7 @@ std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, in
 
 						if ((inNodeColor == color) || (inNodeColor == fwColor))
 						{
-							myQueue->Push(inNode);
+							myQueue->push_back(inNode);
 						}
 					}
 				}else if (nodeColor == fwColor)
@@ -491,7 +492,7 @@ std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, in
 
 						if ((inNodeColor == color) || (inNodeColor == fwColor))
 						{
-							myQueue->Push(inNode);
+							myQueue->push_back(inNode);
 						}
 					}
 				}
@@ -505,7 +506,7 @@ std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, in
 	
 
 	//Something wrong happened
-	if (!Queue.Empty()) {
+	if (!Queue.empty()) {
 		throw "relaxedSearch: BW queue not emptied";
 	}
 

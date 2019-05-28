@@ -14,7 +14,7 @@ struct scc
 	int size;
 };
 
-vector<scc> generateSCClist(string filename)
+vector<scc> generateSCClist(string filename, bool silent)
 {
 	string line;
 	ifstream sccFile(filename);
@@ -50,10 +50,14 @@ vector<scc> generateSCClist(string filename)
 			  [](auto const &a, auto const &b) { return a.size > b.size; });
 
 	cout << filename << " contains the following SCCs: \n";
-	for (int i = 0; i < sccSizes.size(); i++)
-	{
-		cout << "SCC color " << sccSizes.at(i).color << " has size " << sccSizes.at(i).size << "\n";
+
+	if (!silent) {
+		for (int i = 0; i < sccSizes.size(); i++)
+		{
+			cout << "SCC color " << sccSizes.at(i).color << " has size " << sccSizes.at(i).size << "\n";
+		}
 	}
+	
 	
 	
 	cout << filename << " contains " << sccSizes.size() << " SCCs \n";
@@ -100,8 +104,8 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	vector<scc> scclist1 = generateSCClist(scc1FileName);
-	vector<scc> scclist2 = generateSCClist(scc2FileName);
+	vector<scc> scclist1 = generateSCClist(scc1FileName, generateOutputs);
+	vector<scc> scclist2 = generateSCClist(scc2FileName, generateOutputs);
 
 	if(generateOutputs){
 		generateOutput("outfile1.out", scclist1);

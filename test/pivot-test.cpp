@@ -122,9 +122,9 @@ TEST_P(SimpleGraphTest, CanFindStartnode) {
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
-		for (THashKeyDatI<TInt, TInt> i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
+		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
-			EXPECT_NE(gs.color, i.GetDat());
+			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}
 	} else if (gs.method == 0 && gs.parallel) {
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
@@ -153,9 +153,9 @@ TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) {
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
-		for (THashKeyDatI<TInt, TInt> i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
+		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
-			EXPECT_NE(gs.color, i.GetDat());
+			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}
 	} else {
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
@@ -176,9 +176,9 @@ TEST_P(AdvancedColorGraphTest, FindsMaxDegree) {
 	if (gs.expectedOutput == -1) {
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
-		for (THashKeyDatI<TInt, TInt> i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
+		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
-			EXPECT_NE(gs.color, i.GetDat());
+			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}
 	} else if (gs.color == 2) {
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));

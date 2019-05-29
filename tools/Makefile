@@ -35,15 +35,15 @@ endif
 NUM_CORES ?= $(shell grep -c "vendor_id" /proc/cpuinfo)
 MAKEFLAGS = " -j$(NUM_CORES) -l$(NUM_CORES) "
 
-MAIN = scc_checker
+MAIN = scc_checker graph_converter
 
 all: $(MAIN)
 run:
 	./$(MAIN)
 
 # COMPILE
-$(MAIN): $(MAIN).cpp
-	$(CC) $(CXXFLAGS) -o $(MAIN) $(MAIN).cpp $(LIBS)
+%: %.cpp
+	$(CC) $(CXXFLAGS) -o $@ $< $(LIBS)
 
 clean:
 	rm -f *.o  $(MAIN)  $(MAIN).exe

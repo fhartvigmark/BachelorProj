@@ -1,36 +1,36 @@
 #include "iostream"
 #include "trim.h"
 
-int trim::doTrim(int trimlevel, enhancedgraph *g, int color) {
-	int retVal = -1;
+std::pair<int, float> trim::doTrim(int trimlevel, enhancedgraph *g, int color, int low, int high) {
+	std::pair<int, float> retVal;
 	TimePoint start = g->startTimer();
 	TimePoint start2;
 
 	switch (trimlevel)
 	{
 		case 1:
-			retVal = trim::partrim1(g, color, false);
+			retVal = trim::partrim1(g, color, false, low, high);
 			g->endTimer(start, eTimer::TRIM1);
 			break;
 		case 2:
-			trim::partrim1(g, color, false);
+			retVal = trim::partrim1(g, color, false, low, high);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			retVal = trim::partrim2(g, color, false);
+			retVal = trim::partrim2(g, color, false, retVal.first, retVal.second);
 			g->endTimer(start2, eTimer::TRIM2);
 			break;
 		case 3:
-			trim::partrim1(g, color, false);
+			retVal = trim::partrim1(g, color, false, low, high);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			trim::partrim2(g, color, false);
+			retVal = trim::partrim2(g, color, false, retVal.first, retVal.second);
 			g->endTimer(start2, eTimer::TRIM2);
 			start2 = g->startTimer();
-			retVal = trim::partrim3(g, color, false);
+			retVal = trim::partrim3(g, color, false, retVal.first, retVal.second);
 			g->endTimer(start2, eTimer::TRIM3);
 			break;
 		default:
-			retVal = -1;
+			retVal = std::make_pair(low, high);
 			break;
 	}
 
@@ -38,36 +38,36 @@ int trim::doTrim(int trimlevel, enhancedgraph *g, int color) {
 	return retVal;
 }
 
-int trim::doParTrim(int trimlevel, enhancedgraph *g, int color) {
-	int retVal = -1;
+std::pair<int, float> trim::doParTrim(int trimlevel, enhancedgraph *g, int color, int low, int high) {
+	std::pair<int, float> retVal;
 	TimePoint start = g->startTimer();
 	TimePoint start2;
 
 	switch (trimlevel)
 	{
 		case 1:
-			retVal = trim::partrim1(g, color, true);
+			retVal = trim::partrim1(g, color, true, low, high);
 			g->endTimer(start, eTimer::TRIM1);
 			break;
 		case 2:
-			trim::partrim1(g, color, true);
+			retVal = trim::partrim1(g, color, true, low, high);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			retVal = trim::partrim2(g, color, true);
+			retVal = trim::partrim2(g, color, true, retVal.first, retVal.second);
 			g->endTimer(start2, eTimer::TRIM2);
 			break;
 		case 3:
-			trim::partrim1(g, color, true);
+			retVal = trim::partrim1(g, color, true, low, high);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			trim::partrim2(g, color, true);
+			retVal = trim::partrim2(g, color, true, retVal.first, retVal.second);
 			g->endTimer(start2, eTimer::TRIM2);
 			start2 = g->startTimer();
-			retVal = trim::partrim3(g, color, true);
+			retVal = trim::partrim3(g, color, true, retVal.first, retVal.second);
 			g->endTimer(start2, eTimer::TRIM3);
 			break;
 		default:
-			retVal = -1;
+			retVal = std::make_pair(low, high);
 			break;
 	}
 
@@ -243,15 +243,18 @@ int trim::trim1(enhancedgraph *g, int color) {
     return -1;
 }
 
-int trim::partrim1(enhancedgraph *g, int color, bool parallel) {
+std::pair<int, float> trim::partrim1(enhancedgraph *g, int color, bool parallel, int low, int high) {
 	TSnapQueue<int> Queue;
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	int count = 0;
 	int count2 = 0;
 
-	#pragma omp parallel for schedule(static) reduction(+:count) if(parallel)
-	for (int i = colors->BegI(); i < colors->EndI(); i++)
+	int min_i = high;
+	int max_i = low;
+
+	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel)
+	for (int i = low; i < high+1; i++)
 	{
 		int nodeColor;
 		//std::cout << "Error on node " << node << "\n";
@@ -311,6 +314,13 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel) {
 					Queue.Push(i);
 				}
 				continue;
+			}
+
+			if (i < min_i) {
+				min_i = i;
+			}
+			if (i > max_i) {
+				max_i = i;
 			}
 		}
 	}
@@ -454,12 +464,12 @@ int trim::partrim1(enhancedgraph *g, int color, bool parallel) {
 				}
 			}
 		}
-		
+
 		count += count2;
 	}
 
 	g->reportTrim(color, count, 1);
-	return -1;
+	return std::make_pair(min_i, max_i);
 }
 
 int trim::trim2(enhancedgraph *g, int color) {
@@ -560,13 +570,16 @@ int trim::trim2(enhancedgraph *g, int color) {
 	return -1;
 }
 
-int trim::partrim2(enhancedgraph *g, int color, bool parallel) {
+std::pair<int, float> trim::partrim2(enhancedgraph *g, int color, bool parallel, int low, int high) {
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	int count = 0;
 
-	#pragma omp parallel for schedule(static) reduction(+:count) if(parallel)
-	for (int i = colors->BegI(); i < colors->EndI(); i++)
+	int min_i = high;
+	int max_i = low;
+
+	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel)
+	for (int i = low; i < high+1; i++)
 	{
 		if (colors->GetDat(i) == color)
 		{
@@ -649,11 +662,18 @@ int trim::partrim2(enhancedgraph *g, int color, bool parallel) {
 					continue;
 				}
 			}
+
+			if (i < min_i) {
+				min_i = i;
+			}
+			if (i > max_i) {
+				max_i = i;
+			}
 		}
 	}
 
 	g->reportTrim(color, count, 2);
-	return -1;
+	return std::make_pair(min_i, max_i);;
 }
 
 int trim::trim3(enhancedgraph *g, int color) {
@@ -916,15 +936,18 @@ int trim::trim3(enhancedgraph *g, int color) {
 	return -1;
 }
 
-int trim::partrim3(enhancedgraph *g, int color, bool parallel) {
+std::pair<int, float> trim::partrim3(enhancedgraph *g, int color, bool parallel, int low, int high) {
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	int count = 0;
+
+	int min_i = high;
+	int max_i = low;
 	//std::cout << colors->BegI() << "\n";
 	//std::cout << colors->EndI() << "\n";
 
-	#pragma omp parallel for schedule(static) reduction(+:count) if(parallel)
-	for (int i = colors->BegI(); i < colors->EndI(); i++)
+	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel)
+	for (int i = low; i < high+1; i++)
 	{
 		//if (i > colors->EndI()-100) {
 		//	#pragma omp critical
@@ -1229,9 +1252,16 @@ int trim::partrim3(enhancedgraph *g, int color, bool parallel) {
 					continue;
 				}
 			}
+
+			if (i < min_i) {
+				min_i = i;
+			}
+			if (i > max_i) {
+				max_i = i;
+			}
 		}
 	}
 
 	g->reportTrim(color, count, 3);
-	return -1;
+	return std::make_pair(min_i, max_i);
 }

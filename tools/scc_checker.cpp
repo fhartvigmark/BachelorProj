@@ -49,7 +49,9 @@ vector<scc> generateSCClist(string filename, bool silent)
 	std::sort(sccSizes.begin(), sccSizes.end(),
 			  [](auto const &a, auto const &b) { return a.size > b.size; });
 
-	cout << filename << " contains the following SCCs: \n";
+	if (!silent) {
+		cout << filename << " contains the following SCCs: \n";
+	}
 
 	if (!silent) {
 		for (int i = 0; i < sccSizes.size(); i++)
@@ -58,9 +60,9 @@ vector<scc> generateSCClist(string filename, bool silent)
 		}
 	}
 	
-	
-	
-	cout << filename << " contains " << sccSizes.size() << " SCCs \n";
+	if (!silent) {
+		cout << filename << " contains " << sccSizes.size() << " SCCs \n";
+	}
 	return sccSizes;
 }
 
@@ -146,6 +148,7 @@ int main(int argc, char **argv)
 		cout << "SCCs seems to match \n";
 	}else{
 		cout << "SCCs appear to be different \n";
+		cout << "Files " << scc1FileName << ", " << scc2FileName << "\n";
 	}
 	
 

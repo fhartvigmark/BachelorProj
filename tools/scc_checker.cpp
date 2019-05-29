@@ -83,6 +83,7 @@ void generateOutput(string filename, vector<scc> list){
 int main(int argc, char **argv)
 {
 	bool generateOutputs = false;
+	bool silent = false;
 	int retVal = 0;
 	string scc1FileName = "";
 	string scc2FileName = "";
@@ -95,17 +96,31 @@ int main(int argc, char **argv)
 	{
 		scc1FileName = argv[1];
 		scc2FileName = argv[2];
-		generateOutputs = true;
+		string arg = argv[3];
+		if (arg == "o") {
+			generateOutputs = true;
+			silent = true;
+		} else if (arg == "s") {
+			silent = true;
+		} else {
+			cout << "Unkown third argument " << arg << "\n\n";
+			cout << "Usage: ./scc_checker scc1File scc2File {OPTIONAL: o | s}  \n";
+			cout << "o flag generates outputfiles \n";
+			cout << "s suppress stdout listing of SCCs \n";
+			return 1;
+		}
+		
 	}
 	else
 	{
-		cout << "Usage: ./scc_checker scc1File scc2File {OPTIONAL: o}  \n";
+		cout << "Usage: ./scc_checker scc1File scc2File {OPTIONAL: o | s}  \n";
 		cout << "o flag generates outputfiles \n";
+		cout << "s suppress stdout listing of SCCs \n";
 		return 1;
 	}
 
-	vector<scc> scclist1 = generateSCClist(scc1FileName, generateOutputs);
-	vector<scc> scclist2 = generateSCClist(scc2FileName, generateOutputs);
+	vector<scc> scclist1 = generateSCClist(scc1FileName, silent);
+	vector<scc> scclist2 = generateSCClist(scc2FileName, silent);
 
 	if(generateOutputs){
 		generateOutput("outfile1.out", scclist1);

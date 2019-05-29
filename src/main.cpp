@@ -322,6 +322,10 @@ int main(int argc, char **argv)
         Env.GetIfArgPrefixInt("-w=", omp_get_max_threads(), "Specify maximum workers\t\t");
 	const int RandIterations =
         Env.GetIfArgPrefixInt("-rand=", 10, "Specify randwalk iterations\t");
+	const int TrimCutoff =
+        Env.GetIfArgPrefixInt("-cutoff=", 0, "Specify trim cutoff point\t");
+	const int TrimSteps =
+        Env.GetIfArgPrefixInt("-steps=", 1, "Specify how often to trim\t");
 	const bool Help =
         Env.GetIfArgPrefixBool("-h=", false, "Print help section\t\t");
 	const bool Output =
@@ -386,7 +390,7 @@ int main(int argc, char **argv)
 	
 
 	enhancedgraph *enhgraph;
-    enhgraph = new enhancedgraph(Graph, Timer, Analyse, RandIterations);
+    enhgraph = new enhancedgraph(Graph, Timer, Analyse, RandIterations, TrimCutoff, TrimSteps);
 	
 	enhgraph->endTimer(start, eTimer::SETUP);
 	cout << "Graph loaded\n";

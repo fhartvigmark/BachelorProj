@@ -49,6 +49,8 @@ class enhancedgraph
 		const int RAND_WALK_ITERATIONS;
 		const bool TIMER_ENABLED;
 		const bool ANALYSE_ENABLED;
+		const int TRIM_CUTOFF;
+		const int TRIM_STEPS;
 
     	PNGraph graph;
 		ColorMap *colors;
@@ -70,7 +72,7 @@ class enhancedgraph
 		std::list<int>* getReports(eDebug data);
 
 
-		enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations);
+		enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps);
 		enhancedgraph();
 
 		~enhancedgraph();

@@ -39,7 +39,7 @@ struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state>
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10);
+		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
 	}
 
     virtual ~SimpleGraphTest() {
@@ -59,7 +59,7 @@ struct ColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> 
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10);
+		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
 
 		enhgraph->colors->AddDat(1, 2);
 		enhgraph->colors->AddDat(3, 40);
@@ -90,7 +90,7 @@ struct AdvancedColorGraphTest : testing::Test, testing::WithParamInterface<pivot
 		graph->AddEdge(5, 3);
 		graph->AddEdge(6, 3);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10);
+		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
 
 		enhgraph->colors->AddDat(1, 1);
 		enhgraph->colors->AddDat(2, 1);

@@ -243,7 +243,7 @@ std::list<int>* enhancedgraph::getReports(eDebug data) {
 }
 
 
-enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations){
+enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations), TRIM_CUTOFF(cutoff), TRIM_STEPS(steps) {
 	graph = g;
 	colorGen = new ColorGenerator();
 	//colors = new TIntH();
@@ -307,7 +307,7 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 }
 
 //Basic constructor, only sets constants and initilize timers
-enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), RAND_WALK_ITERATIONS(10){
+enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), RAND_WALK_ITERATIONS(10), TRIM_CUTOFF(0), TRIM_STEPS(1) {
 	//Initialize durations and duration locks
 	if (true) {
 		tMain = Duration::zero();

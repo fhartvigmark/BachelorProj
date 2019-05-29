@@ -44,6 +44,29 @@ void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		file.close();
 
 		cout << "Done\n";
+	} else if (operation == 3) {
+		cout << "\nWriting timer output\n";
+
+		TStr fileName = getFileName(path);
+		fileName += suffix;
+		fileName += ".time";
+
+		ofstream file;
+		file.open(fileName.GetCStr());
+
+		file << enhgraph->getTime(eTimer::SETUP) << "\t";
+		file << enhgraph->getTime(eTimer::PREP) << "\t";
+		file << enhgraph->getTime(eTimer::MAIN) << "\t";
+		file << enhgraph->getTime(eTimer::FirstFWBW) << "\t";
+		file << enhgraph->getTime(eTimer::FWBWs) << "\t";
+		file << enhgraph->getTime(eTimer::TRIM) << "\t";
+		file << enhgraph->getTime(eTimer::TRIM1) << "\t";
+		file << enhgraph->getTime(eTimer::FirstTRIM) << "\t";
+		file << enhgraph->getTime(eTimer::TRIM2) << "\t";
+		file << enhgraph->getTime(eTimer::TRIM3) << "\t";
+		file << enhgraph->getTime(eTimer::PIVOT) << "\n";
+
+		file.close();
 	}
 }
 

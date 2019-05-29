@@ -112,8 +112,9 @@
   * ~Trim min and max index~
   * ~BFS FW and BW min and max index~
   * Run Trim based on previous iterations
-    * Add cutoff arg
-    * Add skip steps arg
+    * ~Add cutoff arg~
+    * ~Add skip steps arg~
+    * Smarter heuristic based on graph size and prev iterations
 * Output
   * ~Make time output reduced format~
   * ~Make time output easy to analyse and import~

@@ -1,52 +1,11 @@
 #!/bin/sh
 cd src 
-./main -g=Slashdot0902.txt -p=4 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C1_iteration1 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C1_iteration2 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C1_iteration3 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C1_iteration4 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C1_iteration5 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C1_iteration6 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C1_iteration7 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C1_iteration8 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C1_iteration9 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C1_iteration10 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=2 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C2_iteration1 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=2 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C2_iteration2 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=2 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C2_iteration3 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=2 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C2_iteration4 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=2 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C2_iteration5 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=2 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C2_iteration6 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=2 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C2_iteration7 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=2 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C2_iteration8 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=2 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C2_iteration9 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=2 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C2_iteration10 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=4 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C4_iteration1 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=4 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C4_iteration2 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=4 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C4_iteration3 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=4 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C4_iteration4 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=4 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C4_iteration5 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=4 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C4_iteration6 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=4 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C4_iteration7 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=4 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C4_iteration8 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=4 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C4_iteration9 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=4 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C4_iteration10 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C8_iteration1 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C8_iteration2 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C8_iteration3 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C8_iteration4 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C8_iteration5 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C8_iteration6 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C8_iteration7 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C8_iteration8 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C8_iteration9 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C8_iteration10 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C16_iteration1 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C16_iteration2 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C16_iteration3 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C16_iteration4 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C16_iteration5 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C16_iteration6 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C16_iteration7 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C16_iteration8 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C16_iteration9 -m=1
-./main -g=Slashdot0902.txt -p=4 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_precomp_C16_iteration10 -m=1
+for i in 1 2 4 8 16
+do
+	for j in 1 2 3 4 5 6 7 8 9 10
+	do
+		./main -g=Slashdot0902.txt -p=4 -w=${i} -time=3 -a=3 -out= -suffix=PivotMaxDeg_precomp_C${i}_iteration${j} -m=1
+	done
+	cat Slashdot0902PivotMaxDeg_precomp_C${i}_iteration*.time > Slashdot0902PivotMaxDeg_precomp_C${i}.time
+	rm Slashdot0902PivotMaxDeg_precomp_C${i}_iteration*.time
+done

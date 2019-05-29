@@ -1,5 +1,5 @@
 #!/bin/sh
-cd bachelor-proj/src 
+cd src 
 ./main -g=Slashdot0902.txt -p=2 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C1_iteration1 -m=1
 ./main -g=Slashdot0902.txt -p=2 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C1_iteration2 -m=1
 ./main -g=Slashdot0902.txt -p=2 -w=1 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C1_iteration3 -m=1
@@ -40,13 +40,13 @@ cd bachelor-proj/src
 ./main -g=Slashdot0902.txt -p=2 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C8_iteration8 -m=1
 ./main -g=Slashdot0902.txt -p=2 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C8_iteration9 -m=1
 ./main -g=Slashdot0902.txt -p=2 -w=8 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C8_iteration10 -m=1
-./main -g=Slashdot0902.txt -p=2 -w=12 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C12_iteration1 -m=1
-./main -g=Slashdot0902.txt -p=2 -w=12 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C12_iteration2 -m=1
-./main -g=Slashdot0902.txt -p=2 -w=12 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C12_iteration3 -m=1
-./main -g=Slashdot0902.txt -p=2 -w=12 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C12_iteration4 -m=1
-./main -g=Slashdot0902.txt -p=2 -w=12 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C12_iteration5 -m=1
-./main -g=Slashdot0902.txt -p=2 -w=12 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C12_iteration6 -m=1
-./main -g=Slashdot0902.txt -p=2 -w=12 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C12_iteration7 -m=1
-./main -g=Slashdot0902.txt -p=2 -w=12 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C12_iteration8 -m=1
-./main -g=Slashdot0902.txt -p=2 -w=12 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C12_iteration9 -m=1
-./main -g=Slashdot0902.txt -p=2 -w=12 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C12_iteration10 -m=1
+./main -g=Slashdot0902.txt -p=2 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C16_iteration1 -m=1
+./main -g=Slashdot0902.txt -p=2 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C16_iteration2 -m=1
+./main -g=Slashdot0902.txt -p=2 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C16_iteration3 -m=1
+./main -g=Slashdot0902.txt -p=2 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C16_iteration4 -m=1
+./main -g=Slashdot0902.txt -p=2 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C16_iteration5 -m=1
+./main -g=Slashdot0902.txt -p=2 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C16_iteration6 -m=1
+./main -g=Slashdot0902.txt -p=2 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C16_iteration7 -m=1
+./main -g=Slashdot0902.txt -p=2 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C16_iteration8 -m=1
+./main -g=Slashdot0902.txt -p=2 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C16_iteration9 -m=1
+./main -g=Slashdot0902.txt -p=2 -w=16 -time=2 -a=2 -out= -suffix=PivotMaxDeg_Col_C16_iteration10 -m=1

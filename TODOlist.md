@@ -77,7 +77,7 @@
 * Test on big graphs
 * Debug information
   * Verbose setting
-  * FWBW-tree
+  * ~FWBW-tree~
 * Threads
   * ~Max threads option~ (Not fully tested)
   * Dynamic thread allocation / thread pool

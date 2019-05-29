@@ -34,13 +34,16 @@ ColorMap::ColorMap(int size, bool hasZero) {
 		end = length + 1;
 	}
 }
+
 ColorMap::~ColorMap() {
 	delete[] array;
 }
 
+
 ColorGenerator::ColorGenerator() {
 	lastColor = 0;
 }
+
 
 void enhancedgraph::calculateDegree() {
 	bool zero = graph->IsNode(0);
@@ -166,51 +169,35 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 	}
 }
 
-void enhancedgraph::reportFWBW(int depth) {
+void enhancedgraph::reportFWBW(int color, int node, int trim1, int trim2, int trim3, int bfs, int depth, int fw, int bw) {
 	if (ANALYSE_ENABLED) {
 		omp_set_lock(&lDebugFWBW);
+		if (node == -1) {
+			callsPivot++;
+			omp_unset_lock(&lDebugFWBW);
+			return;
+		}
+
 		callsFWBW++;
+		callsTrim++;
+		callsPivot++;
 
 		if (depth > depthFWBW) {
 			depthFWBW = depth;
 		}
+
+		dColor->push_back(color);
+		dNode->push_back(node);
+		dTrim1->push_back(trim1);
+		dTrim2->push_back(trim2);
+		dTrim3->push_back(trim3);
+		dBFS->push_back(bfs);
+		dDepth->push_back(depth);
+		dFW->push_back(fw);
+		dBW->push_back(bw);
+
 		omp_unset_lock(&lDebugFWBW);
 	}
-}
-
-void enhancedgraph::reportBFS(int color, int amount) {
-	if (ANALYSE_ENABLED) {
-		omp_set_lock(&lDebugBFS);
-		bfsColor->push_back(color);
-		bfsAmount->push_back(amount);
-		omp_unset_lock(&lDebugBFS);
-	}
-}
-
-void enhancedgraph::reportTrim(int color, int amount, int type) {
-	if (ANALYSE_ENABLED) {
-		omp_set_lock(&lDebugTrim);
-		trimColor->push_back(color);
-		trimAmount->push_back(amount);
-		trimType->push_back(type);
-
-		callsTrim++;
-		omp_unset_lock(&lDebugTrim);
-	}
-}
-
-void enhancedgraph::reportPivot(int color, int node) {
-	if (ANALYSE_ENABLED) {
-		omp_set_lock(&lDebugPivot);
-		if (node > -1) {
-			pivotColor->push_back(color);
-			pivotNode->push_back(node);
-		}
-		
-		callsPivot++;
-		omp_unset_lock(&lDebugPivot);
-	}
-	
 }
 
 int64_t enhancedgraph::getCallsFWBW() {
@@ -232,20 +219,24 @@ int64_t enhancedgraph::getDepth() {
 std::list<int>* enhancedgraph::getReports(eDebug data) {
 	switch (data)
 	{
-		case eDebug::tAmount:
-			return trimAmount;
-		case eDebug::tColor:
-			return trimColor;
-		case eDebug::tType:
-			return trimType;
-		case eDebug::pColor:
-			return pivotColor;
-		case eDebug::pNode:
-			return pivotNode;
-		case eDebug::bAmount:
-			return bfsAmount;
-		case eDebug::bColor:
-			return bfsColor;
+		case eDebug::dCOLOR:
+			return dColor;
+		case eDebug::dNODE:
+			return dNode;
+		case eDebug::dTRIM1:
+			return dTrim1;
+		case eDebug::dTRIM2:
+			return dTrim2;
+		case eDebug::dTRIM3:
+			return dTrim3;
+		case eDebug::dBFS:
+			return dBFS;
+		case eDebug::dDEPTH:
+			return dDepth;
+		case eDebug::dFW:
+			return dFW;
+		case eDebug::dBW:
+			return dBW;
 		default:
 			return {};
 	}
@@ -297,22 +288,21 @@ enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_i
 	//Initialize debug information variables and locks
 	if (true) {
 		omp_init_lock(&lDebugFWBW);
-		omp_init_lock(&lDebugBFS);
-		omp_init_lock(&lDebugTrim);
-		omp_init_lock(&lDebugPivot);
 
 		callsFWBW = 0;
 		callsTrim = 0;
 		callsPivot = 0;
 		depthFWBW = 0;
 
-		trimAmount = new std::list<int>;
-		trimColor = new std::list<int>;
-		trimType = new std::list<int>;
-		pivotNode = new std::list<int>;
-		pivotColor = new std::list<int>;
-		bfsColor = new std::list<int>;
-		bfsAmount = new std::list<int>;
+		dColor = new std::list<int>;
+		dNode = new std::list<int>;
+		dTrim1 = new std::list<int>;
+		dTrim2 = new std::list<int>;
+		dTrim3 = new std::list<int>;
+		dBFS = new std::list<int>;
+		dDepth = new std::list<int>;
+		dFW = new std::list<int>;
+		dBW = new std::list<int>;
 	}
 }
 
@@ -344,22 +334,21 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 	//Initialize debug information variables and locks
 	if (true) {
 		omp_init_lock(&lDebugFWBW);
-		omp_init_lock(&lDebugBFS);
-		omp_init_lock(&lDebugTrim);
-		omp_init_lock(&lDebugPivot);
 
 		callsFWBW = 0;
 		callsTrim = 0;
 		callsPivot = 0;
 		depthFWBW = 0;
 
-		trimAmount = {};
-		trimColor = {};
-		trimType = {};
-		pivotNode = {};
-		pivotColor = {};
-		bfsColor = {};
-		bfsAmount = {};
+		dColor = {};
+		dNode = {};
+		dTrim1 = {};
+		dTrim2 = {};
+		dTrim3 = {};
+		dBFS = {};
+		dDepth = {};
+		dFW = {};
+		dBW = {};
 	}
 }
 
@@ -373,17 +362,16 @@ enhancedgraph::~enhancedgraph() {
 	//Delete analysis elements
 	if (true) {
 		omp_destroy_lock(&lDebugFWBW);
-		omp_destroy_lock(&lDebugBFS);
-		omp_destroy_lock(&lDebugTrim);
-		omp_destroy_lock(&lDebugPivot);
-
-		delete trimAmount;
-		delete trimColor;
-		delete trimType;
-		delete pivotNode;
-		delete pivotColor;
-		delete bfsColor;
-		delete bfsAmount;
+		
+		delete dColor;
+		delete dNode;
+		delete dTrim1;
+		delete dTrim2;
+		delete dTrim3;
+		delete dBFS;
+		delete dDepth;
+		delete dFW;
+		delete dBW;
 	}
 
 	//Delete timing elements

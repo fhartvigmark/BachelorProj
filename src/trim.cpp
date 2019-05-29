@@ -1,78 +1,96 @@
 #include "iostream"
 #include "trim.h"
 
-std::pair<int, float> trim::doTrim(int trimlevel, enhancedgraph *g, int color, int low, int high) {
-	std::pair<int, float> retVal;
+std::tuple<int, int, int, int, int> trim::doTrim(int trimlevel, enhancedgraph *g, int color, int low, int high) {
+	std::tuple<int, int, int> retVal;
 	TimePoint start = g->startTimer();
 	TimePoint start2;
+	int count1 = -1;
+	int count2 = -1;
+	int count3 = -1;
 
 	switch (trimlevel)
 	{
 		case 1:
 			retVal = trim::partrim1(g, color, false, low, high);
+			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			break;
 		case 2:
 			retVal = trim::partrim1(g, color, false, low, high);
+			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			retVal = trim::partrim2(g, color, false, retVal.first, retVal.second);
+			retVal = trim::partrim2(g, color, false, std::get<0>(retVal), std::get<1>(retVal));
+			count2 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM2);
 			break;
 		case 3:
 			retVal = trim::partrim1(g, color, false, low, high);
+			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			retVal = trim::partrim2(g, color, false, retVal.first, retVal.second);
+			retVal = trim::partrim2(g, color, false, std::get<0>(retVal), std::get<1>(retVal));
+			count2 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM2);
 			start2 = g->startTimer();
-			retVal = trim::partrim3(g, color, false, retVal.first, retVal.second);
+			retVal = trim::partrim3(g, color, false, std::get<0>(retVal), std::get<1>(retVal));
+			count3 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM3);
 			break;
 		default:
-			retVal = std::make_pair(low, high);
+			retVal = std::make_tuple(low, high, -1);
 			break;
 	}
 
 	g->endTimer(start, eTimer::TRIM);
-	return retVal;
+	return std::make_tuple(std::get<0>(retVal), std::get<1>(retVal), count1, count2, count3);
 }
 
-std::pair<int, float> trim::doParTrim(int trimlevel, enhancedgraph *g, int color, int low, int high) {
-	std::pair<int, float> retVal;
+std::tuple<int, int, int, int, int> trim::doParTrim(int trimlevel, enhancedgraph *g, int color, int low, int high) {
+	std::tuple<int, int, int> retVal;
 	TimePoint start = g->startTimer();
 	TimePoint start2;
+	int count1 = -1;
+	int count2 = -1;
+	int count3 = -1;
 
 	switch (trimlevel)
 	{
 		case 1:
 			retVal = trim::partrim1(g, color, true, low, high);
+			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			break;
 		case 2:
 			retVal = trim::partrim1(g, color, true, low, high);
+			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			retVal = trim::partrim2(g, color, true, retVal.first, retVal.second);
+			retVal = trim::partrim2(g, color, true, std::get<0>(retVal), std::get<1>(retVal));
+			count2 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM2);
 			break;
 		case 3:
 			retVal = trim::partrim1(g, color, true, low, high);
+			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			retVal = trim::partrim2(g, color, true, retVal.first, retVal.second);
+			retVal = trim::partrim2(g, color, true, std::get<0>(retVal), std::get<1>(retVal));
+			count2 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM2);
 			start2 = g->startTimer();
-			retVal = trim::partrim3(g, color, true, retVal.first, retVal.second);
+			retVal = trim::partrim3(g, color, true, std::get<0>(retVal), std::get<1>(retVal));
+			count3 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM3);
 			break;
 		default:
-			retVal = std::make_pair(low, high);
+			retVal = std::make_tuple(low, high, -1);
 			break;
 	}
 
 	g->endTimer(start, eTimer::TRIM);
-	return retVal;
+	return std::make_tuple(std::get<0>(retVal), std::get<1>(retVal), count1, count2, count3);
 }
 
 int trim::trim1(enhancedgraph *g, int color) {
@@ -239,11 +257,11 @@ int trim::trim1(enhancedgraph *g, int color) {
 		}
 	}
 
-	g->reportTrim(color, count, 1);
+	//g->reportTrim(color, count, 1);
     return -1;
 }
 
-std::pair<int, float> trim::partrim1(enhancedgraph *g, int color, bool parallel, int low, int high) {
+std::tuple<int, int, int> trim::partrim1(enhancedgraph *g, int color, bool parallel, int low, int high) {
 	TSnapQueue<int> Queue;
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
@@ -468,8 +486,8 @@ std::pair<int, float> trim::partrim1(enhancedgraph *g, int color, bool parallel,
 		count += count2;
 	}
 
-	g->reportTrim(color, count, 1);
-	return std::make_pair(min_i, max_i);
+	//g->reportTrim(color, count, 1);
+	return std::make_tuple(min_i, max_i, count);
 }
 
 int trim::trim2(enhancedgraph *g, int color) {
@@ -566,11 +584,11 @@ int trim::trim2(enhancedgraph *g, int color) {
 		}
 	}
 
-	g->reportTrim(color, count, 2);
+	//g->reportTrim(color, count, 2);
 	return -1;
 }
 
-std::pair<int, float> trim::partrim2(enhancedgraph *g, int color, bool parallel, int low, int high) {
+std::tuple<int, int, int> trim::partrim2(enhancedgraph *g, int color, bool parallel, int low, int high) {
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	int count = 0;
@@ -672,8 +690,8 @@ std::pair<int, float> trim::partrim2(enhancedgraph *g, int color, bool parallel,
 		}
 	}
 
-	g->reportTrim(color, count, 2);
-	return std::make_pair(min_i, max_i);;
+	//g->reportTrim(color, count, 2);
+	return std::make_tuple(min_i, max_i, count);;
 }
 
 int trim::trim3(enhancedgraph *g, int color) {
@@ -932,11 +950,11 @@ int trim::trim3(enhancedgraph *g, int color) {
 		}
 	}
 
-	g->reportTrim(color, count, 3);
+	//g->reportTrim(color, count, 3);
 	return -1;
 }
 
-std::pair<int, float> trim::partrim3(enhancedgraph *g, int color, bool parallel, int low, int high) {
+std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool parallel, int low, int high) {
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	int count = 0;
@@ -1262,6 +1280,6 @@ std::pair<int, float> trim::partrim3(enhancedgraph *g, int color, bool parallel,
 		}
 	}
 
-	g->reportTrim(color, count, 3);
-	return std::make_pair(min_i, max_i);
+	//g->reportTrim(color, count, 3);
+	return std::make_tuple(min_i, max_i, count);
 }

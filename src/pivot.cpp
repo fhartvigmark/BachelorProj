@@ -24,7 +24,7 @@ std::tuple<int, int, int> pivot::findPivot(enhancedgraph *g, int color, int meth
 	}
 
 	g->endTimer(start, eTimer::PIVOT);
-	g->reportPivot(color, std::get<0>(retVal));
+	//g->reportPivot(color, std::get<0>(retVal));
 	return retVal;
 }
 
@@ -52,7 +52,7 @@ std::tuple<int, int, int> pivot::findParPivot(enhancedgraph *g, int color, int m
 	}
 
 	g->endTimer(start, eTimer::PIVOT);
-	g->reportPivot(color, std::get<0>(retVal));
+	//g->reportPivot(color, std::get<0>(retVal));
 	return retVal;
 }
 

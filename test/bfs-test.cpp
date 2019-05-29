@@ -11,7 +11,7 @@ struct graph_state {
     std::list<int> bwlist;
 };
 
-std::tuple<int, int, int, int, int, int> testBFS(int variant, enhancedgraph *g, int color, int startNode){
+std::tuple<int, int, int, int, int, int, int> testBFS(int variant, enhancedgraph *g, int color, int startNode){
 	switch (variant){
 		case 0:
 			return bfs::colorbfs(g, color, startNode);

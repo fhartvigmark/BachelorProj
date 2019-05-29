@@ -8,7 +8,7 @@ enum ePivot{Random, Max, MaxColor, ParRandom, ParMax, ParMaxColor, RandWalk};
 enum eMethod{FWBW, ParFWBW, RecFWBW};
 enum eTrim{Trim1, Trim2, Trim3, ParTrim1, ParTrim2, ParTrim3};
 enum eTimer{MAIN, FirstFWBW, FWBWs, TRIM, FirstTRIM, TRIM1, TRIM2, TRIM3, PIVOT, SETUP, PREP};
-enum eDebug{tAmount, tColor, tType, pColor, pNode, bColor, bAmount};
+enum eDebug{dCOLOR, dNODE, dTRIM1, dTRIM2, dTRIM3, dBFS, dDEPTH, dFW, dBW};
 
 typedef std::chrono::high_resolution_clock Time;
 typedef std::chrono::high_resolution_clock::time_point TimePoint;
@@ -61,10 +61,7 @@ class enhancedgraph
 		void endTimer(TimePoint start, eTimer timer);
 		int64_t getTime(eTimer timer);
 
-		void reportFWBW(int depth);
-		void reportBFS(int color, int amount);
-		void reportTrim(int color, int amount, int type);
-		void reportPivot(int color, int node);
+		void reportFWBW(int color, int node, int trim1, int trim2, int trim3, int bfs, int depth, int fw, int bw);
 
 		int64_t getCallsFWBW();
 		int64_t getCallsTrim();
@@ -78,13 +75,25 @@ class enhancedgraph
 
 		~enhancedgraph();
 	private:
-		std::list<int> *trimAmount;
-		std::list<int> *trimColor;
-		std::list<int> *trimType;
-		std::list<int> *pivotNode;
-		std::list<int> *pivotColor;
-		std::list<int> *bfsAmount;
-		std::list<int> *bfsColor;
+		std::list<int> *dColor;
+		std::list<int> *dNode;
+		std::list<int> *dTrim1;
+		std::list<int> *dTrim2;
+		std::list<int> *dTrim3;
+		std::list<int> *dBFS;
+		std::list<int> *dDepth;
+		std::list<int> *dFW;
+		std::list<int> *dBW;
+
+		//Color
+		//Pivot node
+		//Trim-1 amount
+		//Trim-2 amount
+		//Trim-3 amount
+		//BFS amount
+		//FWBW depth
+		//FW color
+		//BW color
 
         Duration tMain;
         Duration tFirstFWBW;
@@ -106,9 +115,6 @@ class enhancedgraph
         omp_lock_t lPivot;
         omp_lock_t lSetup;
 		omp_lock_t lDebugFWBW;
-		omp_lock_t lDebugBFS;
-		omp_lock_t lDebugTrim;
-		omp_lock_t lDebugPivot;
 		
 		int64_t callsFWBW;
 		int64_t callsTrim;

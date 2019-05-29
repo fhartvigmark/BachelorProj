@@ -85,19 +85,27 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	int sccs = 0;
 	int gsize = enhgraph->graph->GetNodes();
 
-	std::list<int> *trimAmount = enhgraph->getReports(eDebug::tAmount);
-	std::list<int> *trimColor = enhgraph->getReports(eDebug::tColor);
-	std::list<int> *trimType = enhgraph->getReports(eDebug::tType);
-	std::list<int> *pivotNode = enhgraph->getReports(eDebug::pNode);
-	std::list<int> *pivotColor = enhgraph->getReports(eDebug::pColor);
-	std::list<int> *bfsAmount = enhgraph->getReports(eDebug::bAmount);
-	std::list<int> *bfsColor = enhgraph->getReports(eDebug::bColor);
+	std::list<int> *lColor = enhgraph->getReports(eDebug::dCOLOR);
+	std::list<int> *lNode = enhgraph->getReports(eDebug::dNODE);
+	std::list<int> *lTrim1 = enhgraph->getReports(eDebug::dTRIM1);
+	std::list<int> *lTrim2 = enhgraph->getReports(eDebug::dTRIM2);
+	std::list<int> *lTrim3 = enhgraph->getReports(eDebug::dTRIM3);
+	std::list<int> *lBfs = enhgraph->getReports(eDebug::dBFS);
+	std::list<int> *lDepth = enhgraph->getReports(eDebug::dDEPTH);
+	std::list<int> *lFw = enhgraph->getReports(eDebug::dFW);
+	std::list<int> *lBw = enhgraph->getReports(eDebug::dBW);
 
-	for (auto it = trimAmount->cbegin(); it != trimAmount->cend(); it++) {
+	for (auto it = lTrim1->cbegin(); it != lTrim1->cend(); it++) {
+		sccs += *it;
+	}
+	for (auto it = lTrim2->cbegin(); it != lTrim2->cend(); it++) {
+		sccs += *it;
+	}
+	for (auto it = lTrim3->cbegin(); it != lTrim3->cend(); it++) {
 		sccs += *it;
 	}
 
-	for (auto it = bfsAmount->cbegin(); it != bfsAmount->cend(); it++) {
+	for (auto it = lBfs->cbegin(); it != lBfs->cend(); it++) {
 		if (*it > 0) {
 			sccs++;
 		}
@@ -110,40 +118,35 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		cout << "  " << "#FWBW calls: " << fwbwCalls << "\n";
 		cout << "  " << "#FWBW depth: " << fwbwDepth << "\n";
 		
-		cout << "  " << "pivots calls: " << enhgraph->getCallsPivot() << "\n";
-		cout << "  " << "successful pivot calls: " << pivotColor->size() << "\n";
-		cout << "  " << "pivots: " << "\n";
-		while (!pivotNode->empty()) {
-			int node = pivotNode->front();
-			pivotNode->pop_front();
-			int color = pivotColor->front();
-			pivotColor->pop_front();
-
-			cout << "    " << "Chosen node " << node << " for color " << color << "\n";
-		}
-
+		cout << "  " << "BFS calls: " << lBfs->size() << "\n";
 		cout << "  " << "trim calls: " << enhgraph->getCallsTrim() << "\n";
-		cout << "  " << "trims: " << "\n";
-		while (!trimAmount->empty()) {
-			int amount = trimAmount->front();
-			trimAmount->pop_front();
-			int color = trimColor->front();
-			trimColor->pop_front();
-			int type = trimType->front();
-			trimType->pop_front();
+		cout << "  " << "pivots calls: " << enhgraph->getCallsPivot() << "\n";
+		cout << "  " << "successful pivot calls: " << lNode->size() << "\n\n";
 
-			cout << "    " << "Trim " << type << " trimmed " << amount << " for color " << color << "\n";
-		}
+		cout << "FWBW: " << "\n";
+		while (!lColor->empty()) {
+			int node = lNode->front();
+			lNode->pop_front();
+			int color = lColor->front();
+			lColor->pop_front();
+			int trim1 = lTrim1->front();
+			lTrim1->pop_front();
+			int trim2 = lTrim2->front();
+			lTrim2->pop_front();
+			int trim3 = lTrim3->front();
+			lTrim3->pop_front();
+			int bfs = lBfs->front();
+			lBfs->pop_front();
+			int depth = lDepth->front();
+			lDepth->pop_front();
+			int fw = lFw->front();
+			lFw->pop_front();
+			int bw = lBw->front();
+			lBw->pop_front();
 
-		cout << "  " << "BFS calls: " << bfsColor->size() << "\n";
-		cout << "  " << "BFS SCCs: " << "\n";
-		while (!bfsAmount->empty()) {
-			int amount = bfsAmount->front();
-			bfsAmount->pop_front();
-			int color = bfsColor->front();
-			bfsColor->pop_front();
-
-			cout << "    " << "BFS found SCC of size " << amount << " for color " << color << "\n";
+			cout << "  " << "FWBW at depth " << depth << " for color " << color << " with pivot " << node << "\n";
+			cout << "    " << "Trim found " << trim1 << ", " << trim2 << ", " << trim3 << "\n";
+			cout << "    " << "Children " << color << ", " << fw << ", " << bw << "\n";
 		}
 
 	} else if (operation == 2) {
@@ -162,40 +165,35 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		file << "  " << "#FWBW calls: " << fwbwCalls << "\n";
 		file << "  " << "#FWBW depth: " << fwbwDepth << "\n";
 		
-		file << "  " << "pivots calls: " << enhgraph->getCallsPivot() << "\n";
-		file << "  " << "successful pivot calls: " << pivotColor->size() << "\n";
-		file << "  " << "pivots: " << "\n";
-		while (!pivotNode->empty()) {
-			int node = pivotNode->front();
-			pivotNode->pop_front();
-			int color = pivotColor->front();
-			pivotColor->pop_front();
-
-			file << "    " << "Chosen node " << node << " for color " << color << "\n";
-		}
-
+		file << "  " << "BFS calls: " << lBfs->size() << "\n";
 		file << "  " << "trim calls: " << enhgraph->getCallsTrim() << "\n";
-		file << "  " << "trims: " << "\n";
-		while (!trimAmount->empty()) {
-			int amount = trimAmount->front();
-			trimAmount->pop_front();
-			int color = trimColor->front();
-			trimColor->pop_front();
-			int type = trimType->front();
-			trimType->pop_front();
+		file << "  " << "pivots calls: " << enhgraph->getCallsPivot() << "\n";
+		file << "  " << "successful pivot calls: " << lNode->size() << "\n\n";
 
-			file << "    " << "Trim " << type << " trimmed " << amount << " for color " << color << "\n";
-		}
+		cout << "FWBW: " << "\n";
+		while (!lColor->empty()) {
+			int node = lNode->front();
+			lNode->pop_front();
+			int color = lColor->front();
+			lColor->pop_front();
+			int trim1 = lTrim1->front();
+			lTrim1->pop_front();
+			int trim2 = lTrim2->front();
+			lTrim2->pop_front();
+			int trim3 = lTrim3->front();
+			lTrim3->pop_front();
+			int bfs = lBfs->front();
+			lBfs->pop_front();
+			int depth = lDepth->front();
+			lDepth->pop_front();
+			int fw = lFw->front();
+			lFw->pop_front();
+			int bw = lBw->front();
+			lBw->pop_front();
 
-		file << "  " << "BFS calls: " << bfsColor->size() << "\n";
-		file << "  " << "BFS SCCs: " << "\n";
-		while (!bfsAmount->empty()) {
-			int amount = bfsAmount->front();
-			bfsAmount->pop_front();
-			int color = bfsColor->front();
-			bfsColor->pop_front();
-
-			file << "    " << "BFS found SCC of size " << amount << " for color " << color << "\n";
+			file << "  " << "FWBW at depth " << depth << " for color " << color << " with pivot " << node << "\n";
+			file << "    " << "Trim found " << trim1 << ", " << trim2 << ", " << trim3 << "\n";
+			file << "    " << "Children " << color << ", " << fw << ", " << bw << "\n";
 		}
 
 		file.close();

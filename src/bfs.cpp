@@ -3,7 +3,7 @@
 #include <deque>
 
 //Maybe include mark
-std::tuple<int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
+std::tuple<int, int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
     TSnapQueue<int> Queue;
     ColorMap *colors = g->colors;
     PNGraph pgraph = g->graph;
@@ -105,14 +105,14 @@ std::tuple<int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, int col
         }
     }
 
-	g->reportBFS(color, count);
-	if (count == 0) {
+	//g->reportBFS(color, count);
+	//if (count == 0) {
 		//return std::make_tuple(fwColor, bwColor, 0, 0, 0, 0);
-	}
-    return std::make_tuple(fwColor, bwColor, min_fw, max_fw, min_bw, max_bw);
+	//}
+    return std::make_tuple(fwColor, bwColor, min_fw, max_fw, min_bw, max_bw, count);
 }
 
-std::tuple<int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
+std::tuple<int, int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
 	TSnapQueue<int> Queue;
 	ColorMap *colors = g->colors;
 	PNGraph pgraph = g->graph;
@@ -228,11 +228,11 @@ std::tuple<int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int color
 		totalCount += count;
 	}
 
-	g->reportBFS(color, totalCount);
-	return std::make_tuple(fwColor, bwColor, 0, pgraph->GetNodes()-1, 0, pgraph->GetNodes()-1);
+	//g->reportBFS(color, totalCount);
+	return std::make_tuple(fwColor, bwColor, 0, pgraph->GetNodes()-1, 0, pgraph->GetNodes()-1, totalCount);
 }
 
-std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNode) {
+std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNode) {
 	ColorMap *colors = g->colors;
 	PNGraph pgraph = g->graph;
 	int totalCount = 0;
@@ -524,11 +524,11 @@ std::tuple<int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, in
 	}
 
 
-	g->reportBFS(color, totalCount + count);
-	if (totalCount + count == 0) {
-		return std::make_tuple(fwColor, bwColor, 0, 0, 0, 0);
-	}
-	return std::make_tuple(fwColor, bwColor, min_fw, max_fw, min_bw, max_bw);
+	//g->reportBFS(color, totalCount + count);
+	//if (totalCount + count == 0) {
+		//return std::make_tuple(fwColor, bwColor, 0, 0, 0, 0);
+	//}
+	return std::make_tuple(fwColor, bwColor, min_fw, max_fw, min_bw, max_bw, totalCount + count);
 }
 
 std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int startNode) {
@@ -671,7 +671,7 @@ std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int st
 	//	std::cout << node << " " << colors->GetDat(node) << "\n";
 	//}
 
-	g->reportBFS(color, totalCount);
+	//g->reportBFS(color, totalCount);
 	return std::make_pair(fwColor, bwColor);
 }
 
@@ -740,7 +740,7 @@ int bfs::fwbfs(enhancedgraph *g, int color, int startNode) {
             }
         }
     }
-	g->reportBFS(color, count);
+	//g->reportBFS(color, count);
     return fwColor;
 }
 
@@ -839,6 +839,6 @@ int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) {
 		totalCount += count;
 	}
 
-	g->reportBFS(color, totalCount);
+	//g->reportBFS(color, totalCount);
 	return fwColor;
 }

@@ -170,7 +170,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		file << "  " << "pivots calls: " << enhgraph->getCallsPivot() << "\n";
 		file << "  " << "successful pivot calls: " << lNode->size() << "\n\n";
 
-		cout << "FWBW: " << "\n";
+		file << "FWBW: " << "\n";
 		while (!lColor->empty()) {
 			int node = lNode->front();
 			lNode->pop_front();

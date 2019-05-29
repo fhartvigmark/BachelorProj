@@ -96,13 +96,19 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	std::list<int> *lBw = enhgraph->getReports(eDebug::dBW);
 
 	for (auto it = lTrim1->cbegin(); it != lTrim1->cend(); it++) {
-		sccs += *it;
+		if (*it > -1) {
+			sccs += *it;
+		}
 	}
 	for (auto it = lTrim2->cbegin(); it != lTrim2->cend(); it++) {
-		sccs += *it;
+		if (*it > -1) {
+			sccs += *it;
+		}
 	}
 	for (auto it = lTrim3->cbegin(); it != lTrim3->cend(); it++) {
-		sccs += *it;
+		if (*it > -1) {
+			sccs += *it;
+		}
 	}
 
 	for (auto it = lBfs->cbegin(); it != lBfs->cend(); it++) {

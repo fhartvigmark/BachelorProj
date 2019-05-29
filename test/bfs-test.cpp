@@ -11,7 +11,7 @@ struct graph_state {
     std::list<int> bwlist;
 };
 
-std::pair<int, int> testBFS(int variant, enhancedgraph *g, int color, int startNode){
+std::tuple<int, int, int, int, int, int> testBFS(int variant, enhancedgraph *g, int color, int startNode){
 	switch (variant){
 		case 0:
 			return bfs::colorbfs(g, color, startNode);
@@ -127,16 +127,16 @@ TEST_P(SimpleReachabilityTest, BasicColors) {
 	for (int sccnode : gs.scclist)
 	{
 		EXPECT_NE(enhgraph->colors->GetDat(sccnode), gs.color);
-		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.first);
-		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.second);
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), std::get<0>(newcolors));
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), std::get<1>(newcolors));
 	}
 
 	for (int fwnode: gs.fwlist) {
-		EXPECT_EQ(enhgraph->colors->GetDat(fwnode), newcolors.first);
+		EXPECT_EQ(enhgraph->colors->GetDat(fwnode), std::get<0>(newcolors));
 	}
 
 	for (int bwnode : gs.bwlist) {
-		EXPECT_EQ(enhgraph->colors->GetDat(bwnode), newcolors.second);
+		EXPECT_EQ(enhgraph->colors->GetDat(bwnode), std::get<1>(newcolors));
 	}
 }
 
@@ -148,18 +148,18 @@ TEST_P(SmallCycleTest, BasicCycle)
 	for (int sccnode : gs.scclist)
 	{
 		EXPECT_NE(enhgraph->colors->GetDat(sccnode), gs.color);
-		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.first);
-		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.second);
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), std::get<0>(newcolors));
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), std::get<1>(newcolors));
 	}
 
 	for (int fwnode : gs.fwlist)
 	{
-		EXPECT_EQ(enhgraph->colors->GetDat(fwnode), newcolors.first);
+		EXPECT_EQ(enhgraph->colors->GetDat(fwnode), std::get<0>(newcolors));
 	}
 
 	for (int bwnode : gs.bwlist)
 	{
-		EXPECT_EQ(enhgraph->colors->GetDat(bwnode), newcolors.second);
+		EXPECT_EQ(enhgraph->colors->GetDat(bwnode), std::get<1>(newcolors));
 	}
 }
 
@@ -173,18 +173,18 @@ TEST_P(SimpleColorTest, IgnoresDifferentColors)
 	for (int sccnode : gs.scclist)
 	{
 		EXPECT_NE(enhgraph->colors->GetDat(sccnode), gs.color);
-		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.first);
-		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.second);
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), std::get<0>(newcolors));
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), std::get<1>(newcolors));
 	}
 
 	for (int fwnode : gs.fwlist)
 	{
-		EXPECT_EQ(enhgraph->colors->GetDat(fwnode), newcolors.first);
+		EXPECT_EQ(enhgraph->colors->GetDat(fwnode), std::get<0>(newcolors));
 	}
 
 	for (int bwnode : gs.bwlist)
 	{
-		EXPECT_EQ(enhgraph->colors->GetDat(bwnode), newcolors.second);
+		EXPECT_EQ(enhgraph->colors->GetDat(bwnode), std::get<1>(newcolors));
 	}
 
 
@@ -198,18 +198,18 @@ TEST_P(AdvancedCycleTest, DetectCycle)
 	for (int sccnode : gs.scclist)
 	{
 		EXPECT_NE(enhgraph->colors->GetDat(sccnode), gs.color);
-		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.first);
-		EXPECT_NE(enhgraph->colors->GetDat(sccnode), newcolors.second);
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), std::get<0>(newcolors));
+		EXPECT_NE(enhgraph->colors->GetDat(sccnode), std::get<1>(newcolors));
 	}
 
 	for (int fwnode : gs.fwlist)
 	{
-		EXPECT_EQ(enhgraph->colors->GetDat(fwnode), newcolors.first);
+		EXPECT_EQ(enhgraph->colors->GetDat(fwnode), std::get<0>(newcolors));
 	}
 
 	for (int bwnode : gs.bwlist)
 	{
-		EXPECT_EQ(enhgraph->colors->GetDat(bwnode), newcolors.second);
+		EXPECT_EQ(enhgraph->colors->GetDat(bwnode), std::get<1>(newcolors));
 	}
 }
 

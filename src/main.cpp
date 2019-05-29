@@ -230,6 +230,59 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		file.close();
 
 		cout << "Done\n";
+	} else if (operation == 3) {
+		cout << "\nWriting debug output\n";
+
+		TStr fileName = getFileName(path);
+		fileName += suffix;
+		fileName += ".debug";
+
+		ofstream file;
+		file.open(fileName.GetCStr());
+
+		file << sccs << "\t";
+		file << gsize << "\t";
+		file << fwbwCalls << "\t";
+		file << fwbwDepth << "\t";
+		file << lBfs->size() << "\t";
+		file << enhgraph->getCallsTrim() << "\t";
+		file << enhgraph->getCallsPivot() << "\t";
+		file << lNode->size() << "\n\n";
+
+		while (!lColor->empty()) {
+			int node = lNode->front();
+			lNode->pop_front();
+			int color = lColor->front();
+			lColor->pop_front();
+			int trim1 = lTrim1->front();
+			lTrim1->pop_front();
+			int trim2 = lTrim2->front();
+			lTrim2->pop_front();
+			int trim3 = lTrim3->front();
+			lTrim3->pop_front();
+			int bfs = lBfs->front();
+			lBfs->pop_front();
+			int depth = lDepth->front();
+			lDepth->pop_front();
+			int fw = lFw->front();
+			lFw->pop_front();
+			int bw = lBw->front();
+			lBw->pop_front();
+
+			file << depth << "\t";
+			file << color << "\t";
+			file << node << "\t";
+			file << bfs << "\t";
+			file << trim1 << "\t";
+			file << trim2 << "\t";
+			file << trim3 << "\t";
+			file << fw << "\t";
+			file << bw << "\n";
+		}
+
+		file.close();
+
+		cout << "Done\n";
 	}
 }
 

@@ -115,6 +115,7 @@
 * Output
   * Make time output reduced format
   * Make time output easy to analyse and import
+  * Make time output append to same file
   * Make debug output reduced format
   * Make debug output easy to analyse and import
 

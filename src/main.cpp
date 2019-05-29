@@ -145,6 +145,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 			lBw->pop_front();
 
 			cout << "  " << "FWBW at depth " << depth << " for color " << color << " with pivot " << node << "\n";
+			cout << "    " << "BFS found " << bfs << "\n";
 			cout << "    " << "Trim found " << trim1 << ", " << trim2 << ", " << trim3 << "\n";
 			cout << "    " << "Children " << color << ", " << fw << ", " << bw << "\n";
 		}
@@ -192,6 +193,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 			lBw->pop_front();
 
 			file << "  " << "FWBW at depth " << depth << " for color " << color << " with pivot " << node << "\n";
+			file << "    " << "BFS found " << bfs << "\n";
 			file << "    " << "Trim found " << trim1 << ", " << trim2 << ", " << trim3 << "\n";
 			file << "    " << "Children " << color << ", " << fw << ", " << bw << "\n";
 		}

@@ -121,4 +121,5 @@
   * Make debug output reduced format
   * Make debug output easy to analyse and import
 * Update help message
+* Fix SCC count in debug counting negative trims
 

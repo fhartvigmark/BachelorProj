@@ -40,7 +40,6 @@ cd bachelor-proj/src
 ./main -g=Slashdot0902.txt -w=8 -time=2 -a=2 -out= -suffix=PivotRandom_C8_iteration8 -m=1
 ./main -g=Slashdot0902.txt -w=8 -time=2 -a=2 -out= -suffix=PivotRandom_C8_iteration9 -m=1
 ./main -g=Slashdot0902.txt -w=8 -time=2 -a=2 -out= -suffix=PivotRandom_C8_iteration10 -m=1
-
 ./main -g=Slashdot0902.txt -w=12 -time=2 -a=2 -out= -suffix=PivotRandom_C12_iteration1 -m=1
 ./main -g=Slashdot0902.txt -w=12 -time=2 -a=2 -out= -suffix=PivotRandom_C12_iteration2 -m=1
 ./main -g=Slashdot0902.txt -w=12 -time=2 -a=2 -out= -suffix=PivotRandom_C12_iteration3 -m=1

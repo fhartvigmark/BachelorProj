@@ -347,6 +347,7 @@ int main(int argc, char **argv)
 		cout << "    " << "1 = max degree product" << "\n";
 		cout << "    " << "2 = max degree product with colors" << "\n";
 		cout << "    " << "3 = randomwalk" << "\n";
+		cout << "    " << "3 = max degree with precomputed product" << "\n";
 
 		cout << "  " << "FWBW method:" << "\n";
 		cout << "    " << "0 = basic FWBW" << "\n";
@@ -359,11 +360,13 @@ int main(int argc, char **argv)
 		cout << "    " << "0 = no printing" << "\n";
 		cout << "    " << "1 = print to stdout" << "\n";
 		cout << "    " << "2 = print to file" << "\n";
+		cout << "    " << "3 = print compact version to file" << "\n";
 
 		cout << "  " << "Debug:" << "\n";
 		cout << "    " << "0 = no printing" << "\n";
 		cout << "    " << "1 = print to stdout" << "\n";
 		cout << "    " << "2 = print to file" << "\n";
+		cout << "    " << "3 = print compact version to file" << "\n";
 
 
 		return 0;

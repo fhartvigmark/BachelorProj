@@ -112,4 +112,9 @@
   * ~Trim min and max index~
   * ~BFS FW and BW min and max index~
   * Run Trim based on previous iterations
+* Output
+  * Make time output reduced format
+  * Make time output easy to analyse and import
+  * Make debug output reduced format
+  * Make debug output easy to analyse and import
 

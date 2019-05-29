@@ -4,4 +4,5 @@
 #SBATCH -N1
 #SBATCH -c24
 #SBATCH -w westervlier
-srun -N1 -n1 --exclusive test_pivot_random_scaling.sh
+srun -N1 -n1 --exclusive test_pivot_random_scaling.sh &
+srun -N1 -n1 --exclusive test_pivot_maxdeg_scaling.sh

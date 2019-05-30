@@ -8,7 +8,7 @@ std::tuple<int, int, int> pivot::findPivot(enhancedgraph *g, int color, int meth
 	switch (method)
 	{
 		case 0:
-			retVal = pivot::getPivot(g, color, low, high);
+			retVal = pivot::getParPivot(g, color, false, low, high);
 			break;
 		case 1:
 			retVal = pivot::getParPivotMaxDegree(g, color, false, low, high);

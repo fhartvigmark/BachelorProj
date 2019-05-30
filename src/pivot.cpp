@@ -17,7 +17,7 @@ std::tuple<int, int, int> pivot::findPivot(enhancedgraph *g, int color, int meth
 			retVal = pivot::getParPivotMaxDegreeColor(g, color, false, low, high);
 			break;
 		case 3:
-			retVal = pivot::getPivotRand(g, color, low, high);
+			retVal = pivot::getParPivotRand(g, color, false, low, high);
 			break;
 		case 4:
 			retVal = pivot::getParPivotMaxDegreeCalc(g, color, false, low, high);

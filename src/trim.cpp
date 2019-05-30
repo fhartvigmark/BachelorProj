@@ -1063,6 +1063,13 @@ std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool paral
 								count++;
 							}
 						}
+						continue;
+					}
+					if (i < min_i) {
+						min_i = i;
+					}
+					if (i > max_i) {
+						max_i = i;
 					}
 					continue;
 				}
@@ -1119,6 +1126,13 @@ std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool paral
 								count++;
 							}
 						}
+						continue;
+					}
+					if (i < min_i) {
+						min_i = i;
+					}
+					if (i > max_i) {
+						max_i = i;
 					}
 					continue;
 				}
@@ -1210,6 +1224,13 @@ std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool paral
 								count++;
 							}
 						}
+						continue;
+					}
+					if (i < min_i) {
+						min_i = i;
+					}
+					if (i > max_i) {
+						max_i = i;
 					}
 					continue;
 				}
@@ -1266,6 +1287,13 @@ std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool paral
 								count++;
 							}
 						}
+						continue;
+					}
+					if (i < min_i) {
+						min_i = i;
+					}
+					if (i > max_i) {
+						max_i = i;
 					}
 					continue;
 				}

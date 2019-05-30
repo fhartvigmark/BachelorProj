@@ -1,5 +1,6 @@
 #pragma once
 #include "Snap.h"
+#include <random>
 #include <atomic>
 #include <chrono>
 #include <list>
@@ -130,8 +131,8 @@ class Random
 		static int randwalk(enhancedgraph *g, int color, int node, const int k);
 		static int randwalk(enhancedgraph *g, int color, int node, const int k, int r, bool direction);
 	private:
-		static int randstep(enhancedgraph *g, int color, int node, unsigned int seed);
-		static int randstepOut(enhancedgraph *g, int color, const int node, unsigned int seed);
-		static int randstepIn(enhancedgraph *g, int color, const int node, unsigned int seed);
-		static int myRand(unsigned int seed, int limit);	
+		static int randstep(enhancedgraph *g, int color, int node);
+		static int randstepOut(enhancedgraph *g, int color, const int node);
+		static int randstepIn(enhancedgraph *g, int color, const int node);
+		static int myRand(const int low, const int high);	
 };

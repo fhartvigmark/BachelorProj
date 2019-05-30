@@ -1,4 +1,5 @@
 #include "pivot.h"
+#include "iostream"
 
 std::tuple<int, int, int> pivot::findPivot(enhancedgraph *g, int color, int method, int low, int high) {
 	std::tuple<int, int, int> retVal;
@@ -326,12 +327,16 @@ std::tuple<int, int, int> pivot::getParPivotMaxDegreeColor(enhancedgraph *g, int
 std::tuple<int, int, int> pivot::getParPivotRand(enhancedgraph *g, int color, bool parallel, int low, int high)
 {
 	std::tuple<int, int, int> node = getParPivot(g, color, parallel, low, high);
+	//std::cout << "Rand found " << std::get<0>(node);
 
 	if (std::get<0>(node) == -1) {
+		//std::cout << "\n";
 		return node;
 	}
 
 	int bestNode = Random::randwalk(g, color, std::get<0>(node), g->RAND_WALK_ITERATIONS);
+	//std::cout << ", " << bestNode << "\n";
+
     return std::make_tuple(bestNode, std::get<1>(node) , std::get<2>(node));
 };
 

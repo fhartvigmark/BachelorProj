@@ -386,11 +386,14 @@ enhancedgraph::~enhancedgraph() {
 	}
 }
 
-int Random::myRand(unsigned int seed, int limit) {
-	return (rand_r(&seed)%limit);
+int Random::myRand(const int low, const int high) {
+    static thread_local std::mt19937 randGenerator;
+
+    std::uniform_int_distribution<int> distribution(low,high);
+    return distribution(randGenerator);
 }
 
-int Random::randstep(enhancedgraph *g, int color, int node, unsigned int seed) {
+int Random::randstep(enhancedgraph *g, int color, int node) {
 	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
@@ -419,11 +422,12 @@ int Random::randstep(enhancedgraph *g, int color, int node, unsigned int seed) {
 			edges += 1;
 		}
 	}
-	
+
 	if (edges <= 0) {
 		return node;
 	}
-	int index = myRand(seed, edges);
+	int index = myRand(0, edges-1);
+	//std::cout << ", " << index << "/" << edges;
 	edges = 0;
 
 	//Find the edges with chosen index
@@ -435,6 +439,7 @@ int Random::randstep(enhancedgraph *g, int color, int node, unsigned int seed) {
 		if (colors->GetDat(outNode) == color)
 		{
 			if (edges == index) {
+				//std::cout << "-" << outNode;
 				return outNode;
 			}
 			edges += 1;
@@ -449,6 +454,7 @@ int Random::randstep(enhancedgraph *g, int color, int node, unsigned int seed) {
 		if (colors->GetDat(outNode) == color)
 		{
 			if (edges == index) {
+				//std::cout << "-" << outNode;
 				return outNode;
 			}
 			edges += 1;
@@ -458,7 +464,7 @@ int Random::randstep(enhancedgraph *g, int color, int node, unsigned int seed) {
 	return node;
 }
 
-int Random::randstepIn(enhancedgraph *g, int color, const int node, unsigned int seed) {
+int Random::randstepIn(enhancedgraph *g, int color, const int node) {
 	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
@@ -481,7 +487,7 @@ int Random::randstepIn(enhancedgraph *g, int color, const int node, unsigned int
 	if (edges <= 0) {
 		return node;
 	}
-	int index = myRand(seed, edges);
+	int index = myRand(0, edges-1);
 	edges = 0;
 
 	//Find the edges with chosen index
@@ -501,7 +507,7 @@ int Random::randstepIn(enhancedgraph *g, int color, const int node, unsigned int
 	return node;
 }
 
-int Random::randstepOut(enhancedgraph *g, int color, const int node, unsigned int seed) {
+int Random::randstepOut(enhancedgraph *g, int color, const int node) {
 	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
@@ -526,7 +532,7 @@ int Random::randstepOut(enhancedgraph *g, int color, const int node, unsigned in
 	if (edges == 0) {
 		return node;
 	}
-	int index = myRand(seed, edges);
+	int index = myRand(0, edges-1);
 	edges = 0;
 
 	//Find the edges with chosen index
@@ -549,14 +555,13 @@ int Random::randstepOut(enhancedgraph *g, int color, const int node, unsigned in
 //Performs a simple random walk for k iterations starting from the given node
 //only looks at in/out edges of same color as start node
 int Random::randwalk(enhancedgraph *g, int color, int node, const int k, int r, bool direction) {
-	unsigned int seed = time(NULL) * (r+1);
 	int currentNode = node;
 
 	for (int i = 0; i < k; i++) {
 		if (direction) {
-			currentNode = randstepOut(g, color, currentNode, seed);
+			currentNode = randstepOut(g, color, currentNode);
 		} else {
-			currentNode = randstepIn(g, color, currentNode, seed);
+			currentNode = randstepIn(g, color, currentNode);
 		}
 	}
 
@@ -566,11 +571,10 @@ int Random::randwalk(enhancedgraph *g, int color, int node, const int k, int r, 
 //Performs a simple random walk for k iterations starting from the given node
 //only looks at in/out edges of same color as start node
 int Random::randwalk(enhancedgraph *g, int color, int node, const int k) {
-	unsigned int seed = time(NULL);
 	int currentNode = node;
 
 	for (int i = 0; i < k; i++) {
-		currentNode = randstep(g, color, currentNode, seed);
+		currentNode = randstep(g, color, currentNode);
 	}
 
 	return currentNode;

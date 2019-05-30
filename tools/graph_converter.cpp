@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		cout << "Usage: ./scc_checker scc1File scc2File \n";
+		cout << "Usage: ./graph_converter graph outfile \n";
 		return 1;
 	}
 

@@ -35,7 +35,7 @@ endif
 NUM_CORES ?= $(shell grep -c "vendor_id" /proc/cpuinfo)
 MAKEFLAGS = " -j$(NUM_CORES) -l$(NUM_CORES) "
 
-MAIN = scc_checker graph_converter
+MAIN = scc_checker graph_converter pivot_extract
 
 all: $(MAIN)
 run:

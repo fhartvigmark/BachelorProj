@@ -5,4 +5,4 @@
 #SBATCH -c32
 #SBATCH --exclusive
 #SBATCH -w caserta
-srun -N1 -n1 --exclusive test_pivot_maxdeg_color_scaling.sh Slashdot 0
+srun -N1 -n1 --exclusive test_pivot_randwalk2_scaling.sh Slashdot 0

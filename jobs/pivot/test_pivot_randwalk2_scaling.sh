@@ -1,6 +1,6 @@
 #!/bin/sh
 cd src 
-for i in 1 2 4 8 16
+for i in 1 2 4 8 16 24 32
 do
 	for j in 1 2 3 4 5 6 7 8 9 10
 	do

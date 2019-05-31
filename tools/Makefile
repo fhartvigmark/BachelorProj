@@ -1,3 +1,9 @@
+aGLIB = glib-core
+aSNAP = snap-core
+
+GLIB = ../Snap-4.1/$(aGLIB)
+SNAP = ../Snap-4.1/$(aSNAP)
+
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
@@ -36,8 +42,9 @@ NUM_CORES ?= $(shell grep -c "vendor_id" /proc/cpuinfo)
 MAKEFLAGS = " -j$(NUM_CORES) -l$(NUM_CORES) "
 
 MAIN = scc_checker graph_converter pivot_extract
+GRAPH = trim_graph_creator
 
-all: $(MAIN)
+all: $(MAIN) $(GRAPH)
 run:
 	./$(MAIN)
 
@@ -45,8 +52,14 @@ run:
 %: %.cpp
 	$(CC) $(CXXFLAGS) -o $@ $< $(LIBS)
 
+$(GRAPH): $(GRAPH).cpp
+	$(CC) $(CXXFLAGS) -o $(GRAPH) $(GRAPH).cpp $(SNAP)/Snap.o -I$(SNAP) -I$(GLIB) $(LIBS)
+
+$(SNAP)/Snap.o: 
+	make -C $(SNAP)
+
 clean:
-	rm -f *.o  $(MAIN)  $(MAIN).exe
+	rm -f *.o  $(MAIN)  $(MAIN).exe $(GRAPH)  $(GRAPH).exe
 	rm -rf Debug Release
 
 .PHONY: all run clean

@@ -963,7 +963,9 @@ std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool paral
 	int max_i = low;
 	//std::cout << colors->BegI() << "\n";
 	//std::cout << colors->EndI() << "\n";
-
+	//std::cout << low << "-" << high << "\n";
+	//std::cout << "\n\n";
+	
 	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel)
 	for (int i = low; i < high+1; i++)
 	{
@@ -972,7 +974,6 @@ std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool paral
 		//	std::cout << i << "\n";
 		//}
 		
-
 		if (colors->GetDat(i) == color)
 		{
 			int inDegree = 0;
@@ -1175,9 +1176,9 @@ std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool paral
 				int outDegree_B = 0;
 				int outNode_B = 0;
 				TNGraph::TNodeI NodeBI = graph->GetNI(nodeB);
-				for (int v = 0; v < NodeBI.GetInDeg(); v++)
+				for (int v = 0; v < NodeBI.GetOutDeg(); v++)
 				{
-					outNode_B = NodeBI.GetInNId(v);
+					outNode_B = NodeBI.GetOutNId(v);
 
 					if (colors->GetDat(outNode_B) == color && outNode_B != nodeB)
 					{

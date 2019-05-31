@@ -3,10 +3,12 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <time.h>
+#include <stdio.h>
 using namespace std;
 
 int myRand(const int low, const int high) {
-    static thread_local std::mt19937 randGenerator;
+    static thread_local std::mt19937 randGenerator(static_cast<std::mt19937::result_type>(time(nullptr)));
 
     std::uniform_int_distribution<int> distribution(low,high);
     return distribution(randGenerator);
@@ -18,9 +20,12 @@ int scc2 = 0;
 int scc3 = 0;
 int nextNode = 0;
 
-void generateNext(PNGraph graph, int prevNode, bool inEdge);
+int t1 = 0;
+int t2 = 0;
 
-void generate1(PNGraph graph, int prevNode, bool inEdge) {
+void generateNext(PNGraph graph, const int prevNode, bool inEdge);
+
+void generate1(PNGraph graph, const int prevNode, bool inEdge) {
 	nextNode++;
 	graph->AddNode(nextNode);
 	if (inEdge) {
@@ -35,7 +40,7 @@ void generate1(PNGraph graph, int prevNode, bool inEdge) {
 	}
 }
 
-void generate2(PNGraph graph, int prevNode, bool inEdge) {
+void generate2(PNGraph graph, const int prevNode, bool inEdge) {
 	int i = ++nextNode;
 	nextNode++;
 	graph->AddNode(i);
@@ -55,7 +60,7 @@ void generate2(PNGraph graph, int prevNode, bool inEdge) {
 	}
 }
 
-void generate3(PNGraph graph, int prevNode, bool inEdge) {
+void generate3(PNGraph graph, const int prevNode, bool inEdge) {
 	int choice = myRand(1, 2);
 	int i = ++nextNode;
 	int j = ++nextNode;
@@ -73,11 +78,13 @@ void generate3(PNGraph graph, int prevNode, bool inEdge) {
 		graph->AddEdge(i, j);
 		graph->AddEdge(j, nextNode);
 		graph->AddEdge(nextNode, i);
+		t1++;
 	} else {
 		graph->AddEdge(i, nextNode);
 		graph->AddEdge(nextNode, i);
 		graph->AddEdge(j, nextNode);
 		graph->AddEdge(nextNode, j);
+		t2++;
 	}
 
 	int count = myRand(1, 10);
@@ -86,7 +93,7 @@ void generate3(PNGraph graph, int prevNode, bool inEdge) {
 	}
 }
 
-void generateNext(PNGraph graph, int prevNode, bool inEdge) {
+void generateNext(PNGraph graph, const int prevNode, bool inEdge) {
 	int choice = myRand(1, 3);
 
 	if (choice == 1 && scc1 < size) {
@@ -156,6 +163,8 @@ int main(int argc, char **argv)
 	else {
 		cout << "Unable to open output file\n";
 	}
+
+	cout << t1 << "-" << t2 << "\n";
 	
 	return retVal;
 }

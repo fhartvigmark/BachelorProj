@@ -5,6 +5,8 @@
 #include <fstream>
 #include <time.h>
 #include <stdio.h>
+#include <queue>
+#include <deque>
 using namespace std;
 
 int myRand(const int low, const int high) {
@@ -22,10 +24,11 @@ int nextNode = 0;
 
 int t1 = 0;
 int t2 = 0;
+PNGraph graph;
 
-void generateNext(PNGraph graph, const int prevNode, bool inEdge);
+int generateNext();
 
-void generate1(PNGraph graph, const int prevNode, bool inEdge) {
+int generate1(const int prevNode, bool inEdge) {
 	nextNode++;
 	graph->AddNode(nextNode);
 	if (inEdge) {
@@ -34,13 +37,10 @@ void generate1(PNGraph graph, const int prevNode, bool inEdge) {
 		graph->AddEdge(nextNode, prevNode);
 	}
 
-	int count = myRand(1, 10);
-	for (int v = 0; v < count; v++) {
-		generateNext(graph, nextNode, !inEdge);
-	}
+	return nextNode;
 }
 
-void generate2(PNGraph graph, const int prevNode, bool inEdge) {
+int generate2(const int prevNode, bool inEdge) {
 	int i = ++nextNode;
 	nextNode++;
 	graph->AddNode(i);
@@ -54,13 +54,10 @@ void generate2(PNGraph graph, const int prevNode, bool inEdge) {
 	graph->AddEdge(nextNode, i);
 	graph->AddEdge(i, nextNode);
 
-	int count = myRand(1, 10);
-	for (int v = 0; v < count; v++) {
-		generateNext(graph, nextNode, !inEdge);
-	}
+	return nextNode;
 }
 
-void generate3(PNGraph graph, const int prevNode, bool inEdge) {
+int generate3(const int prevNode, bool inEdge) {
 	int choice = myRand(1, 2);
 	int i = ++nextNode;
 	int j = ++nextNode;
@@ -87,47 +84,44 @@ void generate3(PNGraph graph, const int prevNode, bool inEdge) {
 		t2++;
 	}
 
-	int count = myRand(1, 10);
-	for (int v = 0; v < count; v++) {
-		generateNext(graph, nextNode, !inEdge);
-	}
+	return nextNode;
 }
 
-void generateNext(PNGraph graph, const int prevNode, bool inEdge) {
+int generateNext() {
 	int choice = myRand(1, 3);
 
 	if (choice == 1 && scc1 < size) {
 		scc1++;
-		generate1(graph, prevNode, inEdge);
-		return;
+		return 1;
 	}
 	else if (choice == 2 && scc2 < size) {
 		scc2++;
-		generate2(graph, prevNode, inEdge);
-		return;
+		return 2;
 	} else if (choice == 3 && scc3 < size) {
 		scc3++;
-		generate3(graph, prevNode, inEdge);
-		return;
+		return 3;
 	}
 
 	if (scc1 < size) {
 		scc1++;
-		generate1(graph, prevNode, inEdge);
-		return;
+		return 1;
 	}
 	else if (scc2 < size) {
 		scc2++;
-		generate2(graph, prevNode, inEdge);
-		return;
+		return 2;
 	} else if (scc3 < size) {
 		scc3++;
-		generate3(graph, prevNode, inEdge);
-		return;
+		return 3;
 	}
 	
+	return 0;
 }
 
+struct gen
+{
+	int prevNode;
+	bool inEdge;
+};
 
 int main(int argc, char **argv)
 {
@@ -144,10 +138,35 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	PNGraph graph = TNGraph::New();
+	std::deque<gen> q;
+	q.push_back({0, true});
+	graph = TNGraph::New();
 	graph->AddNode(0);
 	scc1++;
-	generateNext(graph, 0, true);
+	int next = generateNext();
+
+	while (!q.empty()) {
+		gen toGen = q.front();
+		q.pop_front();
+		int newNode;
+
+		if (next == 1) {
+			newNode = generate1(toGen.prevNode, toGen.inEdge);
+		} else if (next == 2) {
+			newNode = generate2(toGen.prevNode, toGen.inEdge);
+		} else if (next == 3) {
+			newNode = generate3(toGen.prevNode, toGen.inEdge);
+		}
+
+		next = generateNext();
+		if (next > 0) {
+			int count = myRand(1, 3);
+			for (int v = 0; v < count; v++) {
+				q.push_back({newNode, !toGen.inEdge});
+			}
+		}
+	}
+	
 
 	ofstream outfile(filename);
 

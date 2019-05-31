@@ -1,4 +1,4 @@
-# BacherlorProj
+# BachelorProj
 
 ## Algorithms
 * Basic Tarjan: [DEPTH-FIRST SEARCH AND LINEAR GRAPH ALGORITHMS](http://langevin.univ-tln.fr/cours/PAA/extra/Tarjan-1972.pdf)

@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 
 	while (getline(infile, line)) {
 		if (line.at(0) == '#') {
-			outfile << line;
+			//outfile << line;
 			continue;
 		}
 

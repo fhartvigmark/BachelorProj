@@ -34,3 +34,10 @@ do
 		./pivot_extract SlashdotPivotMaxDeg_precomp_C${i}_iteration${j}.debug PivotMaxDegPre_C${i}_iteration${j}.out
 	done
 done
+for i in 1 2 4 8 16
+do
+	for j in 1 2 3 4 5 6 7 8 9 10
+	do
+		./pivot_extract SlashdotPivotRandWalk2_C${i}_iteration${j}.debug PivotRandWalk2_C${i}_iteration${j}.out
+	done
+done

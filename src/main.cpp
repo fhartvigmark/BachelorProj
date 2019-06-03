@@ -387,8 +387,10 @@ int main(int argc, char **argv)
 		start = Time::now();
 	}
 	PNGraph Graph = TSnap::LoadEdgeList<PNGraph>(InEdges);
+	//TNGraph graph = *Graph;
+
 	enhancedgraph *enhgraph;
-    enhgraph = new enhancedgraph(Graph, Timer, Analyse, RandIterations, TrimCutoff, TrimSteps);
+    enhgraph = new enhancedgraph(&(*Graph), Timer, Analyse, RandIterations, TrimCutoff, TrimSteps);
 	
 	enhgraph->endTimer(start, eTimer::SETUP);
 	cout << "Graph loaded\n";

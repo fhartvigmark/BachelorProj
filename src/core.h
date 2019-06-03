@@ -53,7 +53,7 @@ class enhancedgraph
 		const int TRIM_CUTOFF;
 		const int TRIM_STEPS;
 
-    	PNGraph graph;
+    	TNGraph *graph;
 		ColorMap *colors;
     	ColorGenerator *colorGen;
 		ColorMap *degree;
@@ -73,7 +73,7 @@ class enhancedgraph
 		std::list<int>* getReports(eDebug data);
 
 
-		enhancedgraph(const PNGraph& g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps);
+		enhancedgraph(TNGraph* g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps);
 		enhancedgraph();
 
 		~enhancedgraph();

@@ -243,7 +243,7 @@ std::list<int>* enhancedgraph::getReports(eDebug data) {
 }
 
 
-enhancedgraph::enhancedgraph(const PNGraph& g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations), TRIM_CUTOFF(cutoff), TRIM_STEPS(steps) {
+enhancedgraph::enhancedgraph(TNGraph* g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations), TRIM_CUTOFF(cutoff), TRIM_STEPS(steps) {
 	graph = g;
 	colorGen = new ColorGenerator();
 	//colors = new TIntH();

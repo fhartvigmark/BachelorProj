@@ -232,9 +232,8 @@ std::tuple<int, int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int 
 	return std::make_tuple(fwColor, bwColor, 0, pgraph->GetNodes()-1, 0, pgraph->GetNodes()-1, totalCount);
 }
 
-std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNode) {
+std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, const PNGraph& pgraph, int color, int startNode) {
 	ColorMap *colors = g->colors;
-	PNGraph pgraph = g->graph;
 	int totalCount = 0;
 	int count = 0;
 	int threads = omp_get_max_threads();

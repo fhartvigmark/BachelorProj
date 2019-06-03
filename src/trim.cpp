@@ -271,7 +271,7 @@ std::tuple<int, int, int> trim::partrim1(enhancedgraph *g, int color, bool paral
 	int min_i = high;
 	int max_i = low;
 
-	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel)
+	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel) num_threads(std::max(4, omp_get_max_threads()))
 	for (int i = low; i < high+1; i++)
 	{
 		int nodeColor;
@@ -348,7 +348,7 @@ std::tuple<int, int, int> trim::partrim1(enhancedgraph *g, int color, bool paral
 		int qsize = Queue.Len();
 		int count2 = 0;
 
-		#pragma omp parallel for schedule(static) reduction(+:count2) if(parallel)
+#pragma omp parallel for schedule(static) reduction(+: count2) if (parallel) num_threads(std::max(4, omp_get_max_threads()))
 		for (int q = 0; q < qsize; q++)
 		{
 			int oldnode;
@@ -596,7 +596,7 @@ std::tuple<int, int, int> trim::partrim2(enhancedgraph *g, int color, bool paral
 	int min_i = high;
 	int max_i = low;
 
-	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel)
+#pragma omp parallel for schedule(static) reduction(+: count) reduction(min: min_i) reduction(max: max_i) if (parallel) num_threads(std::max(4, omp_get_max_threads()))
 	for (int i = low; i < high+1; i++)
 	{
 		if (colors->GetDat(i) == color)
@@ -966,7 +966,7 @@ std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool paral
 	//std::cout << low << "-" << high << "\n";
 	//std::cout << "\n\n";
 	
-	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel)
+	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel) num_threads(std::max(4, omp_get_max_threads()))
 	for (int i = low; i < high+1; i++)
 	{
 		//if (i > colors->EndI()-100) {

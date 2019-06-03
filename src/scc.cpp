@@ -1,9 +1,9 @@
 #include "scc.h"
 
-int scc::FindSCCs(enhancedgraph *enhgraph, const PNGraph& graph, int trimlevel, int pivotmethod, int fwbwmethod){
+int scc::FindSCCs(enhancedgraph *enhgraph, int trimlevel, int pivotmethod, int fwbwmethod){
 	cout << "Starting\n";
 
-    fwbw::FWBW(enhgraph, graph, trimlevel, pivotmethod, 0, fwbwmethod, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
+    fwbw::FWBW(enhgraph, trimlevel, pivotmethod, 0, fwbwmethod, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 
 	cout << "Done\n";
 };

@@ -9,10 +9,10 @@
 
 class fwbw{
 	public:
-		static int FWBW(enhancedgraph *g, TNGraph* graph, int trimlevel, int pivotmethod, int startColor, int method, int low, int high);
+		static int FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int method, int low, int high);
     private:
-     	static int basicFWBW(enhancedgraph *g, TNGraph* graph, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high);
-	 	static int parFWBW(enhancedgraph *g, TNGraph* graph, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high);
-		static int recFWBW(enhancedgraph *g, TNGraph* graph, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high);
-		static int dynamicFWBW(enhancedgraph *g, TNGraph* graph, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high);
+     	static int basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high);
+	 	static int parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high);
+		static int recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high);
+		static int dynamicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high);
 };

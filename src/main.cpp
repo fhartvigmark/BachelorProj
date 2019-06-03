@@ -85,7 +85,6 @@ void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) 
 	file.open(fileName.GetCStr());
 
 	ColorMap *colors = enhgraph->colors;
-	PNGraph graph = enhgraph->graph;
 
 	//std::cout << "first " << enhgraph->colors->BegI() << "\n";
 
@@ -403,7 +402,7 @@ int main(int argc, char **argv)
 
 	
 	start = enhgraph->startTimer();
-	scc::FindSCCs(enhgraph, enhgraph->graph, Trimlevels, PivotMethod, FwBwMethod);
+	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
 	enhgraph->endTimer(start, eTimer::MAIN);
 
 	cout << "Graph " << Graph->GetNodes() << ", " << Graph->GetEdges() << "\n";

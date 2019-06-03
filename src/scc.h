@@ -8,5 +8,5 @@ using namespace std;
 class scc
 {
     public:
-      static int FindSCCs(enhancedgraph *enhgraph, const PNGraph& g, int trimlevel, int pivotmethod, int fwbwmethod);
+      static int FindSCCs(enhancedgraph *enhgraph, int trimlevel, int pivotmethod, int fwbwmethod);
 };

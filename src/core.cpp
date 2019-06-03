@@ -50,7 +50,7 @@ void enhancedgraph::calculateDegree() {
 
 	degree = new ColorMap(graph->GetNodes(), zero);
 
-	for (PNGraph::TObj::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
+	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
 	{
 		degree->AddDat(NI.GetId(), NI.GetInDeg() * NI.GetOutDeg());
 	}
@@ -257,7 +257,7 @@ enhancedgraph::enhancedgraph(TNGraph* g, bool timer, bool analyse, int randwalk_
 
 
 	//Add all colors and node ids to colormap and node vector
-	for (PNGraph::TObj::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
+	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
 	{
 		colors->AddDat(NI.GetId(), 0);
 	}
@@ -358,6 +358,7 @@ enhancedgraph::~enhancedgraph() {
 	//TODO: clean up degree array
 	delete colors;
     delete colorGen;
+	delete graph;
 	//graph.~TPt();
 
 	//Delete analysis elements
@@ -394,8 +395,9 @@ int Random::myRand(const int low, const int high) {
     return distribution(randGenerator);
 }
 
-int Random::randstep(enhancedgraph *g, PNGraph graph, int color, int node) {
+int Random::randstep(enhancedgraph *g, int color, int node) {
 	ColorMap *colors = g->colors;
+	TNGraph* graph = g->graph;
 
 	//Find number of edges of same color
 	int edges = 0;
@@ -570,11 +572,11 @@ int Random::randwalk(enhancedgraph *g, int color, int node, const int k, int r, 
 
 //Performs a simple random walk for k iterations starting from the given node
 //only looks at in/out edges of same color as start node
-int Random::randwalk(enhancedgraph *g, PNGraph graph, int color, int node, const int k) {
+int Random::randwalk(enhancedgraph *g, int color, int node, const int k) {
 	int currentNode = node;
 
 	for (int i = 0; i < k; i++) {
-		currentNode = randstep(g, graph, color, currentNode);
+		currentNode = randstep(g, color, currentNode);
 	}
 
 	return currentNode;

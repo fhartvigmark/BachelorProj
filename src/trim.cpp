@@ -1,7 +1,7 @@
 #include "iostream"
 #include "trim.h"
 
-std::tuple<int, int, int, int, int> trim::doTrim(int trimlevel, enhancedgraph *g, int color, int low, int high) {
+std::tuple<int, int, int, int, int> trim::doTrim(int trimlevel, const PNGraph& graph, enhancedgraph *g, int color, int low, int high) {
 	std::tuple<int, int, int> retVal;
 	TimePoint start = g->startTimer();
 	TimePoint start2;
@@ -12,29 +12,29 @@ std::tuple<int, int, int, int, int> trim::doTrim(int trimlevel, enhancedgraph *g
 	switch (trimlevel)
 	{
 		case 1:
-			retVal = trim::partrim1(g, color, false, low, high);
+			retVal = trim::partrim1(g, graph, color, false, low, high);
 			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			break;
 		case 2:
-			retVal = trim::partrim1(g, color, false, low, high);
+			retVal = trim::partrim1(g, graph, color, false, low, high);
 			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			retVal = trim::partrim2(g, color, false, std::get<0>(retVal), std::get<1>(retVal));
+			retVal = trim::partrim2(g, graph, color, false, std::get<0>(retVal), std::get<1>(retVal));
 			count2 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM2);
 			break;
 		case 3:
-			retVal = trim::partrim1(g, color, false, low, high);
+			retVal = trim::partrim1(g, graph, color, false, low, high);
 			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			retVal = trim::partrim2(g, color, false, std::get<0>(retVal), std::get<1>(retVal));
+			retVal = trim::partrim2(g, graph, color, false, std::get<0>(retVal), std::get<1>(retVal));
 			count2 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM2);
 			start2 = g->startTimer();
-			retVal = trim::partrim3(g, color, false, std::get<0>(retVal), std::get<1>(retVal));
+			retVal = trim::partrim3(g, graph, color, false, std::get<0>(retVal), std::get<1>(retVal));
 			count3 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM3);
 			break;
@@ -47,7 +47,7 @@ std::tuple<int, int, int, int, int> trim::doTrim(int trimlevel, enhancedgraph *g
 	return std::make_tuple(std::get<0>(retVal), std::get<1>(retVal), count1, count2, count3);
 }
 
-std::tuple<int, int, int, int, int> trim::doParTrim(int trimlevel, enhancedgraph *g, int color, int low, int high) {
+std::tuple<int, int, int, int, int> trim::doParTrim(int trimlevel, const PNGraph& graph, enhancedgraph *g, int color, int low, int high) {
 	std::tuple<int, int, int> retVal;
 	TimePoint start = g->startTimer();
 	TimePoint start2;
@@ -58,29 +58,29 @@ std::tuple<int, int, int, int, int> trim::doParTrim(int trimlevel, enhancedgraph
 	switch (trimlevel)
 	{
 		case 1:
-			retVal = trim::partrim1(g, color, true, low, high);
+			retVal = trim::partrim1(g, graph, color, true, low, high);
 			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			break;
 		case 2:
-			retVal = trim::partrim1(g, color, true, low, high);
+			retVal = trim::partrim1(g, graph, color, true, low, high);
 			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			retVal = trim::partrim2(g, color, true, std::get<0>(retVal), std::get<1>(retVal));
+			retVal = trim::partrim2(g, graph, color, true, std::get<0>(retVal), std::get<1>(retVal));
 			count2 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM2);
 			break;
 		case 3:
-			retVal = trim::partrim1(g, color, true, low, high);
+			retVal = trim::partrim1(g, graph, color, true, low, high);
 			count1 = std::get<2>(retVal);
 			g->endTimer(start, eTimer::TRIM1);
 			start2 = g->startTimer();
-			retVal = trim::partrim2(g, color, true, std::get<0>(retVal), std::get<1>(retVal));
+			retVal = trim::partrim2(g, graph, color, true, std::get<0>(retVal), std::get<1>(retVal));
 			count2 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM2);
 			start2 = g->startTimer();
-			retVal = trim::partrim3(g, color, true, std::get<0>(retVal), std::get<1>(retVal));
+			retVal = trim::partrim3(g, graph, color, true, std::get<0>(retVal), std::get<1>(retVal));
 			count3 = std::get<2>(retVal);
 			g->endTimer(start2, eTimer::TRIM3);
 			break;
@@ -261,17 +261,16 @@ int trim::trim1(enhancedgraph *g, int color) {
     return -1;
 }
 
-std::tuple<int, int, int> trim::partrim1(enhancedgraph *g, int color, bool parallel, int low, int high) {
+std::tuple<int, int, int> trim::partrim1(enhancedgraph *g, const PNGraph& graph, int color, bool parallel, int low, int high) {
 	TSnapQueue<int> Queue;
 	ColorMap *colors = g->colors;
-	PNGraph graph = g->graph;
 	int count = 0;
 	int count2 = 0;
 
 	int min_i = high;
 	int max_i = low;
 
-	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel) num_threads(std::max(4, omp_get_max_threads()))
+	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel) num_threads(std::min(4, omp_get_max_threads()))
 	for (int i = low; i < high+1; i++)
 	{
 		int nodeColor;
@@ -348,7 +347,7 @@ std::tuple<int, int, int> trim::partrim1(enhancedgraph *g, int color, bool paral
 		int qsize = Queue.Len();
 		int count2 = 0;
 
-#pragma omp parallel for schedule(static) reduction(+: count2) if (parallel) num_threads(std::max(4, omp_get_max_threads()))
+		#pragma omp parallel for schedule(static) reduction(+: count2) if (parallel) num_threads(std::min(4, omp_get_max_threads()))
 		for (int q = 0; q < qsize; q++)
 		{
 			int oldnode;
@@ -588,15 +587,14 @@ int trim::trim2(enhancedgraph *g, int color) {
 	return -1;
 }
 
-std::tuple<int, int, int> trim::partrim2(enhancedgraph *g, int color, bool parallel, int low, int high) {
+std::tuple<int, int, int> trim::partrim2(enhancedgraph *g, const PNGraph& graph, int color, bool parallel, int low, int high) {
 	ColorMap *colors = g->colors;
-	PNGraph graph = g->graph;
 	int count = 0;
 
 	int min_i = high;
 	int max_i = low;
 
-#pragma omp parallel for schedule(static) reduction(+: count) reduction(min: min_i) reduction(max: max_i) if (parallel) num_threads(std::max(4, omp_get_max_threads()))
+	#pragma omp parallel for schedule(static) reduction(+: count) reduction(min: min_i) reduction(max: max_i) if (parallel) num_threads(std::min(4, omp_get_max_threads()))
 	for (int i = low; i < high+1; i++)
 	{
 		if (colors->GetDat(i) == color)
@@ -954,9 +952,8 @@ int trim::trim3(enhancedgraph *g, int color) {
 	return -1;
 }
 
-std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool parallel, int low, int high) {
+std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, const PNGraph& graph, int color, bool parallel, int low, int high) {
 	ColorMap *colors = g->colors;
-	PNGraph graph = g->graph;
 	int count = 0;
 
 	int min_i = high;
@@ -966,7 +963,7 @@ std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool paral
 	//std::cout << low << "-" << high << "\n";
 	//std::cout << "\n\n";
 	
-	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel) num_threads(std::max(4, omp_get_max_threads()))
+	#pragma omp parallel for schedule(static) reduction(+:count) reduction(min:min_i) reduction(max:max_i) if(parallel) num_threads(std::min(4, omp_get_max_threads()))
 	for (int i = low; i < high+1; i++)
 	{
 		//if (i > colors->EndI()-100) {

@@ -3,10 +3,10 @@
 #include <deque>
 
 //Maybe include mark
-std::tuple<int, int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
+std::tuple<int, int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, const PNGraph& pgraph, int color, int startNode) {
     TSnapQueue<int> Queue;
     ColorMap *colors = g->colors;
-    PNGraph pgraph = g->graph;
+
 	int count = 0;
 	int min_fw = pgraph->GetNodes();
 	int min_bw = pgraph->GetNodes();

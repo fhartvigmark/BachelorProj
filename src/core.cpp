@@ -243,7 +243,7 @@ std::list<int>* enhancedgraph::getReports(eDebug data) {
 }
 
 
-enhancedgraph::enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations), TRIM_CUTOFF(cutoff), TRIM_STEPS(steps) {
+enhancedgraph::enhancedgraph(const PNGraph& g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations), TRIM_CUTOFF(cutoff), TRIM_STEPS(steps) {
 	graph = g;
 	colorGen = new ColorGenerator();
 	//colors = new TIntH();
@@ -358,6 +358,7 @@ enhancedgraph::~enhancedgraph() {
 	//TODO: clean up degree array
 	delete colors;
     delete colorGen;
+	//graph.~TPt();
 
 	//Delete analysis elements
 	if (true) {
@@ -393,9 +394,8 @@ int Random::myRand(const int low, const int high) {
     return distribution(randGenerator);
 }
 
-int Random::randstep(enhancedgraph *g, int color, int node) {
+int Random::randstep(enhancedgraph *g, PNGraph graph, int color, int node) {
 	ColorMap *colors = g->colors;
-    PNGraph graph = g->graph;
 
 	//Find number of edges of same color
 	int edges = 0;
@@ -570,11 +570,11 @@ int Random::randwalk(enhancedgraph *g, int color, int node, const int k, int r, 
 
 //Performs a simple random walk for k iterations starting from the given node
 //only looks at in/out edges of same color as start node
-int Random::randwalk(enhancedgraph *g, int color, int node, const int k) {
+int Random::randwalk(enhancedgraph *g, PNGraph graph, int color, int node, const int k) {
 	int currentNode = node;
 
 	for (int i = 0; i < k; i++) {
-		currentNode = randstep(g, color, currentNode);
+		currentNode = randstep(g, graph, color, currentNode);
 	}
 
 	return currentNode;

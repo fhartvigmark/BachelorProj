@@ -1,26 +1,26 @@
 #include "pivot.h"
 #include "iostream"
 
-std::tuple<int, int, int> pivot::findPivot(enhancedgraph *g, int color, int method, int low, int high) {
+std::tuple<int, int, int> pivot::findPivot(enhancedgraph *g, const PNGraph& graph, int color, int method, int low, int high) {
 	std::tuple<int, int, int> retVal;
 	TimePoint start = g->startTimer();
 
 	switch (method)
 	{
 		case 0:
-			retVal = pivot::getParPivot(g, color, false, low, high);
+			retVal = pivot::getParPivot(g, graph, color, false, low, high);
 			break;
 		case 1:
-			retVal = pivot::getParPivotMaxDegree(g, color, false, low, high);
+			retVal = pivot::getParPivotMaxDegree(g, graph, color, false, low, high);
 			break;
 		case 2:
-			retVal = pivot::getParPivotMaxDegreeColor(g, color, false, low, high);
+			retVal = pivot::getParPivotMaxDegreeColor(g, graph, color, false, low, high);
 			break;
 		case 3:
-			retVal = pivot::getParPivotRand(g, color, false, low, high);
+			retVal = pivot::getParPivotRand(g, graph, color, false, low, high);
 			break;
 		case 4:
-			retVal = pivot::getParPivotMaxDegreeCalc(g, color, false, low, high);
+			retVal = pivot::getParPivotMaxDegreeCalc(g, graph, color, false, low, high);
 			break;
 	}
 
@@ -29,26 +29,26 @@ std::tuple<int, int, int> pivot::findPivot(enhancedgraph *g, int color, int meth
 	return retVal;
 }
 
-std::tuple<int, int, int> pivot::findParPivot(enhancedgraph *g, int color, int method, int low, int high) {
+std::tuple<int, int, int> pivot::findParPivot(enhancedgraph *g, const PNGraph& graph, int color, int method, int low, int high) {
 	std::tuple<int, int, int> retVal;
 	TimePoint start = g->startTimer();
 
 	switch (method)
 	{
 		case 0:
-			retVal = pivot::getParPivot(g, color, true, low, high);
+			retVal = pivot::getParPivot(g, graph, color, true, low, high);
 			break;
 		case 1:
-			retVal = pivot::getParPivotMaxDegree(g, color, true, low, high);
+			retVal = pivot::getParPivotMaxDegree(g, graph, color, true, low, high);
 			break;
 		case 2:
-			retVal = pivot::getParPivotMaxDegreeColor(g, color, true, low, high);
+			retVal = pivot::getParPivotMaxDegreeColor(g, graph, color, true, low, high);
 			break;
 		case 3:
-			retVal = pivot::getParPivotRand(g, color, true, low, high);
+			retVal = pivot::getParPivotRand(g, graph, color, true, low, high);
 			break;
 		case 4:
-			retVal = pivot::getParPivotMaxDegreeCalc(g, color, true, low, high);
+			retVal = pivot::getParPivotMaxDegreeCalc(g, graph, color, true, low, high);
 			break;
 	}
 
@@ -159,7 +159,7 @@ std::tuple<int, int, int> pivot::getPivotRand(enhancedgraph *g, int color, int l
 		return node;
 	}
 
-	int bestNode = Random::randwalk(g, color, std::get<0>(node), g->RAND_WALK_ITERATIONS);
+	int bestNode = Random::randwalk(g, g->graph, color, std::get<0>(node), g->RAND_WALK_ITERATIONS);
     return std::make_tuple(bestNode, std::get<1>(node) , std::get<2>(node));
 };
 
@@ -170,7 +170,7 @@ std::tuple<int, int, int> pivot::getPivotRand(enhancedgraph *g, int color, int l
 //--------------------------------
 
 //Parallel version of getPivot()
-std::tuple<int, int, int> pivot::getParPivot(enhancedgraph *g, int color, bool parallel, int low, int high)
+std::tuple<int, int, int> pivot::getParPivot(enhancedgraph *g, const PNGraph& graph, int color, bool parallel, int low, int high)
 {
     ColorMap *colorMap = g->colors;
 	int retVal = -1;
@@ -192,10 +192,9 @@ std::tuple<int, int, int> pivot::getParPivot(enhancedgraph *g, int color, bool p
 };
 
 //Parallel version of getPivotMaxDegree()
-std::tuple<int, int, int> pivot::getParPivotMaxDegree(enhancedgraph *g, int color, bool parallel, int low, int high)
+std::tuple<int, int, int> pivot::getParPivotMaxDegree(enhancedgraph *g, const PNGraph& graph, int color, bool parallel, int low, int high)
 {
 	ColorMap *colors = g->colors;
-    PNGraph graph = g->graph;
 	int min_i = high;
 	int max_i = low;
 
@@ -228,11 +227,10 @@ std::tuple<int, int, int> pivot::getParPivotMaxDegree(enhancedgraph *g, int colo
 };
 
 //Parallel version of getPivotMaxDegree()
-std::tuple<int, int, int> pivot::getParPivotMaxDegreeCalc(enhancedgraph *g, int color, bool parallel, int low, int high)
+std::tuple<int, int, int> pivot::getParPivotMaxDegreeCalc(enhancedgraph *g, const PNGraph& graph, int color, bool parallel, int low, int high)
 {
 	ColorMap *colors = g->colors;
 	ColorMap *degree = g->degree;
-    PNGraph graph = g->graph;
 	int min_i = high;
 	int max_i = low;
 
@@ -262,10 +260,9 @@ std::tuple<int, int, int> pivot::getParPivotMaxDegreeCalc(enhancedgraph *g, int 
 };
 
 //Parallel version of getPivotMaxDegreeColor()
-std::tuple<int, int, int> pivot::getParPivotMaxDegreeColor(enhancedgraph *g, int color, bool parallel, int low, int high)
+std::tuple<int, int, int> pivot::getParPivotMaxDegreeColor(enhancedgraph *g, const PNGraph& graph, int color, bool parallel, int low, int high)
 {
 	ColorMap *colors = g->colors;
-    PNGraph graph = g->graph;
 	int min_i = high;
 	int max_i = low;
 
@@ -324,9 +321,9 @@ std::tuple<int, int, int> pivot::getParPivotMaxDegreeColor(enhancedgraph *g, int
 };
 
 //Performs a simple random walk on the output of getParPivot()
-std::tuple<int, int, int> pivot::getParPivotRand(enhancedgraph *g, int color, bool parallel, int low, int high)
+std::tuple<int, int, int> pivot::getParPivotRand(enhancedgraph *g, const PNGraph& graph, int color, bool parallel, int low, int high)
 {
-	std::tuple<int, int, int> node = getParPivot(g, color, parallel, low, high);
+	std::tuple<int, int, int> node = getParPivot(g, graph, color, parallel, low, high);
 	//std::cout << "Rand found " << std::get<0>(node);
 
 	if (std::get<0>(node) == -1) {
@@ -334,7 +331,7 @@ std::tuple<int, int, int> pivot::getParPivotRand(enhancedgraph *g, int color, bo
 		return node;
 	}
 
-	int bestNode = Random::randwalk(g, color, std::get<0>(node), g->RAND_WALK_ITERATIONS);
+	int bestNode = Random::randwalk(g, graph, color, std::get<0>(node), g->RAND_WALK_ITERATIONS);
 	//std::cout << ", " << bestNode << "\n";
 
     return std::make_tuple(bestNode, std::get<1>(node) , std::get<2>(node));

@@ -386,9 +386,7 @@ int main(int argc, char **argv)
 	if (Timer) {
 		start = Time::now();
 	}
-    PNGraph Graph = TSnap::LoadEdgeList<PNGraph>(InEdges);
-	
-
+	PNGraph Graph = TSnap::LoadEdgeList<PNGraph>(InEdges);
 	enhancedgraph *enhgraph;
     enhgraph = new enhancedgraph(Graph, Timer, Analyse, RandIterations, TrimCutoff, TrimSteps);
 	
@@ -403,9 +401,10 @@ int main(int argc, char **argv)
 
 	
 	start = enhgraph->startTimer();
-	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
+	scc::FindSCCs(enhgraph, enhgraph->graph, Trimlevels, PivotMethod, FwBwMethod);
 	enhgraph->endTimer(start, eTimer::MAIN);
 
+	cout << "Graph " << Graph->GetNodes() << ", " << Graph->GetEdges() << "\n";
 	/*
 	try {
 		//pivot::findPivot(enhgraph, -1, PivotMethod);

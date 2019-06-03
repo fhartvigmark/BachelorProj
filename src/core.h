@@ -73,7 +73,7 @@ class enhancedgraph
 		std::list<int>* getReports(eDebug data);
 
 
-		enhancedgraph(PNGraph g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps);
+		enhancedgraph(const PNGraph& g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps);
 		enhancedgraph();
 
 		~enhancedgraph();
@@ -128,10 +128,10 @@ class enhancedgraph
 class Random
 {
 	public:
-		static int randwalk(enhancedgraph *g, int color, int node, const int k);
+		static int randwalk(enhancedgraph *g, PNGraph graph, int color, int node, const int k);
 		static int randwalk(enhancedgraph *g, int color, int node, const int k, int r, bool direction);
 	private:
-		static int randstep(enhancedgraph *g, int color, int node);
+		static int randstep(enhancedgraph *g, PNGraph graph, int color, int node);
 		static int randstepOut(enhancedgraph *g, int color, const int node);
 		static int randstepIn(enhancedgraph *g, int color, const int node);
 		static int myRand(const int low, const int high);	

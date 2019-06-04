@@ -5,6 +5,10 @@ std::tuple<int, int, int> pivot::findPivot(enhancedgraph *g, int color, int meth
 	std::tuple<int, int, int> retVal;
 	TimePoint start = g->startTimer();
 
+	if (high < low) {
+		return std::make_tuple(-1, low, high);
+	}
+
 	switch (method)
 	{
 		case 0:
@@ -32,6 +36,10 @@ std::tuple<int, int, int> pivot::findPivot(enhancedgraph *g, int color, int meth
 std::tuple<int, int, int> pivot::findParPivot(enhancedgraph *g, int color, int method, int low, int high) {
 	std::tuple<int, int, int> retVal;
 	TimePoint start = g->startTimer();
+
+	if (high < low) {
+		return std::make_tuple(-1, low, high);
+	}
 
 	switch (method)
 	{
@@ -175,7 +183,9 @@ std::tuple<int, int, int> pivot::getParPivot(enhancedgraph *g, int color, bool p
     ColorMap *colorMap = g->colors;
 	int retVal = -1;
 
-	#pragma omp parallel for schedule(static) if(parallel)
+	int max_threads = std::min((high-low)/10, omp_get_max_threads());
+
+	#pragma omp parallel for schedule(guided) if(parallel) num_threads(max_threads)
 	for (int i = low; i < high+1; i++) {
 		if (colorMap->GetDat(i) == color) {
 
@@ -199,10 +209,12 @@ std::tuple<int, int, int> pivot::getParPivotMaxDegree(enhancedgraph *g, int colo
 	int min_i = high;
 	int max_i = low;
 
+	int max_threads = std::min((high-low)/10, omp_get_max_threads());
+
 	struct Compare max; 
 	max.val = -1; 
 	max.node = -1;
-	#pragma omp parallel for reduction(maximum:max) reduction(min:min_i) reduction(max:max_i) schedule(static) if(parallel)
+	#pragma omp parallel for reduction(maximum:max) reduction(min:min_i) reduction(max:max_i) schedule(guided) if(parallel) num_threads(max_threads)
 	for (int i = low; i < high+1; i++) {
 
 		const TNGraph::TNodeI NI = graph->GetNI(i);
@@ -235,10 +247,12 @@ std::tuple<int, int, int> pivot::getParPivotMaxDegreeCalc(enhancedgraph *g, int 
 	int min_i = high;
 	int max_i = low;
 
+	int max_threads = std::min((high-low)/10, omp_get_max_threads());
+
 	struct Compare max; 
 	max.val = -1; 
 	max.node = -1;
-	#pragma omp parallel for reduction(maximum:max) reduction(min:min_i) reduction(max:max_i) schedule(static) if(parallel)
+	#pragma omp parallel for reduction(maximum:max) reduction(min:min_i) reduction(max:max_i) schedule(guided) if(parallel) num_threads(max_threads)
 	for (int i = low; i < high+1; i++) {
 		if(colors->GetDat(i)==color){
             int newDeg = degree->GetDat(i);
@@ -268,10 +282,12 @@ std::tuple<int, int, int> pivot::getParPivotMaxDegreeColor(enhancedgraph *g, int
 	int min_i = high;
 	int max_i = low;
 
+	int max_threads = std::min((high-low)/10, omp_get_max_threads());
+
 	struct Compare max; 
 	max.val = -1; 
 	max.node = -1;
-	#pragma omp parallel for reduction(maximum:max) reduction(min:min_i) reduction(max:max_i) schedule(static) if(parallel)
+	#pragma omp parallel for reduction(maximum:max) reduction(min:min_i) reduction(max:max_i) schedule(guided) if(parallel) num_threads(max_threads)
 	for (int i = low; i < high+1; i++) {
 		const TNGraph::TNodeI NI = graph->GetNI(i);
 

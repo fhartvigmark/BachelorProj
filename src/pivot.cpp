@@ -183,17 +183,13 @@ std::tuple<int, int, int> pivot::getParPivot(enhancedgraph *g, int color, bool p
     ColorMap *colorMap = g->colors;
 	int retVal = -1;
 
-	int max_threads = std::min((high-low)/10, omp_get_max_threads());
+	int max_threads = std::min((high-low)/(50*omp_get_max_threads()), omp_get_max_threads());
+	//std::cout << (high-low) << ", " << max_threads << "\n";
 
-	#pragma omp parallel for schedule(guided) if(parallel) num_threads(max_threads)
+	#pragma omp parallel for schedule(static) num_threads(max_threads) reduction(max:retVal) firstprivate(color) if(parallel && max_threads > 0)
 	for (int i = low; i < high+1; i++) {
 		if (colorMap->GetDat(i) == color) {
-
-			#pragma omp cancellation point for	
-			#pragma omp critical
-			{
-				retVal = i;
-			}
+			retVal = i;
 			#pragma omp cancel for
 		}
 	}

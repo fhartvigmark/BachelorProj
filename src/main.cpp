@@ -301,9 +301,26 @@ void bootstrap(char **argv) {
 	}
 }
 
+void bootstrap2(char **argv) {
+	//https://stackoverflow.com/questions/46482468/enable-cancellation-of-openmp-threads-from-inside-program
+	char *hasCancel = getenv("OMP_DISPLAY_ENV");
+	if (hasCancel == nullptr) {
+		printf("Bootstrapping...");
+		setenv("OMP_DISPLAY_ENV", "true", 1);
+		// Restart the program here
+		int output = execvp(argv[0], argv);
+		// Execution should not continue past here
+		printf("Bootstrapping failed with code %d\n",output);
+		exit(1);
+	} else {
+		puts("Bootstrapping complete");
+	}
+}
+
 int main(int argc, char **argv)
 {
-	bootstrap(argv);
+	//bootstrap(argv);
+	//bootstrap2(argv);
 
     // Input Parameters
     Env = TEnv(argc, argv, TNotify::StdNotify);

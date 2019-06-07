@@ -5,4 +5,4 @@
 #SBATCH -c64
 #SBATCH --exclusive
 #SBATCH -w weleveld
-srun -N1 -n1 --exclusive test_FWBW_performance.sh Patents 200
+srun -N1 -n1 --exclusive test_FWBW_performance_single.sh Patents 200

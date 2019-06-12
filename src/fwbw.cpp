@@ -96,17 +96,17 @@ int fwbw::FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor,
 int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high) {
 	depth++;
 	
-    //Find pivot node
-    std::tuple<int, int, int> startNode = pivot::findPivot(g, startColor, pivotmethod, low, high);
+	std::tuple<int, int, int, int, int> trimOut = std::make_tuple(low, high, -1, -1, -1);
+	if (depth <= g->TRIM_CUTOFF || depth % g->TRIM_STEPS == 0) {
+		trimOut = trim::doTrim(trimlevel, g, startColor, low, high);
+	}
+
+	//Find pivot node
+    std::tuple<int, int, int> startNode = pivot::findPivot(g, startColor, pivotmethod, std::get<0>(trimOut), std::get<1>(trimOut));
     if (std::get<0>(startNode) == -1) {
 		g->reportFWBW(startColor, -1, 0, 0, 0, 0, depth, 0, 0);
         return -1;
     }
-
-	std::tuple<int, int, int, int, int> trimOut = std::make_tuple(std::get<1>(startNode), std::get<2>(startNode), -1, -1, -1);
-	if (depth <= g->TRIM_CUTOFF || depth % g->TRIM_STEPS == 0) {
-		trimOut = trim::doTrim(trimlevel, g, startColor, std::get<1>(startNode), std::get<2>(startNode));
-	}
 
 	//First: fwColor, Second: bwColor
 	TimePoint start = g->startTimer();
@@ -119,7 +119,7 @@ int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startC
 	g->reportFWBW(startColor, std::get<0>(startNode), std::get<2>(trimOut), std::get<3>(trimOut), std::get<4>(trimOut), 
 		std::get<6>(newColors), depth, std::get<0>(newColors), std::get<1>(newColors));
 
-    basicFWBW(g, trimlevel, pivotmethod, startColor, depth, std::get<0>(trimOut), std::get<1>(trimOut));
+    basicFWBW(g, trimlevel, pivotmethod, startColor, depth, std::get<1>(startNode), std::get<2>(startNode));
     basicFWBW(g, trimlevel, pivotmethod, std::get<0>(newColors), depth, std::get<2>(newColors), std::get<3>(newColors));
     basicFWBW(g, trimlevel, pivotmethod, std::get<1>(newColors), depth, std::get<4>(newColors), std::get<5>(newColors));
     return 0;
@@ -129,8 +129,13 @@ int fwbw::basicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startC
 int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high) {
 	depth++;
 
+	std::tuple<int, int, int, int, int> trimOut = std::make_tuple(low, high, -1, -1, -1);
+	if (depth <= g->TRIM_CUTOFF || depth % g->TRIM_STEPS == 0) {
+		trimOut = trim::doParTrim(trimlevel, g, startColor, low, high);
+	}
+
 	//Find pivot node
-	std::tuple<int, int, int> startNode = pivot::findParPivot(g, startColor, pivotmethod, low, high);
+	std::tuple<int, int, int> startNode = pivot::findParPivot(g, startColor, pivotmethod, std::get<0>(trimOut), std::get<1>(trimOut));
 	if (std::get<0>(startNode) == -1)
 	{
 		g->reportFWBW(startColor, -1, 0, 0, 0, 0, depth, 0, 0);		
@@ -139,10 +144,7 @@ int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 
 	//std::cout << std::get<1>(startNode) << ", " << std::get<2>(startNode) << "\n";
 
-	std::tuple<int, int, int, int, int> trimOut = std::make_tuple(std::get<1>(startNode), std::get<2>(startNode), -1, -1, -1);
-	if (depth <= g->TRIM_CUTOFF || depth % g->TRIM_STEPS == 0) {
-		trimOut = trim::doParTrim(trimlevel, g, startColor, std::get<1>(startNode), std::get<2>(startNode));
-	}
+
 
 	//First: fwColor, Second: bwColor
 	TimePoint start = g->startTimer();
@@ -155,7 +157,7 @@ int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 	g->reportFWBW(startColor, std::get<0>(startNode), std::get<2>(trimOut), std::get<3>(trimOut), std::get<4>(trimOut), 
 		std::get<6>(newColors), depth, std::get<0>(newColors), std::get<1>(newColors));
 
-	parFWBW(g, trimlevel, pivotmethod, startColor, depth, std::get<0>(trimOut), std::get<1>(trimOut));
+	parFWBW(g, trimlevel, pivotmethod, startColor, depth, std::get<1>(startNode), std::get<2>(startNode));
 	parFWBW(g, trimlevel, pivotmethod, std::get<0>(newColors), depth, std::get<2>(newColors), std::get<3>(newColors));
 	parFWBW(g, trimlevel, pivotmethod, std::get<1>(newColors), depth, std::get<4>(newColors), std::get<5>(newColors));
 	return 0;
@@ -165,17 +167,17 @@ int fwbw::parFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high) {
 	depth++;
 
+	std::tuple<int, int, int, int, int> trimOut = std::make_tuple(low, high, -1, -1, -1);
+	if (depth <= g->TRIM_CUTOFF || depth % g->TRIM_STEPS == 0) {
+		trimOut = trim::doTrim(trimlevel, g, startColor, low, high);
+	}
+
 	//Find pivot node
-	std::tuple<int, int, int> startNode = pivot::findPivot(g, startColor, pivotmethod, low, high);
+	std::tuple<int, int, int> startNode = pivot::findPivot(g, startColor, pivotmethod, std::get<0>(trimOut), std::get<1>(trimOut));
 	if (std::get<0>(startNode) == -1)
 	{
 		g->reportFWBW(startColor, -1, 0, 0, 0, 0, depth, 0, 0);
 		return -1;
-	}
-
-	std::tuple<int, int, int, int, int> trimOut = std::make_tuple(std::get<1>(startNode), std::get<2>(startNode), -1, -1, -1);
-	if (depth <= g->TRIM_CUTOFF || depth % g->TRIM_STEPS == 0) {
-		trimOut = trim::doTrim(trimlevel, g, startColor, std::get<1>(startNode), std::get<2>(startNode));
 	}
 	
 	//First: fwColor, Second: bwColor
@@ -192,7 +194,7 @@ int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 		{
 			#pragma omp task shared(g)
 			{
-				recFWBW(g, trimlevel, pivotmethod, startColor, depth, std::get<0>(trimOut), std::get<1>(trimOut));
+				recFWBW(g, trimlevel, pivotmethod, startColor, depth, std::get<1>(startNode), std::get<2>(startNode));
 			}
 
 			#pragma omp task shared(g)
@@ -212,20 +214,21 @@ int fwbw::recFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startCol
 	return 0;
 };
 
+//Mix of recursive fw-bw and parallel fw-bw
 int fwbw::dynamicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int depth, int low, int high) {
 	depth++;
 
+	std::tuple<int, int, int, int, int> trimOut = std::make_tuple(low, high, -1, -1, -1);
+	if (depth <= g->TRIM_CUTOFF || depth % g->TRIM_STEPS == 0) {
+		trimOut = trim::doParTrim(trimlevel, g, startColor, low, high);
+	}
+
 	//Find pivot node
-	std::tuple<int, int, int> startNode = pivot::findParPivot(g, startColor, pivotmethod, low, high);
+	std::tuple<int, int, int> startNode = pivot::findParPivot(g, startColor, pivotmethod, std::get<0>(trimOut), std::get<1>(trimOut));
 	if (std::get<0>(startNode) == -1)
 	{
 		g->reportFWBW(startColor, -1, 0, 0, 0, 0, depth, 0, 0);
 		return -1;
-	}
-
-	std::tuple<int, int, int, int, int> trimOut = std::make_tuple(std::get<1>(startNode), std::get<2>(startNode), -1, -1, -1);
-	if (depth <= g->TRIM_CUTOFF || depth % g->TRIM_STEPS == 0) {
-		trimOut = trim::doParTrim(trimlevel, g, startColor, std::get<1>(startNode), std::get<2>(startNode));
 	}
 	
 	//First: fwColor, Second: bwColor
@@ -242,7 +245,7 @@ int fwbw::dynamicFWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int star
 		{
 			#pragma omp task shared(g)
 			{
-				dynamicFWBW(g, trimlevel, pivotmethod, startColor, depth, std::get<0>(trimOut), std::get<1>(trimOut));
+				dynamicFWBW(g, trimlevel, pivotmethod, startColor, depth, std::get<1>(startNode), std::get<2>(startNode));
 			}
 
 			#pragma omp task shared(g)

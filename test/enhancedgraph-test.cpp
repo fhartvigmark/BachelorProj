@@ -3,16 +3,17 @@
 
 struct SimpleSetupTest : testing::Test {
     enhancedgraph* enhgraph = new enhancedgraph();
+	PNGraph graph;
 
     SimpleSetupTest() {
-        PNGraph graph = TNGraph::New();
+        graph = TNGraph::New();
         graph->AddNode(1);
         graph->AddNode(2);
         graph->AddNode(3);
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-        enhgraph->graph = graph;
+        enhgraph->graph = &(*graph);
         ColorMap *colors = new ColorMap(0, false);
         enhgraph->colors = colors;
         enhgraph->colorGen = new ColorGenerator();
@@ -25,16 +26,17 @@ struct SimpleSetupTest : testing::Test {
 
 struct MapSetupTest : testing::Test {
 	enhancedgraph* enhgraph;
+	PNGraph graph;
 
 	MapSetupTest() {
-		PNGraph graph = new TNGraph();
+		graph = new TNGraph();
         graph->AddNode(1);
         graph->AddNode(2);
         graph->AddNode(3);
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-        enhgraph = new enhancedgraph(graph, true, false, 10, 0, 1);
+        enhgraph = new enhancedgraph(&(*graph), true, false, 10, 0, 1);
 	}
 
 	virtual ~MapSetupTest() {
@@ -61,7 +63,7 @@ TEST_F(SimpleSetupTest, NodeVectorStartsEmpty) {
 }
 
 TEST_F(SimpleSetupTest, GraphTest) {
-	PNGraph graph = enhgraph->graph;
+	TNGraph* graph = enhgraph->graph;
 
 	EXPECT_EQ(3, graph->GetNodes());
 }

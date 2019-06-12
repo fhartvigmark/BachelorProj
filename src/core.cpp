@@ -358,7 +358,7 @@ enhancedgraph::~enhancedgraph() {
 	//TODO: clean up degree array
 	delete colors;
     delete colorGen;
-	delete graph;
+	//delete graph;
 	//graph.~TPt();
 
 	//Delete analysis elements

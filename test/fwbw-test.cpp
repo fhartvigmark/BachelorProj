@@ -3,10 +3,11 @@
 
 struct BasicFWBWTest : testing::Test {
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	BasicFWBWTest()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
@@ -17,7 +18,7 @@ struct BasicFWBWTest : testing::Test {
 		graph->AddEdge(3, 4);
 		graph->AddEdge(4, 3);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
 	virtual ~BasicFWBWTest()
@@ -29,10 +30,11 @@ struct BasicFWBWTest : testing::Test {
 //Graph from figure 1
 struct Graph1Test : testing::Test {
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	Graph1Test()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
@@ -50,7 +52,7 @@ struct Graph1Test : testing::Test {
 		graph->AddEdge(5, 2);
 		graph->AddEdge(7, 5);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
 	virtual ~Graph1Test()

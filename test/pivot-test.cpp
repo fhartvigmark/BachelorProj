@@ -20,9 +20,10 @@ struct pivot_state {
 struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state> {
 
     enhancedgraph* enhgraph;
+	PNGraph graph;
 
     SimpleGraphTest() {
-        PNGraph graph = TNGraph::New();
+        graph = TNGraph::New();
         graph->AddNode(1);
         graph->AddNode(2);
         graph->AddNode(3);
@@ -39,7 +40,7 @@ struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state>
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
     virtual ~SimpleGraphTest() {
@@ -50,16 +51,17 @@ struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state>
 struct ColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> {
 
     enhancedgraph* enhgraph;
+	PNGraph graph;
 
     ColorGraphTest() {
-        PNGraph graph = TNGraph::New();
+        graph = TNGraph::New();
         graph->AddNode(1);
         graph->AddNode(2);
         graph->AddNode(3);
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 
 		enhgraph->colors->AddDat(1, 2);
 		enhgraph->colors->AddDat(3, 40);
@@ -73,10 +75,11 @@ struct ColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> 
 struct AdvancedColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> {
 
 	enhancedgraph* enhgraph;
+	PNGraph graph;
 
 	AdvancedColorGraphTest()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
@@ -90,7 +93,7 @@ struct AdvancedColorGraphTest : testing::Test, testing::WithParamInterface<pivot
 		graph->AddEdge(5, 3);
 		graph->AddEdge(6, 3);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 
 		enhgraph->colors->AddDat(1, 1);
 		enhgraph->colors->AddDat(2, 1);

@@ -27,16 +27,17 @@ struct SimpleReachabilityTest : testing::Test,
 {
 
 	enhancedgraph* enhgraph;
+	PNGraph graph;
 
     SimpleReachabilityTest() {
-        PNGraph graph = TNGraph::New();
+        graph = TNGraph::New();
         graph->AddNode(1);
         graph->AddNode(2);
         graph->AddNode(3);
         graph->AddEdge(1, 2);
         graph->AddEdge(2, 3);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
     virtual ~SimpleReachabilityTest() {
@@ -46,19 +47,19 @@ struct SimpleReachabilityTest : testing::Test,
 
 struct SimpleColorTest : testing::Test, testing::WithParamInterface<graph_state>
 {
-
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	SimpleColorTest()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
 		graph->AddEdge(1, 2);
 		graph->AddEdge(2, 3);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 
 		enhgraph->colors->AddDat(3, 42);
 	}
@@ -71,18 +72,18 @@ struct SimpleColorTest : testing::Test, testing::WithParamInterface<graph_state>
 
 struct SmallCycleTest : testing::Test, testing::WithParamInterface<graph_state>
 {
-
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	SmallCycleTest()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddEdge(1, 2);
 		graph->AddEdge(2, 1);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 
 	}
 
@@ -94,12 +95,12 @@ struct SmallCycleTest : testing::Test, testing::WithParamInterface<graph_state>
 
 struct AdvancedCycleTest : testing::Test, testing::WithParamInterface<graph_state>
 {
-
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	AdvancedCycleTest()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
@@ -111,7 +112,7 @@ struct AdvancedCycleTest : testing::Test, testing::WithParamInterface<graph_stat
 		graph->AddEdge(4, 5);
 		graph->AddEdge(5, 2);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
 	virtual ~AdvancedCycleTest()

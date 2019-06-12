@@ -4,9 +4,10 @@
 struct SimpleGraphTest : testing::Test {
 
     enhancedgraph* enhgraph;
+	PNGraph graph;
 
     SimpleGraphTest() {
-        PNGraph graph = TNGraph::New();
+        graph = TNGraph::New();
         graph->AddNode(1);
         graph->AddNode(2);
         graph->AddNode(3);
@@ -25,7 +26,7 @@ struct SimpleGraphTest : testing::Test {
 		graph->AddEdge(1, 7);
 		graph->AddEdge(7, 1);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
     virtual ~SimpleGraphTest() {
@@ -36,9 +37,10 @@ struct SimpleGraphTest : testing::Test {
 struct SimpleChainTest :testing::Test {
 
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	SimpleChainTest() {
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
@@ -51,7 +53,7 @@ struct SimpleChainTest :testing::Test {
 		graph->AddEdge(6, 5);
 		graph->AddEdge(5, 4);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
 	virtual ~SimpleChainTest() {
@@ -63,9 +65,10 @@ struct SimpleChainTest :testing::Test {
 struct ColorGraphTest : testing::Test {
 
     enhancedgraph* enhgraph;
+	PNGraph graph;
 
     ColorGraphTest() {
-        PNGraph graph = TNGraph::New();
+        graph = TNGraph::New();
         graph->AddNode(1);
         graph->AddNode(2);
         graph->AddNode(3);
@@ -84,7 +87,7 @@ struct ColorGraphTest : testing::Test {
 		graph->AddEdge(1, 7);
 		graph->AddEdge(7, 1);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 
 		enhgraph->colors->AddDat(4, 1);
 		enhgraph->colors->AddDat(5, 2);
@@ -99,10 +102,11 @@ struct ColorGraphTest : testing::Test {
 
 struct SimpleTrim2GraphTest : testing::Test {
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	SimpleTrim2GraphTest()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
@@ -110,7 +114,7 @@ struct SimpleTrim2GraphTest : testing::Test {
 		graph->AddEdge(2, 1);
 		graph->AddEdge(3, 1);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
 	virtual ~SimpleTrim2GraphTest()
@@ -122,10 +126,11 @@ struct SimpleTrim2GraphTest : testing::Test {
 struct AdvancedTrim2GraphTest : testing::Test
 {
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	AdvancedTrim2GraphTest()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
@@ -137,7 +142,7 @@ struct AdvancedTrim2GraphTest : testing::Test
 		graph->AddEdge(4, 3);
 		graph->AddEdge(4, 2);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
 	virtual ~AdvancedTrim2GraphTest()
@@ -149,10 +154,11 @@ struct AdvancedTrim2GraphTest : testing::Test
 struct SimpleTrim3Pattern1Test : testing::Test
 {
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	SimpleTrim3Pattern1Test()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
@@ -168,7 +174,7 @@ struct SimpleTrim3Pattern1Test : testing::Test
 		graph->AddEdge(6, 2);
 		graph->AddEdge(7, 2);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
 	virtual ~SimpleTrim3Pattern1Test()
@@ -180,10 +186,11 @@ struct SimpleTrim3Pattern1Test : testing::Test
 struct SimpleTrim3Pattern2Test : testing::Test
 {
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	SimpleTrim3Pattern2Test()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
@@ -200,7 +207,7 @@ struct SimpleTrim3Pattern2Test : testing::Test
 		graph->AddEdge(6, 2);
 		graph->AddEdge(7, 2);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
 	virtual ~SimpleTrim3Pattern2Test()
@@ -212,10 +219,11 @@ struct SimpleTrim3Pattern2Test : testing::Test
 struct Trim3MixedPatternTest : testing::Test
 {
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	Trim3MixedPatternTest()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
@@ -234,7 +242,7 @@ struct Trim3MixedPatternTest : testing::Test
 		graph->AddEdge(2, 5);
 		graph->AddEdge(3, 6);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
 	virtual ~Trim3MixedPatternTest()
@@ -246,10 +254,11 @@ struct Trim3MixedPatternTest : testing::Test
 struct Trim3SelfEdgesTest : testing::Test
 {
 	enhancedgraph *enhgraph;
+	PNGraph graph;
 
 	Trim3SelfEdgesTest()
 	{
-		PNGraph graph = TNGraph::New();
+		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
 		graph->AddNode(3);
@@ -263,7 +272,7 @@ struct Trim3SelfEdgesTest : testing::Test
 		graph->AddEdge(3, 3);
 		graph->AddEdge(2, 4);
 
-		enhgraph = new enhancedgraph(graph, false, false, 10, 0, 1);
+		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
 	virtual ~Trim3SelfEdgesTest()

@@ -33,6 +33,8 @@ After installation you can run the program by going to the `src/` directory and 
 ```sh
 make src
 cd src/
+export OMP_DISPLAY_ENV=true
+export OMP_PROC_BIND=close
 ./main arguments
 ```
 
@@ -84,7 +86,7 @@ An example of using the program with trim level 1, sequential FWBW, max-degree p
 `[-h=]` Print help section
 
 	//To print help section:
-	-h=true
+	-h=1
 
 `[-out=]` Print SCC output file
 

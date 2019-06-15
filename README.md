@@ -33,6 +33,8 @@ After installation you can run the program by going to the `src/` directory and 
 ```sh
 make src
 cd src/
+export OMP_DISPLAY_ENV=true
+export OMP_PROC_BIND=close
 ./main arguments
 ```
 

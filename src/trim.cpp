@@ -93,12 +93,17 @@ std::tuple<int, int, int, int, int> trim::doParTrim(int trimlevel, enhancedgraph
 	return std::make_tuple(std::get<0>(retVal), std::get<1>(retVal), count1, count2, count3);
 }
 
+//Colors SCC's of size 1. 
+//Nodes with 0 in- or -out degree are colored
+//Not all SCC's of size 1 may be found in 1 call
+//Additional SCC's may be found after further decomposition
 int trim::trim1(enhancedgraph *g, int color) {
 	TSnapQueue<int> Queue;
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
 	int count = 0;
 
+	//First pass of all nodes in graph
 	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
     {
 		int node = NI.GetId();
@@ -111,12 +116,14 @@ int trim::trim1(enhancedgraph *g, int color) {
             {
                 int outNode = NodeI.GetInNId(v);
 
+				//Early stopping of loop if in-degree higher than 0
                 if (colors->GetDat(outNode) == color && outNode != node) {
                     inDegree = 1;
 					break;
                 }
             }
 
+			//SCC has been found
 			if (inDegree == 0) {
 				colors->AddDat(node, g->colorGen->getNext());
 				count++;
@@ -131,12 +138,14 @@ int trim::trim1(enhancedgraph *g, int color) {
             {
                 int outNode = NodeI.GetOutNId(v);
 
+				//Early stopping of loop if out-degree higher than 0
                 if (colors->GetDat(outNode) == color && outNode != node) {
                     outDegree = 1;
 					break;
                 }
             }
 
+			//SCC has been found
 			if (outDegree == 0) {
 				colors->AddDat(node, g->colorGen->getNext());
 				count++;
@@ -146,6 +155,8 @@ int trim::trim1(enhancedgraph *g, int color) {
 		}
         
     }
+	//Loop over nodes adjacent to previously detected SCCs
+	//End when no new SCCs found
 	while (!Queue.Empty())
 	{
 		int oldnode = Queue.Top();
@@ -261,6 +272,7 @@ int trim::trim1(enhancedgraph *g, int color) {
     return -1;
 }
 
+//Parallel version of trim1
 std::tuple<int, int, int> trim::partrim1(enhancedgraph *g, int color, bool parallel, int low, int high) {
 	TSnapQueue<int> Queue;
 	ColorMap *colors = g->colors;
@@ -492,6 +504,10 @@ std::tuple<int, int, int> trim::partrim1(enhancedgraph *g, int color, bool paral
 	return std::make_tuple(min_i, max_i, count);
 }
 
+//Colors SCC's of size 2. 
+//Finds SCC's where both nodes have 1 in-degree or 1 out-degree
+//Not all SCC's of size 2 may be found in 1 call
+//Additional SCC's may be found after further decomposition
 int trim::trim2(enhancedgraph *g, int color) {
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
@@ -590,6 +606,7 @@ int trim::trim2(enhancedgraph *g, int color) {
 	return -1;
 }
 
+//Parallel version of trim2
 std::tuple<int, int, int> trim::partrim2(enhancedgraph *g, int color, bool parallel, int low, int high) {
 	ColorMap *colors = g->colors;
 	TNGraph* graph = g->graph;
@@ -703,6 +720,14 @@ std::tuple<int, int, int> trim::partrim2(enhancedgraph *g, int color, bool paral
 	return std::make_tuple(min_i, max_i, count);;
 }
 
+//Colors SCC's of size 3. 
+//Finds the following patterns of SCC
+//1: a->b->c->a
+//2: a->b->a->c->a
+//3: a<-b<-c<-a
+//4: a<-b<-a<-c<-a
+//Not all SCC's of size 3 may be found by Trim
+//Additional SCC's may be found after further decomposition
 int trim::trim3(enhancedgraph *g, int color) {
 	ColorMap *colors = g->colors;
 	PNGraph graph = g->graph;
@@ -739,6 +764,7 @@ int trim::trim3(enhancedgraph *g, int color) {
 				}
 			}
 
+			//Possible pattern 3, check node b has b<-c
 			if (inDegree == 1 && colors->GetDat(nodeB) == color)
 			{
 				int inDegree_B = 0;
@@ -755,6 +781,7 @@ int trim::trim3(enhancedgraph *g, int color) {
 						}
 					}
 				}
+				//check node c has c<-a
 				if (inDegree_B == 1)
 				{
 					int inDegree_C = 0;
@@ -772,6 +799,7 @@ int trim::trim3(enhancedgraph *g, int color) {
 							}
 						}
 					}
+					//Pattern 3 found
 					if(inDegree_C == 1 && NodeCI.IsInNId(node)){
 						int newSCC = g->colorGen->getNext();
 						colors->AddDat(node, newSCC);
@@ -783,6 +811,7 @@ int trim::trim3(enhancedgraph *g, int color) {
 				}
 			}
 
+			//Possible pattern 4
 			if (inDegree == 2 && colors->GetDat(nodeB) == color)
 			{
 				//std::cout << "Found potential pattern 2 on in-degrees, node: " << node << "\n";
@@ -860,7 +889,8 @@ int trim::trim3(enhancedgraph *g, int color) {
 					}
 				}
 			}
-
+			
+			//Possible pattern 1
 			if (outDegree == 1 && colors->GetDat(nodeB) == color)
 			{
 				int outDegree_B = 0;
@@ -907,6 +937,7 @@ int trim::trim3(enhancedgraph *g, int color) {
 				}
 			}
 
+			//Possible pattern 2
 			if (outDegree == 2 && colors->GetDat(nodeB) == color)
 			{
 				//std::cout << "Found potential pattern 2 on out-degrees, node: " << node << "\n";
@@ -963,6 +994,8 @@ int trim::trim3(enhancedgraph *g, int color) {
 	return -1;
 }
 
+
+//Parallel version of trim3
 std::tuple<int, int, int> trim::partrim3(enhancedgraph *g, int color, bool parallel, int low, int high) {
 	ColorMap *colors = g->colors;
 	TNGraph* graph = g->graph;

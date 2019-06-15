@@ -84,7 +84,7 @@ An example of using the program with trim level 1, sequential FWBW, max-degree p
 `[-h=]` Print help section
 
 	//To print help section:
-	-h=true
+	-h=1
 
 `[-out=]` Print SCC output file
 

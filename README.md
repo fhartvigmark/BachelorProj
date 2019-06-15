@@ -113,6 +113,6 @@ Since most publicly available graphs are not of this format, we have included `g
 
 ## Authors
 
-[Eske Hoy Nielsen](github.com/4ever2)
+[Eske Hoy Nielsen](https://www.github.com/4ever2/)
 
-[Frederik Hartvig-Mærkedahl](github.com/fhartvigmark)
+[Frederik Hartvig-Mærkedahl](https://www.github.com/fhartvigmark/)

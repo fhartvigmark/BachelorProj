@@ -1,11 +1,18 @@
 #include "main.h"
 
+//Get extract the name of a file from its path
 TStr getFileName(TStr path) {
 	return path.GetFMid();
 }
 
+//Print timers
+// operation=0		No printing
+// operation=1		Print to stdout
+// operation=2		Print to file at 'path' with suffix 'suffix'
+// operation=3		Print compact version to file
 void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	if (operation == 1) {
+		//Print timers to stdout
 		cout << "\nTime used: \n";
 		cout << "  " << "Setup\t\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
 		cout << "  " << "Prep\t\t\t" << enhgraph->getTime(eTimer::PREP) << "μs\n";
@@ -21,6 +28,7 @@ void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	} else if (operation == 2) {
 		cout << "\nWriting timer output\n";
 
+		//Create output file
 		TStr fileName = getFileName(path);
 		fileName += suffix;
 		fileName += ".time";
@@ -28,6 +36,7 @@ void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		ofstream file;
 		file.open(fileName.GetCStr());
 
+		//Print timers to file
 		file << "\nTime used: \n";
 		file << "  " << "Setup\t\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
 		file << "  " << "Prep\t\t\t" << enhgraph->getTime(eTimer::PREP) << "μs\n";
@@ -47,6 +56,7 @@ void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	} else if (operation == 3) {
 		cout << "\nWriting timer output\n";
 
+		//Create output file
 		TStr fileName = getFileName(path);
 		fileName += suffix;
 		fileName += ".time";
@@ -54,6 +64,7 @@ void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		ofstream file;
 		file.open(fileName.GetCStr());
 
+		//Write compact timers to file
 		file << enhgraph->getTime(eTimer::SETUP) << "\t";
 		file << enhgraph->getTime(eTimer::PREP) << "\t";
 		file << enhgraph->getTime(eTimer::MAIN) << "\t";
@@ -70,6 +81,9 @@ void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	}
 }
 
+//Print SCC output
+// operation=0		No printing
+// operation=1		Print to file at 'path' with suffix 'suffix'
 void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) {
 	if (!operation) {
 		return;
@@ -77,6 +91,7 @@ void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) 
 
 	cout << "\nWriting SCC output\n";
 
+	//Create output file
 	TStr fileName = getFileName(path);
 	fileName += suffix;
 	fileName += ".scc";
@@ -86,8 +101,7 @@ void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) 
 
 	ColorMap *colors = enhgraph->colors;
 
-	//std::cout << "first " << enhgraph->colors->BegI() << "\n";
-
+	//Print list of nodes and their color
 	for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
     {
 		file << i << " " << colors->GetDat(i) << "\n";
@@ -98,10 +112,16 @@ void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) 
 	cout << "Done\n";
 }
 
+//Print debug information about program execution
+// operation=0		No printing
+// operation=1		Print to stdout
+// operation=2		Print to file at 'path' with suffix 'suffix'
+// operation=3		Print compact version to file
 void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	if (operation == 0) {
 		return;
 	}
+	//Get basic information
 	int fwbwCalls = enhgraph->getCallsFWBW();
 	int fwbwDepth = enhgraph->getDepth();
 	int sccs = 0;
@@ -117,6 +137,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	std::list<int> *lFw = enhgraph->getReports(eDebug::dFW);
 	std::list<int> *lBw = enhgraph->getReports(eDebug::dBW);
 
+	//Count number of SCC's
 	for (auto it = lTrim1->cbegin(); it != lTrim1->cend(); it++) {
 		if (*it > -1) {
 			sccs += *it;
@@ -139,7 +160,9 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		}
 	}
 
+
 	if (operation == 1) {
+		//Write basic info to stdout
 		cout << "\nDebug information: \n";
 		cout << "  " << "#SCCs: " << sccs << "\n";
 		cout << "  " << "Graph size: " << gsize << "\n";
@@ -151,6 +174,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		cout << "  " << "pivots calls: " << enhgraph->getCallsPivot() << "\n";
 		cout << "  " << "successful pivot calls: " << lNode->size() << "\n\n";
 
+		//Write FWBW recurion tree
 		cout << "FWBW: " << "\n";
 		while (!lColor->empty()) {
 			int node = lNode->front();
@@ -181,6 +205,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	} else if (operation == 2) {
 		cout << "\nWriting debug output\n";
 
+		//Create output file
 		TStr fileName = getFileName(path);
 		fileName += suffix;
 		fileName += ".debug";
@@ -188,6 +213,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		ofstream file;
 		file.open(fileName.GetCStr());
 
+		//Write basic info to file
 		file << "\nDebug information: \n";
 		file << "  " << "#SCCs: " << sccs << "\n";
 		file << "  " << "Graph size: " << gsize << "\n";
@@ -199,6 +225,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		file << "  " << "pivots calls: " << enhgraph->getCallsPivot() << "\n";
 		file << "  " << "successful pivot calls: " << lNode->size() << "\n\n";
 
+		//Write FWBW recursion tree
 		file << "FWBW: " << "\n";
 		while (!lColor->empty()) {
 			int node = lNode->front();
@@ -232,6 +259,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	} else if (operation == 3) {
 		cout << "\nWriting debug output\n";
 
+		//Create output file
 		TStr fileName = getFileName(path);
 		fileName += suffix;
 		fileName += ".debug";
@@ -239,6 +267,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		ofstream file;
 		file.open(fileName.GetCStr());
 
+		//Write compact info to file
 		file << sccs << "\t";
 		file << gsize << "\t";
 		file << fwbwCalls << "\t";
@@ -248,6 +277,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		file << enhgraph->getCallsPivot() << "\t";
 		file << lNode->size() << "\n\n";
 
+		//Write recursion tree
 		while (!lColor->empty()) {
 			int node = lNode->front();
 			lNode->pop_front();
@@ -289,6 +319,7 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 void setup(char **argv) {
 	char *hasOMPCancel = getenv("OMP_CANCELLATION");
 
+	//If variable is not set, set it and restart program
 	if (hasOMPCancel == nullptr) {
 		printf("Setting environment variables");
 		setenv("OMP_CANCELLATION", "true", 1);
@@ -302,7 +333,7 @@ void setup(char **argv) {
 
 int main(int argc, char **argv)
 {
-    // Input Parameters
+    // Setup input arguments handler
     Env = TEnv(argc, argv, TNotify::StdNotify);
     Env.PrepArgs(TStr::Fmt("SCC. build: %s, %s. Time: %s",
                            __TIME__, __DATE__, TExeTm::GetCurTm()));
@@ -333,6 +364,7 @@ int main(int argc, char **argv)
 	const int Analyse =
         Env.GetIfArgPrefixInt("-a=", 0, "Print debug information\t\t");
 
+	//Print help section if help argument was included
 	if (Help)
 	{
 		cout << "\n" << "parameters:" << "\n";
@@ -374,16 +406,16 @@ int main(int argc, char **argv)
 	
 	cout << "\n";
 
+	//Set max number of OpenMP workers
 	omp_set_num_threads(MaxThreads);
 
-    // Load the graph 
+    // Load the graph and setup enhanched graph object
 	cout << "Loading graph\n";
 	TimePoint start;
 	if (Timer) {
 		start = Time::now();
 	}
 	PNGraph Graph = TSnap::LoadEdgeList<PNGraph>(InEdges);
-	//TNGraph graph = *Graph;
 
 	enhancedgraph *enhgraph;
     enhgraph = new enhancedgraph(&(*Graph), Timer, Analyse, RandIterations, TrimCutoff, TrimSteps);
@@ -398,6 +430,7 @@ int main(int argc, char **argv)
 	enhgraph->endTimer(start, eTimer::PREP);
 
 	
+	//Perform SCC decomposition of the graph
 	start = enhgraph->startTimer();
 	scc::FindSCCs(enhgraph, Trimlevels, PivotMethod, FwBwMethod);
 	enhgraph->endTimer(start, eTimer::MAIN);
@@ -449,7 +482,7 @@ int main(int argc, char **argv)
 	}
 	*/
 	
-
+	//Output data, timers and debug information if specified in the arguments
 	printTime(enhgraph, InEdges, Suffix, Timer);
 	printFile(enhgraph, InEdges, Suffix, Output);
 	printInfo(enhgraph, InEdges, Suffix, Analyse);

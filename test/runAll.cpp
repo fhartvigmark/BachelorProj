@@ -4,6 +4,7 @@
 void setup(char **argv) {
 	char *hasOMPCancel = getenv("OMP_CANCELLATION");
 
+	//If variable is not set, set it and restart program
 	if (hasOMPCancel == nullptr) {
 		printf("Setting environment variables");
 		setenv("OMP_CANCELLATION", "true", 1);

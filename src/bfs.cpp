@@ -2,8 +2,9 @@
 #include "iostream"
 #include <deque>
 
-//Maybe include mark
-std::tuple<int, int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) {
+//Sequential BFS using colors, and partitioning the region into 4 partitions, starting in 'startNode'
+std::tuple<int, int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, int color, int startNode) 
+{	
     TSnapQueue<int> Queue;
 	TNGraph* pgraph = g->graph;
     ColorMap *colors = g->colors;
@@ -14,6 +15,7 @@ std::tuple<int, int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, in
 	int max_fw = 0;
 	int max_bw = 0;
 
+	//Add start node to queue and generate colors
     Queue.Push(startNode);
 
     const int sccColor = g->colorGen->getNext();
@@ -22,18 +24,25 @@ std::tuple<int, int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, in
 
     int v = 0;
 
+	//Process the graph untill all forward reachable nodes have been reached
     while(!Queue.Empty())
     {
         const int node = Queue.Top();
         Queue.Pop();
 
-        if (colors->GetDat(node) == color) {
+		//Check that node is within the region being processed
+        if (colors->GetDat(node) == color) 
+		{
+			//Add node to FW region
             colors->AddDat(node, fwColor);
 
-			if (node < min_fw) {
+			//Update range
+			if (node < min_fw) 
+			{
 				min_fw = node;
 			}
-			if (node > max_fw) {
+			if (node > max_fw) 
+			{
 				max_fw = node;
 			}
 
@@ -46,12 +55,15 @@ std::tuple<int, int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, in
             {
                 const int outNode = NodeI.GetOutNId(v);
 
-                if (colors->GetDat(outNode) == color) {
+                if (colors->GetDat(outNode) == color) 
+				{
                     Queue.Push(outNode);
                 }
             }
         }
     }
+
+	//Process the graph untill all backward reachable nodes have been reached
     Queue.Push(startNode);
     while (!Queue.Empty())
     {
@@ -59,16 +71,22 @@ std::tuple<int, int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, in
         Queue.Pop();
         const int nodeColor = colors->GetDat(node);
 
+		//Check that node is within the region being processed
         if (nodeColor == color)
         {
+			//Add node to BW region
             colors->AddDat(node, bwColor);
 
-			if (node < min_bw) {
+			//Update range
+			if (node < min_bw) 
+			{
 				min_bw = node;
 			}
-			if (node > max_bw) {
+			if (node > max_bw) 
+			{
 				max_bw = node;
 			}
+
 
             //Get node iterator for the current node
             const TNGraph::TNodeI NodeI = pgraph->GetNI(node);
@@ -84,8 +102,10 @@ std::tuple<int, int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, in
                     Queue.Push(inNode);
                 }
             }
-        }else if (nodeColor == fwColor)
+        }
+		else if (nodeColor == fwColor)
         {
+			//Add node to current SCC
             colors->AddDat(node, sccColor);
 			count++;
 
@@ -113,12 +133,15 @@ std::tuple<int, int, int, int, int, int, int> bfs::colorbfs(enhancedgraph *g, in
     return std::make_tuple(fwColor, bwColor, min_fw, max_fw, min_bw, max_bw, count);
 }
 
-std::tuple<int, int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) {
+//Parallel BFS using colors, and partitioning the region into 4 partitions, starting in 'startNode'
+std::tuple<int, int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int color, int startNode) 
+{
 	TSnapQueue<int> Queue;
 	ColorMap *colors = g->colors;
 	PNGraph pgraph = g->graph;
 	int totalCount = 0;
 
+	//Add start node to queue and generate colors
 	Queue.Push(startNode);
 
 	const int sccColor = g->colorGen->getNext();
@@ -126,10 +149,12 @@ std::tuple<int, int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int 
 	const int bwColor = g->colorGen->getNext();
 
 
+	//Process graph until all forward reachable nodes have been covered
 	while (!Queue.Empty())
 	{
 		int qsize = Queue.Len();
 
+		//Process nodes in queue in parallel
 		#pragma omp parallel for schedule(static)
 		for (int i = 0; i<qsize; i++)
 		{
@@ -141,8 +166,10 @@ std::tuple<int, int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int 
 				Queue.Pop();
 			}
 
+			//Check that node is within the region being processed
 			if (colors->GetDat(node) == color)
 			{
+				//Add node to FW region
 				colors->AddDat(node, fwColor);
 
 				//Get node iterator for the current node
@@ -163,6 +190,7 @@ std::tuple<int, int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int 
 		}
 	}
 
+	//Process graph until all forward reachable nodes have been covered
 	Queue.Push(startNode);
 
 	while (!Queue.Empty())
@@ -170,6 +198,7 @@ std::tuple<int, int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int 
 		int qsize = Queue.Len();
 		int count = 0;
 
+		//Process nodes in queue in parallel
 		#pragma omp parallel for reduction(+:count) schedule(static)
 		for (int i = 0; i < qsize; i++)
 		{
@@ -183,8 +212,10 @@ std::tuple<int, int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int 
 
 			const int nodeColor = colors->GetDat(node);
 
+			//Check that node is within the region being processed
 			if (nodeColor == color)
-			{
+			{	
+				//Add node to BW region
 				colors->AddDat(node, bwColor);
 
 				//Get node iterator for the current node
@@ -205,6 +236,7 @@ std::tuple<int, int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int 
 			}
 			else if (nodeColor == fwColor)
 			{
+				//Add node to current SCC
 				colors->AddDat(node, sccColor);
 				count++;
 
@@ -233,7 +265,9 @@ std::tuple<int, int, int, int, int, int, int> bfs::parbfs(enhancedgraph *g, int 
 	return std::make_tuple(fwColor, bwColor, 0, pgraph->GetNodes()-1, 0, pgraph->GetNodes()-1, totalCount);
 }
 
-std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNode) {
+//Relaxed parallel BFS using colors, and partitioning the region into 4 partitions, starting in 'startNode'
+std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *g, int color, int startNode) 
+{
 	ColorMap *colors = g->colors;
 	TNGraph* pgraph = g->graph;
 	int totalCount = 0;
@@ -250,6 +284,7 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
 	int max_bw2 = 0;
 	//std::cout << "Threads " << threads << "\n";
 
+	//Generate colors and add start node to queue
 	const int sccColor = g->colorGen->getNext();
 	const int fwColor = g->colorGen->getNext();
 	const int bwColor = g->colorGen->getNext();
@@ -264,13 +299,19 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
         const int node = Queue.front();
         Queue.pop_front();
 
-        if (colors->GetDat(node) == color) {
+		//Check that node is within the region being processed
+        if (colors->GetDat(node) == color) 
+		{
+			//Add node to FW region
             colors->AddDat(node, fwColor);
 
-			if (node < min_fw) {
+			//Update range
+			if (node < min_fw) 
+			{
 				min_fw = node;
 			}
-			if (node > max_fw) {
+			if (node > max_fw) 
+			{
 				max_fw = node;
 			}
 
@@ -282,12 +323,14 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
             {
                 const int outNode = NodeI.GetOutNId(v);
 
-                if (colors->GetDat(outNode) == color) {
+                if (colors->GetDat(outNode) == color) 
+				{
                     Queue.push_back(outNode);
                 }
             }
         }
 
+		//Stop when there are more elements than threads
 		if (Queue.size() >= threads) {
 			break;
 		}
@@ -296,16 +339,22 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
 	//std::cout << "Queue " << Queue.Len() << "\n";
 
 	//Find FW closure
-	if (!Queue.empty()) {
+	if (!Queue.empty()) 
+	{
+		//Process remaining graph in parallel
 		#pragma omp parallel reduction(min:min_fw2) reduction(max:max_fw2)
-		{
+		{	
+			///Setup private queues
 			std::deque<int> *myQueue;
 			int threadNode;
 			int id = omp_get_thread_num();
 
-			if (id == 0) {
+			if (id == 0) 
+			{
 				myQueue = &Queue;
-			} else {
+			} 
+			else 
+			{
 				myQueue = new std::deque<int>();
 			}
 
@@ -319,19 +368,25 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
 			#pragma omp barrier
 			myQueue->push_back(threadNode);
 
-
+			//Process forward reachable nodes
 			int v = 0;
 			while(!myQueue->empty())
 			{
 				int node = myQueue->front();
 				myQueue->pop_front();
 
-				if (colors->GetDat(node) == color) {
+				if (colors->GetDat(node) == color) 
+				{
+					//Add node to FW region
 					colors->AddDat(node, fwColor);
-					if (node < min_fw2) {
+
+					//Update range
+					if (node < min_fw2) 
+					{
 						min_fw2 = node;
 					}
-					if (node > max_fw2) {
+					if (node > max_fw2) 
+					{
 						max_fw2 = node;
 					}
 
@@ -351,7 +406,9 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
 				}
 			}
 
-			if (id != 0) {
+			//Cleanup
+			if (id != 0) 
+			{
 				delete myQueue;
 			}
 		}
@@ -359,7 +416,8 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
 	
 
 	//Something wrong happened
-	if (!Queue.empty()) {
+	if (!Queue.empty()) 
+	{
 		throw "relaxedSearch: FW queue not emptied";
 	}
 
@@ -371,13 +429,19 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
         Queue.pop_front();
         const int nodeColor = colors->GetDat(node);
 
+		//Check that node is within the region being processed
         if (nodeColor == color)
         {
+			//Add node to BW region
             colors->AddDat(node, bwColor);
-			if (node < min_bw) {
+
+			//Update range
+			if (node < min_bw) 
+			{
 				min_bw = node;
 			}
-			if (node > max_bw) {
+			if (node > max_bw) 
+			{
 				max_bw = node;
 			}
 
@@ -395,8 +459,10 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
                     Queue.push_back(inNode);
                 }
             }
-        }else if (nodeColor == fwColor)
+        }
+		else if (nodeColor == fwColor)
         {
+			//Add node to current SCC
             colors->AddDat(node, sccColor);
 			totalCount++;
 
@@ -416,22 +482,30 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
             }
         }
 
-		if (Queue.size() >= threads) {
+		//Stop when there are more elements than threads
+		if (Queue.size() >= threads) 
+		{
 			break;
 		}
     }
 	
 	//Find BW closure
-	if (!Queue.empty()) {
+	if (!Queue.empty()) 
+	{
+		//Process remaining graph in parallel
 		#pragma omp parallel reduction(+:count) reduction(min:min_bw2) reduction(max:max_bw2)
 		{
+			///Setup private queues
 			std::deque<int> *myQueue;
 			int threadNode;
 			int id = omp_get_thread_num();
 
-			if (id == 0) {
+			if (id == 0) 
+			{
 				myQueue = &Queue;
-			} else {
+			} 
+			else 
+			{
 				myQueue = new std::deque<int>();
 			}
 
@@ -445,7 +519,7 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
 			#pragma omp barrier
 			myQueue->push_back(threadNode);
 
-
+			//Process backward reachable nodes
 			int v = 0;
 			while (!myQueue->empty())
 			{
@@ -454,12 +528,17 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
 				int nodeColor = colors->GetDat(node);
 
 				if (nodeColor == color)
-				{
+				{	
+					//Add node to BW region
 					colors->AddDat(node, bwColor);
-					if (node < min_bw2) {
+
+					//Update range
+					if (node < min_bw2) 
+					{
 						min_bw2 = node;
 					}
-					if (node > max_bw2) {
+					if (node > max_bw2) 
+					{
 						max_bw2 = node;
 					}
 
@@ -477,8 +556,10 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
 							myQueue->push_back(inNode);
 						}
 					}
-				}else if (nodeColor == fwColor)
+				}
+				else if (nodeColor == fwColor)
 				{
+					//Add node to current SCC
 					colors->AddDat(node, sccColor);
 					count++;
 
@@ -499,7 +580,9 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
 				}
 			}
 
-			if (id != 0) {
+			//Cleanup
+			if (id != 0) 
+			{
 				delete myQueue;
 			}
 		}
@@ -507,20 +590,25 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
 	
 
 	//Something wrong happened
-	if (!Queue.empty()) {
+	if (!Queue.empty()) 
+	{
 		throw "relaxedSearch: BW queue not emptied";
 	}
 
-	if (min_bw2 < min_bw) {
+	if (min_bw2 < min_bw) 
+	{
 		min_bw = min_bw2;
 	}
-	if (max_bw2 > max_bw) {
+	if (max_bw2 > max_bw) 
+	{
 		max_bw = max_bw2;
 	}
-	if (min_fw2 < min_fw) {
+	if (min_fw2 < min_fw) 
+	{
 		min_fw = min_fw2;
 	}
-	if (max_fw2 > max_fw) {
+	if (max_fw2 > max_fw) 
+	{
 		max_fw = max_fw2;
 	}
 
@@ -532,25 +620,34 @@ std::tuple<int, int, int, int, int, int, int> bfs::relaxedSearch(enhancedgraph *
 	return std::make_tuple(fwColor, bwColor, min_fw, max_fw, min_bw, max_bw, totalCount + count);
 }
 
-std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int startNode) {
+//Random relaxed parallel BFS using colors, and partitioning the region into 4 partitions, starting in 'startNode'
+std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int startNode) 
+{
 	ColorMap *colors = g->colors;
 	PNGraph pgraph = g->graph;
 	int totalCount = 0;
 
+	//Generate colors
 	const int sccColor = g->colorGen->getNext();
 	const int fwColor = g->colorGen->getNext();
 	const int bwColor = g->colorGen->getNext();
 
 	
-
+	//Process graph in parallel
 	#pragma omp parallel reduction(+:totalCount)
-	{
+	{	
+		//Setup private queues
 		TSnapQueue<int> *Queue = new TSnapQueue<int>();
 		int id = omp_get_thread_num();
 		int threadNode;
-		if (id == 0) {
+
+		//Find random start nodes using random-walk in forward direction
+		if (id == 0) 
+		{
 			threadNode = startNode;
-		} else {
+		} 
+		else 
+		{
 			threadNode = Random::randwalk(g, color, startNode, 5, id, true);
 		}
 		
@@ -567,14 +664,17 @@ std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int st
 		//#pragma omp critical
 		//std::cout << "Past barrier " << id << "\n";
 
+		//Process forward reachable nodes
 		int v = 0;
 		while(!Queue->Empty())
 		{
 			int node = Queue->Top();
 			Queue->Pop();
 
-			if (colors->GetDat(node) == color) {
+			if (colors->GetDat(node) == color) 
+			{
 				//#pragma omp critical
+				//Add node to FW region
 				colors->AddDat(node, fwColor);
 
 
@@ -595,9 +695,13 @@ std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int st
 			}
 		}
 
-		if (id == 0) {
+		//Find random start nodes using random-walk in backward direction
+		if (id == 0) 
+		{
 			threadNode = startNode;
-		} else {
+		} 
+		else 
+		{
 			threadNode = Random::randwalk(g, color, startNode, 5, id, false);
 		}
 		
@@ -609,7 +713,7 @@ std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int st
 		
 		//#pragma omp critical
 		//std::cout << "Past barrier2 " << id << "\n";
-		
+		//Process backward reachable nodes
 		while (!Queue->Empty())
 		{
 			int node = Queue->Top();
@@ -619,6 +723,7 @@ std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int st
 			if (nodeColor == color)
 			{
 				//#pragma omp critical
+				//Add node to BW region
 				colors->AddDat(node, bwColor);
 
 				//Get node iterator for the current node
@@ -636,9 +741,11 @@ std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int st
 						Queue->Push(inNode);
 					}
 				}
-			}else if (nodeColor == fwColor)
+			}
+			else if (nodeColor == fwColor)
 			{
 				//#pragma omp critical
+				//Add node to current SCC
 				colors->AddDat(node, sccColor);
 				totalCount++;
 
@@ -676,13 +783,15 @@ std::pair<int, int> bfs::randomRelaxedSearch(enhancedgraph *g, int color, int st
 	return std::make_pair(fwColor, bwColor);
 }
 
-//TODO: test fwbfs and parfwbfs
-int bfs::fwbfs(enhancedgraph *g, int color, int startNode) {
+//Sequential BFS using colors, and partitioning the region into 3 partitions, starting in 'startNode'
+int bfs::fwbfs(enhancedgraph *g, int color, int startNode) 
+{
     TSnapQueue<int> Queue;
     ColorMap *colors = g->colors;
     PNGraph pgraph = g->graph;
 	int count = 0;
 
+	//Add start node to queue and generate colors
     Queue.Push(startNode);
 
     const int sccColor = g->colorGen->getNext();
@@ -690,12 +799,16 @@ int bfs::fwbfs(enhancedgraph *g, int color, int startNode) {
 
     int v = 0;
 
+	//Process the graph untill all forward reachable nodes have been reached
     while(!Queue.Empty())
     {
         const int node = Queue.Top();
         Queue.Pop();
 
-        if (colors->GetDat(node) == color) {
+		//Check that node is within the region being processed
+        if (colors->GetDat(node) == color) 
+		{
+			//Add node to FW region
             colors->AddDat(node, fwColor);
 
 
@@ -707,12 +820,15 @@ int bfs::fwbfs(enhancedgraph *g, int color, int startNode) {
             {
                 const int outNode = NodeI.GetOutNId(v);
 
-                if (colors->GetDat(outNode) == color) {
+                if (colors->GetDat(outNode) == color) 
+				{
                     Queue.Push(outNode);
                 }
             }
         }
     }
+
+	//Process the graph untill all backward reachable nodes in the FW region have been reached
     Queue.Push(startNode);
     while (!Queue.Empty())
     {
@@ -720,8 +836,10 @@ int bfs::fwbfs(enhancedgraph *g, int color, int startNode) {
         Queue.Pop();
         const int nodeColor = colors->GetDat(node);
 
+		//Check that node is within the region being processed
 		if (nodeColor == fwColor)
         {
+			//Add node to current SCC
             colors->AddDat(node, sccColor);
 			count++;
 
@@ -745,12 +863,15 @@ int bfs::fwbfs(enhancedgraph *g, int color, int startNode) {
     return fwColor;
 }
 
-int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) {
+//Parallel BFS using colors, and partitioning the region into 3 partitions, starting in 'startNode'
+int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) 
+{
 	TSnapQueue<int> Queue;
 	ColorMap *colors = g->colors;
 	PNGraph pgraph = g->graph;
 	int totalCount = 0;
 
+	//Add start node to queue and generate colors
 	Queue.Push(startNode);
 
 	const int sccColor = g->colorGen->getNext();
@@ -758,10 +879,12 @@ int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) {
 
 	int v = 0;
 
+	//Process the graph untill all forward reachable nodes have been reached
 	while (!Queue.Empty())
 	{
 		int qsize = Queue.Len();
 
+		//Process elements in queue in parallel
 		#pragma omp parallel for 
 		for (int i = 0; i<qsize; i++)
 		{
@@ -769,12 +892,14 @@ int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) {
 
 			#pragma omp critical
 			{
-			node = Queue.Top();
-			Queue.Pop();
+				node = Queue.Top();
+				Queue.Pop();
 			}
 
+			//Check that node is within the region being processed
 			if (colors->GetDat(node) == color)
 			{
+				//Add node to FW region
 				colors->AddDat(node, fwColor);
 
 				//Get node iterator for the current node
@@ -795,6 +920,7 @@ int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) {
 		}
 	}
 
+	//Process the graph untill all backward reachable nodes in the FW region have been reached
 	Queue.Push(startNode);
 
 	while (!Queue.Empty())
@@ -802,6 +928,7 @@ int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) {
 		int qsize = Queue.Len();
 		int count = 0;
 
+		//Process elements in queue in parallel
 		#pragma omp parallel for reduction(+:count)
 		for (int i = 0; i < qsize; i++)
 		{
@@ -809,14 +936,16 @@ int bfs::parfwbfs(enhancedgraph *g, int color, int startNode) {
 
 			#pragma omp critical
 			{
-			node = Queue.Top();
-			Queue.Pop();
+				node = Queue.Top();
+				Queue.Pop();
 			}
 
 			const int nodeColor = colors->GetDat(node);
 
+			//Check that node is within the region being processed
 			if (nodeColor == fwColor)
 			{
+				//Add node to current SCC
 				colors->AddDat(node, sccColor);
 
 				//Get node iterator for the current node

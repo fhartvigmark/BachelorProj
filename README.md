@@ -15,7 +15,7 @@ GCC-5.0
 OpenMP-5.0
 Makefile
 SNAP (we have included SNAP in this repository)
-GoogleTest
+GoogleTest (only required to run unit tests)
 ```
 
 ## Installation

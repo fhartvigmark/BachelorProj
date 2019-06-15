@@ -285,43 +285,23 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	}
 }
 
-void bootstrap(char **argv) {
-	//https://stackoverflow.com/questions/46482468/enable-cancellation-of-openmp-threads-from-inside-program
-	char *hasCancel = getenv("OMP_CANCELLATION");
-	if (hasCancel == nullptr) {
-		printf("Bootstrapping...");
-		setenv("OMP_CANCELLATION", "true", 1);
-		// Restart the program here
-		int output = execvp(argv[0], argv);
-		// Execution should not continue past here
-		printf("Bootstrapping failed with code %d\n",output);
-		exit(1);
-	} else {
-		puts("Bootstrapping complete");
-	}
-}
+//Method to setup env variables for OpenMP
+void setup(char **argv) {
+	char *hasOMPCancel = getenv("OMP_CANCELLATION");
 
-void bootstrap2(char **argv) {
-	//https://stackoverflow.com/questions/46482468/enable-cancellation-of-openmp-threads-from-inside-program
-	char *hasCancel = getenv("OMP_DISPLAY_ENV");
-	if (hasCancel == nullptr) {
-		printf("Bootstrapping...");
-		setenv("OMP_DISPLAY_ENV", "true", 1);
-		// Restart the program here
+	if (hasOMPCancel == nullptr) {
+		printf("Setting environment variables");
+		setenv("OMP_CANCELLATION", "true", 1);
+
 		int output = execvp(argv[0], argv);
-		// Execution should not continue past here
-		printf("Bootstrapping failed with code %d\n",output);
+
+		printf("Setting environment variablesfailed with code %d\n",output);
 		exit(1);
-	} else {
-		puts("Bootstrapping complete");
 	}
 }
 
 int main(int argc, char **argv)
 {
-	//bootstrap(argv);
-	//bootstrap2(argv);
-
     // Input Parameters
     Env = TEnv(argc, argv, TNotify::StdNotify);
     Env.PrepArgs(TStr::Fmt("SCC. build: %s, %s. Time: %s",

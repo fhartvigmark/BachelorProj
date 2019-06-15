@@ -1,20 +1,23 @@
 #include <gtest/gtest.h>
 
-int main(int argc, char **argv) {
-	//https://stackoverflow.com/questions/46482468/enable-cancellation-of-openmp-threads-from-inside-program
-	char *hasCancel = getenv("OMP_CANCELLATION");
-	if (hasCancel == nullptr) {
-		printf("Bootstrapping...");
-		setenv("OMP_CANCELLATION", "true", 1);
-		// Restart the program here
-		int output = execvp(argv[0], argv);
-		// Execution should not continue past here
-		printf("Bootstrapping failed with code %d\n",output);
-		exit(1);
-	} else {
-		puts("Bootstrapping complete");
-	}
+//Method to setup env variables for OpenMP
+void setup(char **argv) {
+	char *hasOMPCancel = getenv("OMP_CANCELLATION");
 
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+	if (hasOMPCancel == nullptr) {
+		printf("Setting environment variables");
+		setenv("OMP_CANCELLATION", "true", 1);
+
+		int output = execvp(argv[0], argv);
+
+		printf("Setting environment variablesfailed with code %d\n",output);
+		exit(1);
+	}
+}
+
+int main(int argc, char **argv) {
+	//setup(argv);
+
+  	::testing::InitGoogleTest(&argc, argv);
+  	return RUN_ALL_TESTS();
 }

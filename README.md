@@ -8,4 +8,18 @@ The purpose of the project was to investigate the performance of parallelized al
 
 The purpose of this code is to serve as a benchmarking tool. The "src/" folder includes the algorithms we tested as well as the general setup code. Timers and the like are built in to the code. The implementation of the algorithms found in this repository is therefore **not** optimized for performance and should **not** be used in real-world scenarios.
 
+## Prerequisites
+
+```javascript
+GCC-5.0
+OpenMP-5.0
+Makefile
+```
+
+## Installation
+
+Get into the root directory, then compile the source code with Makefile
+```sh
+make all
+```
 

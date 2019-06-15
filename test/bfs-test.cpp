@@ -121,7 +121,8 @@ struct AdvancedCycleTest : testing::Test, testing::WithParamInterface<graph_stat
 	}
 };
 
-TEST_P(SimpleReachabilityTest, BasicColors) {
+TEST_P(SimpleReachabilityTest, BasicColors) 
+{
     auto gs = GetParam();
     auto newcolors = testBFS(gs.variant, enhgraph, gs.color, gs.startnode);
 
@@ -132,11 +133,13 @@ TEST_P(SimpleReachabilityTest, BasicColors) {
 		EXPECT_NE(enhgraph->colors->GetDat(sccnode), std::get<1>(newcolors));
 	}
 
-	for (int fwnode: gs.fwlist) {
+	for (int fwnode: gs.fwlist) 
+	{
 		EXPECT_EQ(enhgraph->colors->GetDat(fwnode), std::get<0>(newcolors));
 	}
 
-	for (int bwnode : gs.bwlist) {
+	for (int bwnode : gs.bwlist) 
+	{
 		EXPECT_EQ(enhgraph->colors->GetDat(bwnode), std::get<1>(newcolors));
 	}
 }

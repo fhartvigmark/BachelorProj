@@ -33,11 +33,14 @@ vector<scc> generateSCClist(string filename, bool silent)
 			int sccID = stoi(sccString);
 			sccMap[sccID]++;
 		}
+
 		sccFile.close();
 	}
 	else
+	{
 		cout << "Unable to open file\n";
-	
+	}
+
 	vector<scc> sccSizes(0);
 
 	for_each(sccMap.begin(), sccMap.end(),
@@ -49,24 +52,29 @@ vector<scc> generateSCClist(string filename, bool silent)
 	std::sort(sccSizes.begin(), sccSizes.end(),
 			  [](auto const &a, auto const &b) { return a.size > b.size; });
 
-	if (!silent) {
+	if (!silent) 
+	{
 		cout << filename << " contains the following SCCs: \n";
 	}
 
-	if (!silent) {
+	if (!silent) 
+	{
 		for (int i = 0; i < sccSizes.size(); i++)
 		{
 			cout << "SCC color " << sccSizes.at(i).depth << " has size " << sccSizes.at(i).size << "\n";
 		}
 	}
 	
-	if (!silent) {
+	if (!silent) 
+	{
 		cout << filename << " contains " << sccSizes.size() << " SCCs \n";
 	}
+
 	return sccSizes;
 }
 
-void generateOutput(string filename, vector<scc> list){
+void generateOutput(string filename, vector<scc> list)
+{
 	ofstream outfile(filename);
 
 	if (outfile.is_open())
@@ -79,7 +87,9 @@ void generateOutput(string filename, vector<scc> list){
 		outfile.close();
 	}
 	else
+	{
 		cout << "Unable to open output file\n";
+	}
 }
 
 int main(int argc, char **argv)
@@ -89,6 +99,7 @@ int main(int argc, char **argv)
 	int retVal = 0;
 	string filename = "";
 	string outname = "";
+
 	if (argc == 3)
 	{
 		filename = argv[1];
@@ -109,7 +120,8 @@ int main(int argc, char **argv)
 
 	vector<scc> lines(0);
 
-	while (getline(infile, line)) {
+	while (getline(infile, line)) 
+	{
 		int depth;
 		int size;
 		istringstream iss(line);
@@ -135,7 +147,8 @@ int main(int argc, char **argv)
 		
 		outfile.close();
 	}
-	else {
+	else 
+	{
 		cout << "Unable to open output file\n";
 	}
 

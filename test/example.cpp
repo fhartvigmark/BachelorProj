@@ -1,23 +1,28 @@
 #include <gtest/gtest.h>
 
-struct BankAccount {
+struct BankAccount 
+{
     int balance = 0;
     
-    BankAccount(){
+    BankAccount()
+	{
 
     }
 
-    explicit BankAccount(const int balance) 
-        : balance{balance}{
+    explicit BankAccount(const int balance) : balance{balance}
+	{
 
     }
 
-    void deposit(int amount) {
+    void deposit(int amount) 
+	{
         balance += amount;
     }
 
-    bool withdraw(int amount) {
-        if (amount <= balance) {
+    bool withdraw(int amount) 
+	{
+        if (amount <= balance) 
+		{
             balance -= amount;
             return true;
         }
@@ -27,43 +32,52 @@ struct BankAccount {
 };
 
 struct BankAccountTest : testing::Test {
+
     BankAccount* account;
 
-    BankAccountTest() {
+    BankAccountTest() 
+	{
         account = new BankAccount;
     }
 
-    virtual ~BankAccountTest() {
+    virtual ~BankAccountTest() 
+	{
         delete account;
     }
 };
 
-TEST(AccountTest, BankAcountStartsEmpty) {
+TEST(AccountTest, BankAcountStartsEmpty) 
+{
     BankAccount account;
     EXPECT_EQ(0, account.balance);
 }
 
-TEST(AccountTest, BankAcountDoesntStartsEmpty) {
+TEST(AccountTest, BankAcountDoesntStartsEmpty) 
+{
     BankAccount *account = new BankAccount(100);
     EXPECT_EQ(100, account->balance);
 }
 
-TEST_F(BankAccountTest, BankAcountStartsEmpty) {
+TEST_F(BankAccountTest, BankAcountStartsEmpty) 
+{
     EXPECT_EQ(0, account->balance);
 }
 
-TEST_F(BankAccountTest, CanDepositMoney) {
+TEST_F(BankAccountTest, CanDepositMoney) 
+{
     account->deposit(100);
     EXPECT_EQ(100, account->balance);
 }
 
-struct account_state {
+struct account_state 
+{
     int initial_balance;
     int withdraw_amount;
     int final_balance;
     bool success;
 
-    friend std::ostream& operator<<(std::ostream& os, const account_state& obj) {
+    friend std::ostream& operator<<(std::ostream& os, const account_state& obj) 
+	{
         return os
             << "initial_balance: " << obj.initial_balance
             << ", withdraw_amount: " << obj.withdraw_amount
@@ -72,13 +86,16 @@ struct account_state {
     }
 };
 
-struct WithdrawAccountTest : BankAccountTest, testing::WithParamInterface<account_state> {
-    WithdrawAccountTest() {
+struct WithdrawAccountTest : BankAccountTest, testing::WithParamInterface<account_state> 
+{
+    WithdrawAccountTest() 
+	{
         account->balance = GetParam().initial_balance;
     }
 };
 
-TEST_P(WithdrawAccountTest, FinalBalance) {
+TEST_P(WithdrawAccountTest, FinalBalance) 
+{
     auto as = GetParam();
     auto success = account->withdraw(as.withdraw_amount);
     EXPECT_EQ(as.final_balance, account->balance);

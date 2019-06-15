@@ -1,12 +1,14 @@
 #include <gtest/gtest.h>
 #include <trim.h>
 
-struct SimpleGraphTest : testing::Test {
+struct SimpleGraphTest : testing::Test 
+{
 
     enhancedgraph* enhgraph;
 	PNGraph graph;
 
-    SimpleGraphTest() {
+    SimpleGraphTest() 
+	{
         graph = TNGraph::New();
         graph->AddNode(1);
         graph->AddNode(2);
@@ -29,17 +31,20 @@ struct SimpleGraphTest : testing::Test {
 		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
-    virtual ~SimpleGraphTest() {
+    virtual ~SimpleGraphTest() 
+	{
         delete enhgraph;
     }
 };
 
-struct SimpleChainTest :testing::Test {
+struct SimpleChainTest :testing::Test 
+{
 
 	enhancedgraph *enhgraph;
 	PNGraph graph;
 
-	SimpleChainTest() {
+	SimpleChainTest() 
+	{
 		graph = TNGraph::New();
 		graph->AddNode(1);
 		graph->AddNode(2);
@@ -56,18 +61,21 @@ struct SimpleChainTest :testing::Test {
 		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
-	virtual ~SimpleChainTest() {
+	virtual ~SimpleChainTest() 
+	{
 		delete enhgraph;
 	}
 
 };
 
-struct ColorGraphTest : testing::Test {
+struct ColorGraphTest : testing::Test 
+{
 
     enhancedgraph* enhgraph;
 	PNGraph graph;
 
-    ColorGraphTest() {
+    ColorGraphTest() 
+	{
         graph = TNGraph::New();
         graph->AddNode(1);
         graph->AddNode(2);
@@ -95,12 +103,14 @@ struct ColorGraphTest : testing::Test {
 		enhgraph->colors->AddDat(7, 4);
 	}
 
-    virtual ~ColorGraphTest() {
+    virtual ~ColorGraphTest() 
+	{
         delete enhgraph;
     }
 };
 
-struct SimpleTrim2GraphTest : testing::Test {
+struct SimpleTrim2GraphTest : testing::Test 
+{
 	enhancedgraph *enhgraph;
 	PNGraph graph;
 
@@ -281,7 +291,8 @@ struct Trim3SelfEdgesTest : testing::Test
 	}
 };
 
-TEST_F(SimpleGraphTest, TrimFindsSCCs) {
+TEST_F(SimpleGraphTest, TrimFindsSCCs) 
+{
 	ColorMap *colors = enhgraph->colors;
     trim::doTrim(1, enhgraph, 0, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 
@@ -318,7 +329,8 @@ TEST_F(SimpleGraphTest, ParTrimFindsSCCs)
 	EXPECT_NE(colors->GetDat(4), colors->GetDat(6));
 }
 
-TEST_F(SimpleGraphTest, TrimRespectsColors) {
+TEST_F(SimpleGraphTest, TrimRespectsColors) 
+{
 	ColorMap *colors = enhgraph->colors;
     trim::doTrim(1, enhgraph, 1, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 
@@ -345,7 +357,8 @@ TEST_F(SimpleGraphTest, ParTrimRespectsColors)
 	EXPECT_EQ(0, colors->GetDat(7));
 }
 
-TEST_F(ColorGraphTest, TrimRespectsColorsDegree) {
+TEST_F(ColorGraphTest, TrimRespectsColorsDegree) 
+{
 	ColorMap *colors = enhgraph->colors;
     trim::doTrim(1, enhgraph, 4, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 
@@ -376,7 +389,8 @@ TEST_F(ColorGraphTest, ParTrimRespectsColorsDegree)
 	EXPECT_NE(4, colors->GetDat(7));
 }
 
-TEST_F(ColorGraphTest, TrimRespectsColors) {
+TEST_F(ColorGraphTest, TrimRespectsColors) 
+{
 	ColorMap *colors = enhgraph->colors;
     trim::doTrim(1, enhgraph, 0, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 
@@ -403,7 +417,8 @@ TEST_F(ColorGraphTest, ParTrimRespectsColors)
 	EXPECT_EQ(4, colors->GetDat(7));
 }
 
-TEST_F(ColorGraphTest, TrimFindsSCCs) {
+TEST_F(ColorGraphTest, TrimFindsSCCs) 
+{
 	ColorMap *colors = enhgraph->colors;
     trim::doParTrim(1, enhgraph, 2, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 
@@ -434,7 +449,8 @@ TEST_F(ColorGraphTest, ParTrimFindsSCCs)
 	EXPECT_NE(2, colors->GetDat(5));
 }
 
-TEST_F(SimpleChainTest, TrimRunsMultiplePasses) {
+TEST_F(SimpleChainTest, TrimRunsMultiplePasses) 
+{
 	ColorMap *colors = enhgraph->colors;
 	trim::doTrim(1, enhgraph, 0, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 

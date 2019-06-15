@@ -1,11 +1,13 @@
 #include <gtest/gtest.h>
 
 //Method to setup env variables for OpenMP
-void setup(char **argv) {
+void setup(char **argv) 
+{
 	char *hasOMPCancel = getenv("OMP_CANCELLATION");
 
 	//If variable is not set, set it and restart program
-	if (hasOMPCancel == nullptr) {
+	if (hasOMPCancel == nullptr) 
+	{
 		printf("Setting environment variables");
 		setenv("OMP_CANCELLATION", "true", 1);
 
@@ -16,7 +18,9 @@ void setup(char **argv) {
 	}
 }
 
-int main(int argc, char **argv) {
+//Run all unit tests
+int main(int argc, char **argv) 
+{
 	//setup(argv);
 
   	::testing::InitGoogleTest(&argc, argv);

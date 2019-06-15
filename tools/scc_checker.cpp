@@ -33,11 +33,14 @@ vector<scc> generateSCClist(string filename, bool silent)
 			int sccID = stoi(sccString);
 			sccMap[sccID]++;
 		}
+
 		sccFile.close();
 	}
 	else
+	{
 		cout << "Unable to open file\n";
-	
+	}
+
 	vector<scc> sccSizes(0);
 
 	for_each(sccMap.begin(), sccMap.end(),
@@ -49,24 +52,29 @@ vector<scc> generateSCClist(string filename, bool silent)
 	std::sort(sccSizes.begin(), sccSizes.end(),
 			  [](auto const &a, auto const &b) { return a.size > b.size; });
 
-	if (!silent) {
+	if (!silent) 
+	{
 		cout << filename << " contains the following SCCs: \n";
 	}
 
-	if (!silent) {
+	if (!silent) 
+	{
 		for (int i = 0; i < sccSizes.size(); i++)
 		{
 			cout << "SCC color " << sccSizes.at(i).color << " has size " << sccSizes.at(i).size << "\n";
 		}
 	}
 	
-	if (!silent) {
+	if (!silent) 
+	{
 		cout << filename << " contains " << sccSizes.size() << " SCCs \n";
 	}
+
 	return sccSizes;
 }
 
-void generateOutput(string filename, vector<scc> list){
+void generateOutput(string filename, vector<scc> list)
+{
 	ofstream outfile(filename);
 
 	if (outfile.is_open())
@@ -79,7 +87,9 @@ void generateOutput(string filename, vector<scc> list){
 		outfile.close();
 	}
 	else
+	{
 		cout << "Unable to open output file\n";
+	}
 }
 
 int main(int argc, char **argv)
@@ -89,6 +99,7 @@ int main(int argc, char **argv)
 	int retVal = 0;
 	string scc1FileName = "";
 	string scc2FileName = "";
+
 	if (argc == 3)
 	{
 		scc1FileName = argv[1];
@@ -99,12 +110,18 @@ int main(int argc, char **argv)
 		scc1FileName = argv[1];
 		scc2FileName = argv[2];
 		string arg = argv[3];
-		if (arg == "o") {
+
+		if (arg == "o") 
+		{
 			generateOutputs = true;
 			silent = true;
-		} else if (arg == "s") {
+		} 
+		else if (arg == "s") 
+		{
 			silent = true;
-		} else {
+		} 
+		else 
+		{
 			cout << "Unkown third argument " << arg << "\n\n";
 			cout << "Usage: ./scc_checker scc1File scc2File {OPTIONAL: o | s}  \n";
 			cout << "o flag generates outputfiles \n";
@@ -124,29 +141,35 @@ int main(int argc, char **argv)
 	vector<scc> scclist1 = generateSCClist(scc1FileName, silent);
 	vector<scc> scclist2 = generateSCClist(scc2FileName, silent);
 
-	if(generateOutputs){
+	if(generateOutputs)
+	{
 		generateOutput("outfile1.out", scclist1);
 		generateOutput("outfile2.out", scclist2);
 	}
 
 	int upperLimit = min(scclist1.size(), scclist2.size());
 
-	if(scclist1.size()!=scclist2.size()){
+	if(scclist1.size()!=scclist2.size())
+	{
 		cout << "SCCs have different sizes " << scclist1.size() << " vs. " << scclist2.size() << "\n";
 		retVal = -1;
 	}
 
 	for (int i = 0; i < upperLimit; i++)
 	{
-		if(scclist1.at(i).size!=scclist2.at(i).size){
+		if(scclist1.at(i).size!=scclist2.at(i).size)
+		{
 			cout << "Size of SCC " << i << " doesn't match " << scclist1.at(i).size << " vs. " << scclist2.at(i).size << "\n";
 			retVal -1;
 		}
 	}
 
-	if(retVal == 0){
+	if(retVal == 0)
+	{
 		cout << "SCCs seems to match \n";
-	}else{
+	}
+	else
+	{
 		cout << "SCCs appear to be different \n";
 		cout << "Files " << scc1FileName << ", " << scc2FileName << "\n";
 	}

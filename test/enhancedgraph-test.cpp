@@ -1,11 +1,13 @@
 #include <gtest/gtest.h>
 #include <core.h>
 
-struct SimpleSetupTest : testing::Test {
+struct SimpleSetupTest : testing::Test 
+{
     enhancedgraph* enhgraph = new enhancedgraph();
 	PNGraph graph;
 
-    SimpleSetupTest() {
+    SimpleSetupTest() 
+	{
         graph = TNGraph::New();
         graph->AddNode(1);
         graph->AddNode(2);
@@ -19,16 +21,19 @@ struct SimpleSetupTest : testing::Test {
         enhgraph->colorGen = new ColorGenerator();
     }
 
-    virtual ~SimpleSetupTest() {
+    virtual ~SimpleSetupTest() 
+	{
         delete enhgraph;
     }
 };
 
-struct MapSetupTest : testing::Test {
+struct MapSetupTest : testing::Test 
+{
 	enhancedgraph* enhgraph;
 	PNGraph graph;
 
-	MapSetupTest() {
+	MapSetupTest() 
+	{
 		graph = new TNGraph();
         graph->AddNode(1);
         graph->AddNode(2);
@@ -39,12 +44,14 @@ struct MapSetupTest : testing::Test {
         enhgraph = new enhancedgraph(&(*graph), true, false, 10, 0, 1);
 	}
 
-	virtual ~MapSetupTest() {
+	virtual ~MapSetupTest() 
+	{
         delete enhgraph;
     }
 };
 
-TEST_F(SimpleSetupTest, ColorIncrementEachTime) {
+TEST_F(SimpleSetupTest, ColorIncrementEachTime) 
+{
 	int color1 = enhgraph->colorGen->getNext();
 	int color2 = enhgraph->colorGen->getNext();
 
@@ -52,23 +59,27 @@ TEST_F(SimpleSetupTest, ColorIncrementEachTime) {
     EXPECT_EQ(2, color2);
 }
 
-TEST_F(SimpleSetupTest, HashMapStartsEmpty) {
+TEST_F(SimpleSetupTest, HashMapStartsEmpty) 
+{
 	ColorMap *colorMap = enhgraph->colors;
     EXPECT_EQ(0, colorMap->Len());
 }
 
-TEST_F(SimpleSetupTest, NodeVectorStartsEmpty) {
+TEST_F(SimpleSetupTest, NodeVectorStartsEmpty) 
+{
 	ColorMap *colorMap = enhgraph->colors;
     EXPECT_EQ(0, colorMap->Len());
 }
 
-TEST_F(SimpleSetupTest, GraphTest) {
+TEST_F(SimpleSetupTest, GraphTest) 
+{
 	TNGraph* graph = enhgraph->graph;
 
 	EXPECT_EQ(3, graph->GetNodes());
 }
 
-TEST_F(SimpleSetupTest, GetNI) {
+TEST_F(SimpleSetupTest, GetNI) 
+{
 	EXPECT_EQ(true, enhgraph->graph->IsNode(1));
 
 	const TNGraph::TNodeI NodeI = enhgraph->graph->GetNI(1);
@@ -79,7 +90,8 @@ TEST_F(SimpleSetupTest, GetNI) {
 	}
 }
 
-TEST_F(SimpleSetupTest, TimerNotEnabledGet) {
+TEST_F(SimpleSetupTest, TimerNotEnabledGet) 
+{
 	EXPECT_EQ(-1, enhgraph->getTime(eTimer::MAIN));
 	EXPECT_EQ(-1, enhgraph->getTime(eTimer::FirstFWBW));
 	EXPECT_EQ(-1, enhgraph->getTime(eTimer::FWBWs));
@@ -88,17 +100,20 @@ TEST_F(SimpleSetupTest, TimerNotEnabledGet) {
 	EXPECT_EQ(-1, enhgraph->getTime(eTimer::SETUP));
 }
 
-TEST_F(SimpleSetupTest, TimerNotEnabledEnd) {
+TEST_F(SimpleSetupTest, TimerNotEnabledEnd) 
+{
 	enhgraph->endTimer(Time::now(), eTimer::MAIN);
 	EXPECT_EQ(-1, enhgraph->getTime(eTimer::MAIN));
 }
 
-TEST_F(MapSetupTest, MapStartsWithAllNodes) {
+TEST_F(MapSetupTest, MapStartsWithAllNodes) 
+{
 	ColorMap *colorMap = enhgraph->colors;
 	EXPECT_EQ(3, colorMap->Len());
 }
 
-TEST_F(MapSetupTest, MapStartsWithZeroValues) {
+TEST_F(MapSetupTest, MapStartsWithZeroValues) 
+{
 	ColorMap *colorMap = enhgraph->colors;
 
 	for (int i = colorMap->BegI(); i < colorMap->Len(); i++)
@@ -107,7 +122,8 @@ TEST_F(MapSetupTest, MapStartsWithZeroValues) {
     }
 }
 
-TEST_F(MapSetupTest, TimersStartsAtZero) {
+TEST_F(MapSetupTest, TimersStartsAtZero) 
+{
 	EXPECT_EQ(0, enhgraph->getTime(eTimer::MAIN));
 	EXPECT_EQ(0, enhgraph->getTime(eTimer::FirstFWBW));
 	EXPECT_EQ(0, enhgraph->getTime(eTimer::FWBWs));
@@ -116,7 +132,8 @@ TEST_F(MapSetupTest, TimersStartsAtZero) {
 	EXPECT_EQ(0, enhgraph->getTime(eTimer::SETUP));
 }
 
-TEST_F(MapSetupTest, TimerUpdatesCorrectly) {
+TEST_F(MapSetupTest, TimerUpdatesCorrectly) 
+{
 	auto start = Time::now() - std::chrono::milliseconds(100);
 
 	EXPECT_EQ(0, enhgraph->getTime(eTimer::MAIN));
@@ -125,7 +142,8 @@ TEST_F(MapSetupTest, TimerUpdatesCorrectly) {
 	EXPECT_EQ(100, enhgraph->getTime(eTimer::MAIN));
 }
 
-TEST_F(MapSetupTest, CanWriteToColorMap) {
+TEST_F(MapSetupTest, CanWriteToColorMap) 
+{
 	enhgraph->colors->AddDat(2, 3);
 	EXPECT_EQ(3, enhgraph->colors->GetDat(2));
 }

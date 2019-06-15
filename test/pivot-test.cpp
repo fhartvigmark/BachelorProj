@@ -2,13 +2,15 @@
 #include <pivot.h>
 #include <tuple>
 
-struct pivot_state {
+struct pivot_state 
+{
     int expectedOutput;
     int color;
 	int method;
 	bool parallel;
 
-	friend std::ostream& operator<<(std::ostream& os, const pivot_state& obj) {
+	friend std::ostream& operator<<(std::ostream& os, const pivot_state& obj) 
+	{
         return os
             << "expected output: " << obj.expectedOutput
             << ", color: " << obj.color
@@ -17,12 +19,14 @@ struct pivot_state {
     }
 };
 
-struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state> {
+struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state> 
+{
 
     enhancedgraph* enhgraph;
 	PNGraph graph;
 
-    SimpleGraphTest() {
+    SimpleGraphTest() 
+	{
         graph = TNGraph::New();
         graph->AddNode(1);
         graph->AddNode(2);
@@ -43,17 +47,20 @@ struct SimpleGraphTest : testing::Test, testing::WithParamInterface<pivot_state>
 		enhgraph = new enhancedgraph(&(*graph), false, false, 10, 0, 1);
 	}
 
-    virtual ~SimpleGraphTest() {
+    virtual ~SimpleGraphTest() 
+	{
         delete enhgraph;
     }
 };
 
-struct ColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> {
+struct ColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> 
+{
 
     enhancedgraph* enhgraph;
 	PNGraph graph;
 
-    ColorGraphTest() {
+    ColorGraphTest() 
+	{
         graph = TNGraph::New();
         graph->AddNode(1);
         graph->AddNode(2);
@@ -67,12 +74,14 @@ struct ColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> 
 		enhgraph->colors->AddDat(3, 40);
 	}
 
-    virtual ~ColorGraphTest() {
+    virtual ~ColorGraphTest() 
+	{
         delete enhgraph;
     }
 };
 
-struct AdvancedColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> {
+struct AdvancedColorGraphTest : testing::Test, testing::WithParamInterface<pivot_state> 
+{
 
 	enhancedgraph* enhgraph;
 	PNGraph graph;
@@ -112,96 +121,124 @@ struct AdvancedColorGraphTest : testing::Test, testing::WithParamInterface<pivot
 	}
 };
 
-TEST(Default, OmpCancelEnabled) {
+TEST(Default, OmpCancelEnabled) 
+{
 	EXPECT_TRUE(omp_get_cancellation());
 }
 
-TEST_P(SimpleGraphTest, CanFindStartnode) {
+TEST_P(SimpleGraphTest, CanFindStartnode) 
+{
     auto gs = GetParam();
 	std::tuple<int, int, int> out;
     
-	if (gs.parallel) {
+	if (gs.parallel) 
+	{
 		out = pivot::findParPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
-	} else {
+	} 
+	else 
+	{
 		out = pivot::findPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 	}
 
 	int startnode = std::get<0>(out);
 	
 
-	if (gs.expectedOutput == -1) {
+	if (gs.expectedOutput == -1) 
+	{
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
 		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
 			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}
-	} else if (gs.method == 0 && gs.parallel) {
+	} 
+	else if (gs.method == 0 && gs.parallel) 
+	{
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
 		//EXPECT_TRUE(startnode <= omp_get_max_threads());
 		//TODO: fix???
 		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
-	} else if (gs.method == 3) {
+	} 
+	else if (gs.method == 3) 
+	{
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
 		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
-	} else {
+	} 
+	else 
+	{
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
 		EXPECT_EQ(gs.expectedOutput, startnode);
 		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
 	}
 }
 
-TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) {
+TEST_P(ColorGraphTest, FindsCorrectNodeWhenMultipleColors) 
+{
     auto gs = GetParam();
     std::tuple<int, int, int> out;
     
-	if (gs.parallel) {
+	if (gs.parallel) 
+	{
 		out = pivot::findParPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
-	} else {
+	} 
+	else 
+	{
 		out = pivot::findPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 	}
 
 	int startnode = std::get<0>(out);
 
-	if (gs.expectedOutput == -1) {
+	if (gs.expectedOutput == -1) 
+	{
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
 		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
 			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}
-	} else {
+	}
+	else 
+	{
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
 		EXPECT_EQ(gs.expectedOutput, startnode);
 		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
 	}
 }
 
-TEST_P(AdvancedColorGraphTest, FindsMaxDegree) {
+TEST_P(AdvancedColorGraphTest, FindsMaxDegree) 
+{
     auto gs = GetParam();
 	std::tuple<int, int, int> out;
     
-	if (gs.parallel) {
+	if (gs.parallel) 
+	{
 		out = pivot::findParPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
-	} else {
+	} 
+	else 
+	{
 		out = pivot::findPivot(enhgraph, gs.color, gs.method, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 	}
 
 	int startnode = std::get<0>(out);
 
-	if (gs.expectedOutput == -1) {
+	if (gs.expectedOutput == -1) 
+	{
 		EXPECT_FALSE(enhgraph->graph->IsNode(startnode));
 
 		for (int i = enhgraph->colors->BegI(); i < enhgraph->colors->EndI(); i++)
 		{
 			EXPECT_NE(gs.color, enhgraph->colors->GetDat(i));
 		}
-	} else if (gs.color == 2) {
+	} 
+	else if (gs.color == 2) 
+	{
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
 		EXPECT_TRUE(gs.expectedOutput > 3);
 		EXPECT_TRUE(gs.expectedOutput < 7);
 		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
-	} else {
+	} 
+	else 
+	{
 		EXPECT_TRUE(enhgraph->graph->IsNode(startnode));
 		EXPECT_EQ(gs.expectedOutput, startnode);
 		EXPECT_EQ(gs.color, enhgraph->colors->GetDat(startnode));
@@ -239,6 +276,7 @@ INSTANTIATE_TEST_CASE_P(Default, SimpleGraphTest,
 							pivot_state{-1, 2, 3, false},
 							pivot_state{1, 0, 3, true},
 							pivot_state{-1, 2, 3, true}));
+
 INSTANTIATE_TEST_CASE_P(Default, ColorGraphTest,
 						testing::Values(
 							pivot_state{2, 0, 0, false},

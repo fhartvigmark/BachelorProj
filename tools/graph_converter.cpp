@@ -11,6 +11,7 @@ int main(int argc, char **argv)
 	int retVal = 0;
 	string inputFileName = "";
 	string outputFileName = "";
+
 	if (argc == 3)
 	{
 		inputFileName = argv[1];
@@ -25,7 +26,8 @@ int main(int argc, char **argv)
 	ofstream outfile;
 	outfile.open(outputFileName);
 
-	if (!outfile.is_open()) {
+	if (!outfile.is_open()) 
+	{
 		cout << "Unable to open output file\n";
 		return 1;
 	}
@@ -35,13 +37,16 @@ int main(int argc, char **argv)
 	map<int, int> nodes;
 	int counter = 0;
 
-	if (!infile.is_open()) {
+	if (!infile.is_open()) 
+	{
 		cout << "Unable to open input file\n";
 		return 1;
 	}
 
-	while (getline(infile, line)) {
-		if (line.at(0) == '#') {
+	while (getline(infile, line)) 
+	{
+		if (line.at(0) == '#') 
+		{
 			//outfile << line;
 			continue;
 		}
@@ -53,12 +58,14 @@ int main(int argc, char **argv)
 		iss >> from;
 		iss >> to;
 
-		if (nodes.count(from) == 0) {
+		if (nodes.count(from) == 0) 
+		{
 			nodes[from] = counter;
 			counter++;
 		}
 
-		if (nodes.count(to) == 0) {
+		if (nodes.count(to) == 0) 
+		{
 			nodes[to] = counter;
 			counter++;
 		}

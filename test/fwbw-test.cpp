@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
 #include <fwbw.h>
 
-struct BasicFWBWTest : testing::Test {
+struct BasicFWBWTest : testing::Test 
+{
 	enhancedgraph *enhgraph;
 	PNGraph graph;
 
@@ -28,7 +29,8 @@ struct BasicFWBWTest : testing::Test {
 };
 
 //Graph from figure 1
-struct Graph1Test : testing::Test {
+struct Graph1Test : testing::Test 
+{
 	enhancedgraph *enhgraph;
 	PNGraph graph;
 
@@ -61,7 +63,8 @@ struct Graph1Test : testing::Test {
 	}
 };
 
-TEST_F(Graph1Test, SCCheck){
+TEST_F(Graph1Test, SCCheck)
+{
 	int status = fwbw::FWBW(enhgraph, 0, 0, 0, 0, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 	//No error
 	EXPECT_EQ(status, 0);
@@ -159,7 +162,8 @@ TEST_F(Graph1Test, RecSCCCheck)
 	EXPECT_NE(scc4, 0);
 }
 
-TEST_F(BasicFWBWTest, ColorCheck){
+TEST_F(BasicFWBWTest, ColorCheck)
+{
 	int status = fwbw::FWBW(enhgraph, 0, 0, 0, 0, enhgraph->colors->BegI(), enhgraph->colors->EndI()-1);
 	//No error
 	EXPECT_EQ(status, 0);

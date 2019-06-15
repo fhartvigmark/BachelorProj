@@ -9,7 +9,8 @@
 #include <deque>
 using namespace std;
 
-int myRand(const int low, const int high) {
+int myRand(const int low, const int high) 
+{
     static thread_local std::mt19937 randGenerator(static_cast<std::mt19937::result_type>(time(nullptr)));
 
     std::uniform_int_distribution<int> distribution(low,high);
@@ -28,26 +29,36 @@ PNGraph graph;
 
 int generateNext();
 
-int generate1(const int prevNode, bool inEdge) {
+int generate1(const int prevNode, bool inEdge) 
+{
 	nextNode++;
 	graph->AddNode(nextNode);
-	if (inEdge) {
+
+	if (inEdge) 
+	{
 		graph->AddEdge(prevNode, nextNode);
-	} else {
+	} 
+	else 
+	{
 		graph->AddEdge(nextNode, prevNode);
 	}
 
 	return nextNode;
 }
 
-int generate2(const int prevNode, bool inEdge) {
+int generate2(const int prevNode, bool inEdge) 
+{
 	int i = ++nextNode;
 	nextNode++;
 	graph->AddNode(i);
 	graph->AddNode(nextNode);
-	if (inEdge) {
+
+	if (inEdge) 
+	{
 		graph->AddEdge(prevNode, nextNode);
-	} else {
+	} 
+	else 
+	{
 		graph->AddEdge(nextNode, prevNode);
 	}
 
@@ -57,26 +68,35 @@ int generate2(const int prevNode, bool inEdge) {
 	return nextNode;
 }
 
-int generate3(const int prevNode, bool inEdge) {
+int generate3(const int prevNode, bool inEdge) 
+{
 	int choice = myRand(1, 2);
 	int i = ++nextNode;
 	int j = ++nextNode;
 	nextNode++;
+
 	graph->AddNode(i);
 	graph->AddNode(j);
 	graph->AddNode(nextNode);
-	if (inEdge) {
+
+	if (inEdge) 
+	{
 		graph->AddEdge(prevNode, nextNode);
-	} else {
+	} 
+	else 
+	{
 		graph->AddEdge(nextNode, prevNode);
 	}
 	
-	if (choice == 1) {
+	if (choice == 1) 
+	{
 		graph->AddEdge(i, j);
 		graph->AddEdge(j, nextNode);
 		graph->AddEdge(nextNode, i);
 		t1++;
-	} else {
+	} 
+	else 
+	{
 		graph->AddEdge(i, nextNode);
 		graph->AddEdge(nextNode, i);
 		graph->AddEdge(j, nextNode);
@@ -87,29 +107,38 @@ int generate3(const int prevNode, bool inEdge) {
 	return nextNode;
 }
 
-int generateNext() {
+int generateNext() 
+{
 	int choice = myRand(1, 3);
 
-	if (choice == 1 && scc1 < size) {
+	if (choice == 1 && scc1 < size) 
+	{
 		scc1++;
 		return 1;
 	}
-	else if (choice == 2 && scc2 < size) {
+	else if (choice == 2 && scc2 < size) 
+	{
 		scc2++;
 		return 2;
-	} else if (choice == 3 && scc3 < size) {
+	} 
+	else if (choice == 3 && scc3 < size) 
+	{
 		scc3++;
 		return 3;
 	}
 
-	if (scc1 < size) {
+	if (scc1 < size) 
+	{
 		scc1++;
 		return 1;
 	}
-	else if (scc2 < size) {
+	else if (scc2 < size) 
+	{
 		scc2++;
 		return 2;
-	} else if (scc3 < size) {
+	} 
+	else if (scc3 < size) 
+	{
 		scc3++;
 		return 3;
 	}
@@ -127,6 +156,7 @@ int main(int argc, char **argv)
 {
 	int retVal = 0;
 	string filename = "";
+
 	if (argc == 3)
 	{
 		filename = argv[1];
@@ -145,23 +175,31 @@ int main(int argc, char **argv)
 	scc1++;
 	int next = generateNext();
 
-	while (!q.empty()) {
+	while (!q.empty()) 
+	{
 		gen toGen = q.front();
 		q.pop_front();
 		int newNode;
 
-		if (next == 1) {
+		if (next == 1) 
+		{
 			newNode = generate1(toGen.prevNode, toGen.inEdge);
-		} else if (next == 2) {
+		} 
+		else if (next == 2) 
+		{
 			newNode = generate2(toGen.prevNode, toGen.inEdge);
-		} else if (next == 3) {
+		} 
+		else if (next == 3) 
+		{
 			newNode = generate3(toGen.prevNode, toGen.inEdge);
 		}
 
 		next = generateNext();
-		if (next > 0) {
+		if (next > 0) 
+		{
 			int count = myRand(1, 3);
-			for (int v = 0; v < count; v++) {
+			for (int v = 0; v < count; v++) 
+			{
 				q.push_back({newNode, !toGen.inEdge});
 			}
 		}
@@ -179,7 +217,8 @@ int main(int argc, char **argv)
 		
 		outfile.close();
 	}
-	else {
+	else 
+	{
 		cout << "Unable to open output file\n";
 	}
 

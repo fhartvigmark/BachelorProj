@@ -6,7 +6,7 @@ This repository contains the source code for a bachelor project (15 ECTS) in com
 
 The purpose of the project was to investigate the performance of parallelized algorithms for [strongly connected component (SCC)](https://www.geeksforgeeks.org/strongly-connected-components/) decomposition. The main algorithm used for parallel strongly connected component decomposition is the [Forward-Backward (FWBW) algorithm](https://www.sandia.gov/~apinar/papers/irreg00.pdf). Most state-of-the-art algorithms use the FWBW algorithm as a starting framework, but often bundle changes (such as different partitioning strategies) and auxillary algorithms (such as trimming algorithms or alternate algorithms for pivot selection). So our goal was to test some of the more commonly used changes in isolation and thus, try to independently verify their usefulness.
 
-The purpose of this code is to serve as a benchmarking tool. The "src/" folder includes the algorithms we tested as well as the general setup code. Timers and the like are built in to the code. The implementation of the algorithms found in this repository is therefore **not** optimized for performance and should **not** be used in real-world scenarios.
+The purpose of this code is to serve as a benchmarking tool. The `src/` folder includes the algorithms we tested as well as the general setup code. Timers and the like are built in to the code. The implementation of the algorithms found in this repository is therefore **not** optimized for performance and should **not** be used in real-world scenarios.
 
 ## Prerequisites
 

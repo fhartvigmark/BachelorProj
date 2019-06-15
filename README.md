@@ -15,24 +15,42 @@ GCC-5.0
 OpenMP-5.0
 Makefile
 SNAP (we have included SNAP in this repository)
+GoogleTest
 ```
 
 ## Installation
 
 Get into the root directory, then compile the source code with Makefile
 ```sh
+git clone https://github.com/fhartvigmark/BachelorProj
+cd BachelorProj/
 make all
 ```
 
 ## Usage
 
 After installation you can run the program by going to the `src/` directory and running the `main` file. You can specify how the the code should be run by using any of the following parameters.
+```sh
+make src
+cd src/
+./main arguments
+```
+
+A detailed description of the valid input to each argument and default values can be found by calling
+```sh
+./main -h=
+```
+
+An example of using the program with trim level 1, sequential FWBW, max-degree pivot method and 16 workers. Also saving output and showing execution time
+```sh
+./main -g=graph.edges -t=1 -p=1 -w=16 -out=1 -time=1
+```
 
 ### Optional parameters:
 
 `[-g=]` Path to graph:
 	Example:
-	-g=PATH/TO/THE/GRAPH.txt
+	-g=PATH/TO/THE/GRAPH.edges
 
 `[-t=]` Trim levels:
 
@@ -59,18 +77,16 @@ After installation you can run the program by going to the `src/` directory and 
 
 `[-rand=]` Specify amount of steps for randomwalk
 
-`[-cutoff=]` Specify the recursion depth at which trim will no longer be used
+`[-cutoff=]` Specify the recursion depth at which trim will no be used every iteration
 
-`[-steps=]` Specify how often to trim
+`[-steps=]` Specify how often to perform trim after the cutoff depth
 
 `[-h=]` Print help section
 
 	//To print help section:
 	-h=true
 
-`[-out=]` Print SCC output to specified file
-
-	-out=PATH/TO/OUTPUT.txt
+`[-out=]` Print SCC output file
 
 `[-suffix=]` Append the specified text string to the file name of the output file
 
@@ -106,9 +122,17 @@ Thus, `graph.txt` could look like the following:
 ```
 Due to assumptions made in our code it is nescessary that a graph of n nodes is contains nodeID's from 1 to n. 
 
-Since most publicly available graphs are not of this format, we have included `graph_converter.cpp` in the `/tools` folder to fix the enumeration. In order to use this tool the graph you are converting must already otherwise correctly formatted to our specifications (outside of the enumeration). Simply go to the `/tools` folder and run
+Since not all publicly available graphs are of this format, we have included `graph_converter.cpp` in the `/tools` folder to fix the enumeration. In order to use this tool the graph you are converting must already otherwise correctly formatted to our specifications (outside of the enumeration). Simply go to the `/tools` folder and run
 ```
+make tools
+cd tools/
 ./graph_converter PATH/TO/THE/GRAPH.txt PATH/TO/THE/CONVERTED_GRAPH.txt
+```
+
+## Tests
+Unit tests can be performed with the Makefile from the root directory
+```sh
+make run-test
 ```
 
 ## Authors

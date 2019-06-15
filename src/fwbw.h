@@ -7,7 +7,8 @@
 #include <tuple>
 
 
-class fwbw{
+class fwbw
+{
 	public:
 		static int FWBW(enhancedgraph *g, int trimlevel, int pivotmethod, int startColor, int method, int low, int high);
     private:

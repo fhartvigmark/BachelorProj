@@ -11,6 +11,7 @@ enum eTrim{Trim1, Trim2, Trim3, ParTrim1, ParTrim2, ParTrim3};
 enum eTimer{MAIN, FirstFWBW, FWBWs, TRIM, FirstTRIM, TRIM1, TRIM2, TRIM3, PIVOT, SETUP, PREP};
 enum eDebug{dCOLOR, dNODE, dTRIM1, dTRIM2, dTRIM3, dBFS, dDEPTH, dFW, dBW};
 
+//Timer types
 typedef std::chrono::high_resolution_clock Time;
 typedef std::chrono::high_resolution_clock::time_point TimePoint;
 typedef std::chrono::high_resolution_clock::duration Duration;
@@ -38,7 +39,11 @@ class ColorMap
 class ColorGenerator
 {
     public:
-        int getNext() { return ++lastColor; }
+		//Return next unique color
+        int getNext() 
+		{ 
+			return ++lastColor; 
+		}
 		ColorGenerator();
     private:
         std::atomic<int> lastColor;

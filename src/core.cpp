@@ -1,55 +1,93 @@
 #include "core.h"
 #include "iostream"
 
-void ColorMap::AddDat(int i, int data) {
+//--------------------------------
+//		ColorMap
+//--------------------------------
+
+//Set color of element 'i' equal to 'data'
+void ColorMap::AddDat(int i, int data) 
+{
 	array[i] = data;
 }
-int ColorMap::GetDat(int i) {
+
+//Get color of element 'i'
+int ColorMap::GetDat(int i) 
+{
 	return array[i];
 }
 
-int ColorMap::Len() {
+//Get number of colors
+int ColorMap::Len() 
+{
 	return length;
 }
 
-int ColorMap::BegI() {
+//Get index of first color element
+int ColorMap::BegI() 
+{
 	return beg;
 }
 
-int ColorMap::EndI() {
+//Get index of last color element
+int ColorMap::EndI() 
+{
 	return end;
 }
 
-ColorMap::ColorMap(int size, bool hasZero) {
+//Construcor for ColorMap sets start and end indexes and allocates space for colors
+ColorMap::ColorMap(int size, bool hasZero) 
+{
 	length = size;
 	array = new int[size+1];
 
 	//std::cout << "Start is " << hasZero << "\n";
 
-	if (hasZero) {
+	if (hasZero) 
+	{
 		beg = 0;
 		end = length;
-	} else {
+	} 
+	else 
+	{
 		beg = 1;
 		end = length + 1;
 	}
 }
 
-ColorMap::~ColorMap() {
+//Destructor for ColorMap, free the space allocated for colors
+ColorMap::~ColorMap() 
+{
 	delete[] array;
 }
 
 
-ColorGenerator::ColorGenerator() {
+
+//--------------------------------
+//		ColorGenerator
+//--------------------------------
+
+//Constructor for ColorGenerator setting up internal logic
+ColorGenerator::ColorGenerator() 
+{
 	lastColor = 0;
 }
 
 
-void enhancedgraph::calculateDegree() {
+
+//--------------------------------
+//		Precomputation
+//--------------------------------
+
+//Precompute product of in- and out-degree for all nodes
+void enhancedgraph::calculateDegree() 
+{
 	bool zero = graph->IsNode(0);
 
+	//Initialize structure to store node degrees
 	degree = new ColorMap(graph->GetNodes(), zero);
 
+	//Iterate over graph storing degree product for all nodes
 	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
 	{
 		degree->AddDat(NI.GetId(), NI.GetInDeg() * NI.GetOutDeg());
@@ -57,20 +95,30 @@ void enhancedgraph::calculateDegree() {
 }
 
 
+
+//--------------------------------
+//		Timers
+//--------------------------------
+
 //Get current time
-TimePoint enhancedgraph::startTimer() {
-	if (TIMER_ENABLED) {
+TimePoint enhancedgraph::startTimer() 
+{
+	if (TIMER_ENABLED) 
+	{
 		return Time::now();
 	}
 }
 
 //Measure end time and add that time to the corresponding duration based on the timer argument
-void enhancedgraph::endTimer(TimePoint start, eTimer timer) {
+void enhancedgraph::endTimer(TimePoint start, eTimer timer) 
+{
 	if (TIMER_ENABLED)
 	{
+		//Get current time and calculate duration
 		auto end = Time::now();
 		auto dur = end - start;
 
+		//Add duration ot the specified timer
 		switch (timer)
 		{
 			case eTimer::MAIN:
@@ -135,11 +183,15 @@ void enhancedgraph::endTimer(TimePoint start, eTimer timer) {
 }
 
 //Get total runtime of a component
-int64_t enhancedgraph::getTime(eTimer timer) {
-	if (!TIMER_ENABLED) {
+int64_t enhancedgraph::getTime(eTimer timer) 
+{
+	//Return default value if timing is not enabled
+	if (!TIMER_ENABLED) 
+	{
 		return -1;
 	}
 
+	//Return the duration of the requested timer in milliseconds
 	switch (timer)
 	{
 		case eTimer::MAIN:
@@ -169,23 +221,38 @@ int64_t enhancedgraph::getTime(eTimer timer) {
 	}
 }
 
-void enhancedgraph::reportFWBW(int color, int node, int trim1, int trim2, int trim3, int bfs, int depth, int fw, int bw) {
-	if (ANALYSE_ENABLED) {
+
+
+//--------------------------------
+//		Debug information
+//--------------------------------
+
+//Report information about an iteration of FWBW
+void enhancedgraph::reportFWBW(int color, int node, int trim1, int trim2, int trim3, int bfs, int depth, int fw, int bw) 
+{
+	//Check if debug is enabled
+	if (ANALYSE_ENABLED) 
+	{	
+		//If no pivot node was found update pivot calls counter and return
 		omp_set_lock(&lDebugFWBW);
-		if (node == -1) {
+		if (node == -1) 
+		{
 			callsPivot++;
 			omp_unset_lock(&lDebugFWBW);
 			return;
 		}
 
+		//Update call counters and max recursion depth
 		callsFWBW++;
 		callsTrim++;
 		callsPivot++;
 
-		if (depth > depthFWBW) {
+		if (depth > depthFWBW) 
+		{
 			depthFWBW = depth;
 		}
 
+		//Add new debug data points to list
 		dColor->push_back(color);
 		dNode->push_back(node);
 		dTrim1->push_back(trim1);
@@ -200,23 +267,33 @@ void enhancedgraph::reportFWBW(int color, int node, int trim1, int trim2, int tr
 	}
 }
 
-int64_t enhancedgraph::getCallsFWBW() {
+//Get the number of FWBW calls
+int64_t enhancedgraph::getCallsFWBW() 
+{
 	return callsFWBW;
 }
 
-int64_t enhancedgraph::getCallsTrim() {
+//Get the number of trim calls
+int64_t enhancedgraph::getCallsTrim() 
+{
 	return callsTrim;
 }
 
-int64_t enhancedgraph::getCallsPivot() {
+//Get the number of pivot calls
+int64_t enhancedgraph::getCallsPivot() 
+{
 	return callsPivot;
 }
 
-int64_t enhancedgraph::getDepth() {
+//Get the maximum recusion depth
+int64_t enhancedgraph::getDepth() 
+{
 	return depthFWBW;
 }
 
-std::list<int>* enhancedgraph::getReports(eDebug data) {
+//Get list of specified data points for FWBW iterations
+std::list<int>* enhancedgraph::getReports(eDebug data) 
+{
 	switch (data)
 	{
 		case eDebug::dCOLOR:
@@ -243,7 +320,15 @@ std::list<int>* enhancedgraph::getReports(eDebug data) {
 }
 
 
-enhancedgraph::enhancedgraph(TNGraph* g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations), TRIM_CUTOFF(cutoff), TRIM_STEPS(steps) {
+
+//--------------------------------
+//		Enhanced Graph
+//--------------------------------
+
+//Enhancedgraph constructor with complete setup
+enhancedgraph::enhancedgraph(TNGraph* g, bool timer, bool analyse, int randwalk_iterations, int cutoff, int steps) : TIMER_ENABLED(timer), ANALYSE_ENABLED(analyse), RAND_WALK_ITERATIONS(randwalk_iterations), TRIM_CUTOFF(cutoff), TRIM_STEPS(steps) 
+{
+	//Setup graph, colors and color generator
 	graph = g;
 	colorGen = new ColorGenerator();
 	//colors = new TIntH();
@@ -256,14 +341,15 @@ enhancedgraph::enhancedgraph(TNGraph* g, bool timer, bool analyse, int randwalk_
 	colors = new ColorMap(g->GetNodes(), zero);
 
 
-	//Add all colors and node ids to colormap and node vector
+	//Initialize all colors to 0
 	for (TNGraph::TNodeI NI = graph->BegNI(); NI < graph->EndNI(); NI++)
 	{
 		colors->AddDat(NI.GetId(), 0);
 	}
 
 	//Initialize durations and duration locks
-	if (true) {
+	if (true) 
+	{
 		tMain = Duration::zero();
 		tFirstFWBW = Duration::zero();
 		tFWBW = Duration::zero();
@@ -286,7 +372,8 @@ enhancedgraph::enhancedgraph(TNGraph* g, bool timer, bool analyse, int randwalk_
 	}
 
 	//Initialize debug information variables and locks
-	if (true) {
+	if (true) 
+	{
 		omp_init_lock(&lDebugFWBW);
 
 		callsFWBW = 0;
@@ -306,10 +393,12 @@ enhancedgraph::enhancedgraph(TNGraph* g, bool timer, bool analyse, int randwalk_
 	}
 }
 
-//Basic constructor, only sets constants and initilize timers
-enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), RAND_WALK_ITERATIONS(10), TRIM_CUTOFF(0), TRIM_STEPS(1) {
+//Basic constructor, only sets constants and initilize timers/debug variables
+enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), RAND_WALK_ITERATIONS(10), TRIM_CUTOFF(0), TRIM_STEPS(1) 
+{
 	//Initialize durations and duration locks
-	if (true) {
+	if (true) 
+	{
 		tMain = Duration::zero();
 		tFirstFWBW = Duration::zero();
 		tFWBW = Duration::zero();
@@ -332,7 +421,8 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 	}
 
 	//Initialize debug information variables and locks
-	if (true) {
+	if (true) 
+	{
 		omp_init_lock(&lDebugFWBW);
 
 		callsFWBW = 0;
@@ -352,7 +442,9 @@ enhancedgraph::enhancedgraph() : TIMER_ENABLED(false), ANALYSE_ENABLED(false), R
 	}
 }
 
-enhancedgraph::~enhancedgraph() {
+//Destructor for enhancedgraph, free spaced occupied by internal data structures
+enhancedgraph::~enhancedgraph() 
+{
 	//Delete graph elements
 	//delete *graph; TODO: clean up graph?
 	//TODO: clean up degree array
@@ -362,7 +454,8 @@ enhancedgraph::~enhancedgraph() {
 	//graph.~TPt();
 
 	//Delete analysis elements
-	if (true) {
+	if (true) 
+	{
 		omp_destroy_lock(&lDebugFWBW);
 		
 		delete dColor;
@@ -377,7 +470,8 @@ enhancedgraph::~enhancedgraph() {
 	}
 
 	//Delete timing elements
-	if (true) {
+	if (true) 
+	{
 		omp_destroy_lock(&lMain);
 		omp_destroy_lock(&lFirstFWBW);
 		omp_destroy_lock(&lFWBW);
@@ -388,20 +482,31 @@ enhancedgraph::~enhancedgraph() {
 	}
 }
 
-int Random::myRand(const int low, const int high) {
+
+
+//--------------------------------
+//		Random walk
+//--------------------------------
+
+//Get a random number in the range [low, high]
+int Random::myRand(const int low, const int high) 
+{
     static thread_local std::mt19937 randGenerator;
 
     std::uniform_int_distribution<int> distribution(low,high);
     return distribution(randGenerator);
 }
 
-int Random::randstep(enhancedgraph *g, int color, int node) {
+//Perform single random step in any direction
+int Random::randstep(enhancedgraph *g, int color, int node) 
+{
 	ColorMap *colors = g->colors;
 	TNGraph* graph = g->graph;
 
-	//Find number of edges of same color
+	//Number of edges of same color
 	int edges = 0;
 
+	//Count out edges
 	TNGraph::TNodeI NodeI = graph->GetNI(node);
 	int v;
 	for (v = 0; v < NodeI.GetOutDeg(); v++)
@@ -414,6 +519,7 @@ int Random::randstep(enhancedgraph *g, int color, int node) {
 		}
 	}
 	
+	//Count in edges
 	NodeI = graph->GetNI(node);
 	for (v = 0; v < NodeI.GetInDeg(); v++)
 	{
@@ -425,14 +531,16 @@ int Random::randstep(enhancedgraph *g, int color, int node) {
 		}
 	}
 
-	if (edges <= 0) {
+	//Choose random edge if there is any to choose from
+	if (edges <= 0) 
+	{
 		return node;
 	}
 	int index = myRand(0, edges-1);
 	//std::cout << ", " << index << "/" << edges;
 	edges = 0;
 
-	//Find the edges with chosen index
+	//Find the edge with chosen index
 	NodeI = graph->GetNI(node);
 	for (v = 0; v < NodeI.GetOutDeg(); v++)
 	{
@@ -440,7 +548,8 @@ int Random::randstep(enhancedgraph *g, int color, int node) {
 
 		if (colors->GetDat(outNode) == color)
 		{
-			if (edges == index) {
+			if (edges == index) 
+			{
 				//std::cout << "-" << outNode;
 				return outNode;
 			}
@@ -455,7 +564,8 @@ int Random::randstep(enhancedgraph *g, int color, int node) {
 
 		if (colors->GetDat(outNode) == color)
 		{
-			if (edges == index) {
+			if (edges == index) 
+			{
 				//std::cout << "-" << outNode;
 				return outNode;
 			}
@@ -466,15 +576,18 @@ int Random::randstep(enhancedgraph *g, int color, int node) {
 	return node;
 }
 
-int Random::randstepIn(enhancedgraph *g, int color, const int node) {
+//Perform single random step following an in going edge
+int Random::randstepIn(enhancedgraph *g, int color, const int node) 
+{
 	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
-	//Find number of edges of same color
+	//Number of edges of same color
 	int edges = 0;
 
 	//#pragma omp critical
 	//std::cout << "NodeI " << node << "\n";
+	//Count in edges
 	TNGraph::TNodeI NodeI = graph->GetNI(node);
 	for (int v = 0; v < NodeI.GetInDeg(); v++)
 	{
@@ -486,20 +599,23 @@ int Random::randstepIn(enhancedgraph *g, int color, const int node) {
 		}
 	}
 	
-	if (edges <= 0) {
+	//Choose random edges if there are any
+	if (edges <= 0) 
+	{
 		return node;
 	}
 	int index = myRand(0, edges-1);
 	edges = 0;
 
-	//Find the edges with chosen index
+	//Find the edge with chosen index
 	for (int v = 0; v < NodeI.GetInDeg(); v++)
 	{
 		int outNode = NodeI.GetInNId(v);
 
 		if (colors->GetDat(outNode) == color)
 		{
-			if (edges == index) {
+			if (edges == index) 
+			{
 				return outNode;
 			}
 			edges += 1;
@@ -509,17 +625,20 @@ int Random::randstepIn(enhancedgraph *g, int color, const int node) {
 	return node;
 }
 
-int Random::randstepOut(enhancedgraph *g, int color, const int node) {
+//Perform single random step following an out going edge
+int Random::randstepOut(enhancedgraph *g, int color, const int node) 
+{
 	ColorMap *colors = g->colors;
     PNGraph graph = g->graph;
 
-	//Find number of edges of same color
+	//Number of edges of same color
 	int edges = 0;
 
 	//#pragma omp critical
 	//std::cout << "NodeO " << node << "\n";
 	TNGraph::TNodeI NodeI = graph->GetNI(node);
 
+	//Count out edges
 	for (int v = 0; v < NodeI.GetOutDeg(); v++)
 	{
 		int outNode = NodeI.GetOutNId(v);
@@ -530,21 +649,23 @@ int Random::randstepOut(enhancedgraph *g, int color, const int node) {
 		}
 	}
 	
-	
-	if (edges == 0) {
+	//Choose random edges if there are any
+	if (edges == 0) 
+	{
 		return node;
 	}
 	int index = myRand(0, edges-1);
 	edges = 0;
 
-	//Find the edges with chosen index
+	//Find the edge with chosen index
 	for (int v = 0; v < NodeI.GetOutDeg(); v++)
 	{
 		int outNode = NodeI.GetOutNId(v);
 
 		if (colors->GetDat(outNode) == color)
 		{
-			if (edges == index) {
+			if (edges == index) 
+			{
 				return outNode;
 			}
 			edges += 1;
@@ -556,13 +677,20 @@ int Random::randstepOut(enhancedgraph *g, int color, const int node) {
 
 //Performs a simple random walk for k iterations starting from the given node
 //only looks at in/out edges of same color as start node
-int Random::randwalk(enhancedgraph *g, int color, int node, const int k, int r, bool direction) {
+//Can only follow edges in the specified direction
+int Random::randwalk(enhancedgraph *g, int color, int node, const int k, int r, bool direction) 
+{
 	int currentNode = node;
 
-	for (int i = 0; i < k; i++) {
-		if (direction) {
+	//Run k steps if randstep in the given direction
+	for (int i = 0; i < k; i++) 
+	{
+		if (direction) 
+		{
 			currentNode = randstepOut(g, color, currentNode);
-		} else {
+		}
+		else 
+		{
 			currentNode = randstepIn(g, color, currentNode);
 		}
 	}
@@ -572,10 +700,13 @@ int Random::randwalk(enhancedgraph *g, int color, int node, const int k, int r, 
 
 //Performs a simple random walk for k iterations starting from the given node
 //only looks at in/out edges of same color as start node
-int Random::randwalk(enhancedgraph *g, int color, int node, const int k) {
+int Random::randwalk(enhancedgraph *g, int color, int node, const int k) 
+{
 	int currentNode = node;
 
-	for (int i = 0; i < k; i++) {
+	//Perform k steps of randstep on the output of previous step
+	for (int i = 0; i < k; i++) 
+	{
 		currentNode = randstep(g, color, currentNode);
 	}
 

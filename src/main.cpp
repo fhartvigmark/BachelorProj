@@ -1,7 +1,8 @@
 #include "main.h"
 
 //Get extract the name of a file from its path
-TStr getFileName(TStr path) {
+TStr getFileName(TStr path) 
+{
 	return path.GetFMid();
 }
 
@@ -10,8 +11,10 @@ TStr getFileName(TStr path) {
 // operation=1		Print to stdout
 // operation=2		Print to file at 'path' with suffix 'suffix'
 // operation=3		Print compact version to file
-void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
-	if (operation == 1) {
+void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) 
+{
+	if (operation == 1) 
+	{
 		//Print timers to stdout
 		cout << "\nTime used: \n";
 		cout << "  " << "Setup\t\t\t" << enhgraph->getTime(eTimer::SETUP) << "ms\n";
@@ -25,7 +28,9 @@ void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		cout << "      " << "Trim 2\t\t" << enhgraph->getTime(eTimer::TRIM2) << "ms\n";
 		cout << "      " << "Trim 3\t\t" << enhgraph->getTime(eTimer::TRIM3) << "ms\n";
 		cout << "    " << "Pivot\t\t" << enhgraph->getTime(eTimer::PIVOT) << "ms\n";
-	} else if (operation == 2) {
+	} 
+	else if (operation == 2) 
+	{
 		cout << "\nWriting timer output\n";
 
 		//Create output file
@@ -53,7 +58,9 @@ void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		file.close();
 
 		cout << "Done\n";
-	} else if (operation == 3) {
+	} 
+	else if (operation == 3) 
+	{
 		cout << "\nWriting timer output\n";
 
 		//Create output file
@@ -84,8 +91,10 @@ void printTime(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 //Print SCC output
 // operation=0		No printing
 // operation=1		Print to file at 'path' with suffix 'suffix'
-void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) {
-	if (!operation) {
+void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) 
+{
+	if (!operation) 
+	{
 		return;
 	}
 
@@ -117,10 +126,13 @@ void printFile(enhancedgraph *enhgraph, TStr path, TStr suffix, bool operation) 
 // operation=1		Print to stdout
 // operation=2		Print to file at 'path' with suffix 'suffix'
 // operation=3		Print compact version to file
-void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
-	if (operation == 0) {
+void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) 
+{
+	if (operation == 0) 
+	{
 		return;
 	}
+
 	//Get basic information
 	int fwbwCalls = enhgraph->getCallsFWBW();
 	int fwbwDepth = enhgraph->getDepth();
@@ -138,30 +150,41 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 	std::list<int> *lBw = enhgraph->getReports(eDebug::dBW);
 
 	//Count number of SCC's
-	for (auto it = lTrim1->cbegin(); it != lTrim1->cend(); it++) {
-		if (*it > -1) {
-			sccs += *it;
-		}
-	}
-	for (auto it = lTrim2->cbegin(); it != lTrim2->cend(); it++) {
-		if (*it > -1) {
-			sccs += *it;
-		}
-	}
-	for (auto it = lTrim3->cbegin(); it != lTrim3->cend(); it++) {
-		if (*it > -1) {
+	for (auto it = lTrim1->cbegin(); it != lTrim1->cend(); it++) 
+	{
+		if (*it > -1) 
+		{
 			sccs += *it;
 		}
 	}
 
-	for (auto it = lBfs->cbegin(); it != lBfs->cend(); it++) {
-		if (*it > 0) {
+	for (auto it = lTrim2->cbegin(); it != lTrim2->cend(); it++) 
+	{
+		if (*it > -1) 
+		{
+			sccs += *it;
+		}
+	}
+
+	for (auto it = lTrim3->cbegin(); it != lTrim3->cend(); it++) 
+	{
+		if (*it > -1) 
+		{
+			sccs += *it;
+		}
+	}
+
+	for (auto it = lBfs->cbegin(); it != lBfs->cend(); it++) 
+	{
+		if (*it > 0) 
+		{
 			sccs++;
 		}
 	}
 
 
-	if (operation == 1) {
+	if (operation == 1) 
+	{
 		//Write basic info to stdout
 		cout << "\nDebug information: \n";
 		cout << "  " << "#SCCs: " << sccs << "\n";
@@ -176,7 +199,8 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 
 		//Write FWBW recurion tree
 		cout << "FWBW: " << "\n";
-		while (!lColor->empty()) {
+		while (!lColor->empty()) 
+		{
 			int node = lNode->front();
 			lNode->pop_front();
 			int color = lColor->front();
@@ -202,7 +226,9 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 			cout << "    " << "Children " << color << ", " << fw << ", " << bw << "\n";
 		}
 
-	} else if (operation == 2) {
+	} 
+	else if (operation == 2) 
+	{
 		cout << "\nWriting debug output\n";
 
 		//Create output file
@@ -227,7 +253,8 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 
 		//Write FWBW recursion tree
 		file << "FWBW: " << "\n";
-		while (!lColor->empty()) {
+		while (!lColor->empty()) 
+		{
 			int node = lNode->front();
 			lNode->pop_front();
 			int color = lColor->front();
@@ -256,7 +283,9 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		file.close();
 
 		cout << "Done\n";
-	} else if (operation == 3) {
+	} 
+	else if (operation == 3) 
+	{
 		cout << "\nWriting debug output\n";
 
 		//Create output file
@@ -278,7 +307,8 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 		file << lNode->size() << "\n\n";
 
 		//Write recursion tree
-		while (!lColor->empty()) {
+		while (!lColor->empty()) 
+		{
 			int node = lNode->front();
 			lNode->pop_front();
 			int color = lColor->front();
@@ -316,11 +346,13 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation) {
 }
 
 //Method to setup env variables for OpenMP
-void setup(char **argv) {
+void setup(char **argv) 
+{
 	char *hasOMPCancel = getenv("OMP_CANCELLATION");
 
 	//If variable is not set, set it and restart program
-	if (hasOMPCancel == nullptr) {
+	if (hasOMPCancel == nullptr) 
+	{
 		printf("Setting environment variables");
 		setenv("OMP_CANCELLATION", "true", 1);
 
@@ -412,7 +444,8 @@ int main(int argc, char **argv)
     // Load the graph and setup enhanched graph object
 	cout << "Loading graph\n";
 	TimePoint start;
-	if (Timer) {
+	if (Timer) 
+	{
 		start = Time::now();
 	}
 	PNGraph Graph = TSnap::LoadEdgeList<PNGraph>(InEdges);
@@ -424,7 +457,8 @@ int main(int argc, char **argv)
 	cout << "Graph loaded\n";
 
 	start = enhgraph->startTimer();
-	if (PivotMethod == 4) {
+	if (PivotMethod == 4) 
+	{
 		enhgraph->calculateDegree();
 	}
 	enhgraph->endTimer(start, eTimer::PREP);

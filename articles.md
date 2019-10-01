@@ -28,6 +28,12 @@ Finding Strongly Connected Components](https://pdfs.semanticscholar.org/7ee1/c61
 
 ## Other articles
 * [Direction-Optimizing Breadth-First Search](http://www.scottbeamer.net/pubs/beamer-sc2012.pdf)
+"On fast parallel detection of strongly connected components (SCC) in small-world graphs", Hong, Rodia, Olukotun
+"Computing Strongly Connected Components in Parallel on CUDA", Barnat, Bauch, Brim, Ceška
+"Finding strongly connected components in parallel using O(log2n) reachability queries", Warren Schudy
+"A divide-and-conquer algorithm for identifying strongly connected components", Coppersmith, DonFleischer, LisaHendrickson, BrucePinar, Ali
+"GPU-Based Graph Decomposition into Strongly Connected and Maximal End Components", Anton WijsJoost-Pieter KatoenDragan Bošnački
+
 
 ## Benchmarking datasets
 * Wiki: [download dataset](https://wiki.dbpedia.org/downloads-2016-10), [nodes example](http://downloads.dbpedia.org/preview.php?file=2016-10_sl_core-i18n_sl_en_sl_labels_wkd_uris_en.tql.bz2), [edges example](http://downloads.dbpedia.org/preview.php?file=2016-10_sl_core-i18n_sl_en_sl_page_links_wkd_uris_en.ttl.bz2), [id to article](https://www.wikidata.org/wiki/Q1000000)
@@ -42,3 +48,4 @@ SNAP: a collection of datasets [SNAP](https://snap.stanford.edu/data/index.html)
 * [OpenMP](https://www.openmp.org/wp-content/uploads/omp-hands-on-SC08.pdf)
 
 ## Might be interesting to look at synthetic and and implicit graphs
+

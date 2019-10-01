@@ -345,22 +345,40 @@ void printInfo(enhancedgraph *enhgraph, TStr path, TStr suffix, int operation)
 	}
 }
 
-//Method to setup env variables for OpenMP
-void setup(char **argv) 
+void printHelp()
 {
-	char *hasOMPCancel = getenv("OMP_CANCELLATION");
+	cout << "\n" << "parameters:" << "\n";
+	cout << "  " << "Trim levels:" << "\n";
+	cout << "    " << "0 = no trim" << "\n";
+	cout << "    " << "1 = trim-1" << "\n";
+	cout << "    " << "2 = trim-1,2" << "\n";
+	cout << "    " << "3 = trim-1,2,3" << "\n";
+	
+	cout << "  " << "Pivot methods:" << "\n";
+	cout << "    " << "0 = first occurrence" << "\n";
+	cout << "    " << "1 = max degree product" << "\n";
+	cout << "    " << "2 = max degree product with colors" << "\n";
+	cout << "    " << "3 = randomwalk" << "\n";
+	cout << "    " << "3 = max degree with precomputed product" << "\n";
 
-	//If variable is not set, set it and restart program
-	if (hasOMPCancel == nullptr) 
-	{
-		printf("Setting environment variables");
-		setenv("OMP_CANCELLATION", "true", 1);
+	cout << "  " << "FWBW method:" << "\n";
+	cout << "    " << "0 = basic FWBW" << "\n";
+	cout << "    " << "1 = FWBW with parallel bfs" << "\n";
+	cout << "    " << "2 = Recursive FWBW" << "\n";
 
-		int output = execvp(argv[0], argv);
 
-		printf("Setting environment variablesfailed with code %d\n",output);
-		exit(1);
-	}
+	cout << "\n" << "Print:" << "\n";
+	cout << "  " << "Timers:" << "\n";
+	cout << "    " << "0 = no printing" << "\n";
+	cout << "    " << "1 = print to stdout" << "\n";
+	cout << "    " << "2 = print to file" << "\n";
+	cout << "    " << "3 = print compact version to file" << "\n";
+
+	cout << "  " << "Debug:" << "\n";
+	cout << "    " << "0 = no printing" << "\n";
+	cout << "    " << "1 = print to stdout" << "\n";
+	cout << "    " << "2 = print to file" << "\n";
+	cout << "    " << "3 = print compact version to file" << "\n";
 }
 
 int main(int argc, char **argv)
@@ -399,40 +417,7 @@ int main(int argc, char **argv)
 	//Print help section if help argument was included
 	if (Help)
 	{
-		cout << "\n" << "parameters:" << "\n";
-		cout << "  " << "Trim levels:" << "\n";
-		cout << "    " << "0 = no trim" << "\n";
-		cout << "    " << "1 = trim-1" << "\n";
-		cout << "    " << "2 = trim-1,2" << "\n";
-		cout << "    " << "3 = trim-1,2,3" << "\n";
-		
-		cout << "  " << "Pivot methods:" << "\n";
-		cout << "    " << "0 = first occurrence" << "\n";
-		cout << "    " << "1 = max degree product" << "\n";
-		cout << "    " << "2 = max degree product with colors" << "\n";
-		cout << "    " << "3 = randomwalk" << "\n";
-		cout << "    " << "3 = max degree with precomputed product" << "\n";
-
-		cout << "  " << "FWBW method:" << "\n";
-		cout << "    " << "0 = basic FWBW" << "\n";
-		cout << "    " << "1 = FWBW with parallel bfs" << "\n";
-		cout << "    " << "2 = Recursive FWBW" << "\n";
-
-
-		cout << "\n" << "Print:" << "\n";
-		cout << "  " << "Timers:" << "\n";
-		cout << "    " << "0 = no printing" << "\n";
-		cout << "    " << "1 = print to stdout" << "\n";
-		cout << "    " << "2 = print to file" << "\n";
-		cout << "    " << "3 = print compact version to file" << "\n";
-
-		cout << "  " << "Debug:" << "\n";
-		cout << "    " << "0 = no printing" << "\n";
-		cout << "    " << "1 = print to stdout" << "\n";
-		cout << "    " << "2 = print to file" << "\n";
-		cout << "    " << "3 = print compact version to file" << "\n";
-
-
+		printHelp();
 		return 0;
 	}
 	
@@ -470,51 +455,7 @@ int main(int argc, char **argv)
 	enhgraph->endTimer(start, eTimer::MAIN);
 
 	cout << "Graph " << Graph->GetNodes() << ", " << Graph->GetEdges() << "\n";
-	/*
-	try {
-		//pivot::findPivot(enhgraph, -1, PivotMethod);
-		TimePoint start = enhgraph->startTimer();
-		//trim::doTrim(Trimlevels, enhgraph, 0);
-		if (FwBwMethod == 0) {
-			bfs::colorbfs(enhgraph, 0, 13130);
-			//trim::doTrim(Trimlevels, enhgraph, 0);
-		} else if (FwBwMethod == 1) {
-			bfs::parbfs(enhgraph, 0, 13130);
-			//trim::doParTrim(Trimlevels, enhgraph, 0);
-		} else if (FwBwMethod == 2) {
-			bfs::randomRelaxedSearch(enhgraph, 0, 13130);
-			//trim::doParTrim(Trimlevels, enhgraph, 0);
-		} else if (FwBwMethod == 3) {
-			bfs::relaxedSearch(enhgraph, 0, 13130);
-			//trim::doParTrim(Trimlevels, enhgraph, 0);
-		}
-		
-		
-		enhgraph->endTimer(start, eTimer::MAIN);
-	} catch(const char* msg) {
-		std::cout << msg << "\n";
-	}
-	*/
-
-	/*
-	for (int j = 0; j < 100; j++) {
-		TimePoint start = enhgraph->startTimer();
-		pivot::findPivot(enhgraph, -1, 0, 0, 5000);
-		enhgraph->endTimer(start, eTimer::MAIN);
-	}
-
-	for (int j = 0; j < 100; j++) {
-		TimePoint start = enhgraph->startTimer();
-		pivot::findPivot(enhgraph, 0, 1, 0, 5000);
-		enhgraph->endTimer(start, eTimer::FirstFWBW);
-	}
-
-	for (int j = 0; j < 100; j++) {
-		TimePoint start = enhgraph->startTimer();
-		pivot::findPivot(enhgraph, 0, 4, 0, 5000);
-		enhgraph->endTimer(start, eTimer::FWBWs);
-	}
-	*/
+	
 	
 	//Output data, timers and debug information if specified in the arguments
 	printTime(enhgraph, InEdges, Suffix, Timer);
